@@ -377,7 +377,9 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
           ),
         ),
       ),
-      appBar: AppBar(title: Text('Diamond Details - ' + currStockObj.stone_id)),
+      appBar: AppBar(
+          backgroundColor: Colors.indigo[800],
+          title: Text('Diamond Details - ' + currStockObj.stone_id)),
       body: SingleChildScrollView(
         child: Column(children: [
           Container(

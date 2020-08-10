@@ -579,6 +579,10 @@ class _searchlistState extends State<searchlist> {
                                                       ),
                                                     ],
                                                   ),
+                                                  new Divider(
+                                                    color: Colors.grey[100],
+                                                    thickness: 1.0,
+                                                  ),
                                                   Container(
                                                     child: InkWell(
                                                       onTap: () => Navigator.of(
