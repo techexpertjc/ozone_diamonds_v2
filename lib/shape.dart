@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'ozone_diaicon_icons.dart';
+import 'package:ozone_diamonds/StoneSearch.dart';
 
 class shapes extends StatefulWidget {
+  final customFunction, shapeMap, loadfromSaved;
+  shapes({Key key, this.customFunction, this.shapeMap, this.loadfromSaved})
+      : super(key: key);
   @override
   shapesState createState() => shapesState();
 }
@@ -20,10 +24,110 @@ class shapesState extends State<shapes> {
   bool changeColorMarquise = false;
   bool changeColorOther = false;
   bool size = false;
-  static String all,round,princess,cushion,oval,emerald,pear,asscher,heart,radiant,marquise,other;
+  static String all,
+      round,
+      princess,
+      cushion,
+      oval,
+      emerald,
+      pear,
+      asscher,
+      heart,
+      radiant,
+      marquise,
+      other;
+  bool loadFromSaved = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    loadFromSaved = (widget.loadfromSaved == true);
+    if (widget.shapeMap != null && loadFromSaved) {
+      Map tempMap = widget.shapeMap;
+      print(tempMap);
+
+      loadFromSaved = false;
+    }
+
+    super.initState();
+    widget.customFunction(
+      changeColorAll,
+      changeColorRound,
+      changeColorPrincess,
+      changeColorCushion,
+      changeColorOval,
+      changeColorEmerald,
+      changeColorPear,
+      changeColorAsscher,
+      changeColorHeart,
+      changeColorRadiant,
+      changeColorMarquise,
+      changeColorOther,
+    );
+  }
+
+  void mySetState() {
+    loadFromSaved = (widget.loadfromSaved == true);
+    setState(() {});
+    if (widget.shapeMap != null && isFromSaved) {
+      Map tempMap = widget.shapeMap;
+      print(tempMap);
+      print('inside shhapes ' + tempMap['all'].toString());
+
+      changeColorAll = tempMap['all'];
+      changeColorAsscher = tempMap['asscher'];
+      changeColorCushion = tempMap['cushion'];
+      changeColorEmerald = tempMap['emerald'];
+      isFromSaved = false;
+      setState(() {});
+    }
+  }
+
+  @override
+  void setState(fn) {
+    // TODO: implement setState
+    loadFromSaved = (widget.loadfromSaved == true);
+    if (widget.shapeMap != null && isFromSaved) {
+      Map tempMap = widget.shapeMap;
+      print(tempMap);
+      print('inside shhapes ' + tempMap['all'].toString());
+
+      changeColorAll = tempMap['all'];
+      changeColorAsscher = tempMap['asscher'];
+      changeColorCushion = tempMap['cushion'];
+      changeColorEmerald = tempMap['emerald'];
+      changeColorHeart = tempMap['heart'];
+      changeColorMarquise = tempMap['marquise'];
+      changeColorOther = tempMap['other'];
+      changeColorOval = tempMap['oval'];
+      changeColorPear = tempMap['pear'];
+      changeColorPrincess = tempMap['princess'];
+      changeColorRadiant = tempMap['radiant'];
+      changeColorRound = tempMap['round'];
+
+      isFromSaved = false;
+    }
+
+    super.setState(fn);
+
+    widget.customFunction(
+      changeColorAll,
+      changeColorRound,
+      changeColorPrincess,
+      changeColorCushion,
+      changeColorOval,
+      changeColorEmerald,
+      changeColorPear,
+      changeColorAsscher,
+      changeColorHeart,
+      changeColorRadiant,
+      changeColorMarquise,
+      changeColorOther,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    setState(() {});
     return Column(
       children: <Widget>[
         Padding(
@@ -32,23 +136,21 @@ class shapesState extends State<shapes> {
             children: <Widget>[
               InkWell(
                 child: Container(
-                //  width: MediaQuery.of(context).size.width * 0.16,
-                //  height: MediaQuery.of(context).size.height * 0.10,
-               
-              
-                  
+                  //  width: MediaQuery.of(context).size.width * 0.16,
+                  //  height: MediaQuery.of(context).size.height * 0.10,
+
                   padding: EdgeInsets.only(bottom: 1.0, left: 5.0, right: 5.0),
                   decoration: BoxDecoration(
-                      border: Border.all(
-                          color: changeColorAll ? Colors.grey : Colors.grey),
-                      color: changeColorAll
-                          ? Colors.indigo[800]
-                          : Colors.transparent,
-                      // gradient: LinearGradient(
-                      //     begin: Alignment.topCenter,
-                      //     end: Alignment.bottomCenter,
-                      //     colors: [Colors.blue[100], Colors.indigo[200]])
-                      ),
+                    border: Border.all(
+                        color: changeColorAll ? Colors.grey : Colors.grey),
+                    color: changeColorAll
+                        ? Colors.indigo[800]
+                        : Colors.transparent,
+                    // gradient: LinearGradient(
+                    //     begin: Alignment.topCenter,
+                    //     end: Alignment.bottomCenter,
+                    //     colors: [Colors.blue[100], Colors.indigo[200]])
+                  ),
                   child: Column(
                     children: <Widget>[
                       IconButton(
@@ -61,21 +163,19 @@ class shapesState extends State<shapes> {
                           setState(() {
                             if (changeColorAll == false) {
                               changeColorAll = !changeColorAll;
-                              round="1";
-                              princess="2";
-                              marquise="3";
-                              emerald="4";
-                              pear="6";
+                              round = "1";
+                              princess = "2";
+                              marquise = "3";
+                              emerald = "4";
+                              pear = "6";
                               oval = "7";
                               cushion = "9";
                               radiant = "13";
                               heart = "15";
                               asscher = "28";
                               if (changeColorRound == true) {
-                                
                                 changeColorRound = changeColorRound;
                               } else {
-
                                 changeColorRound = !changeColorRound;
                               }
                               if (changeColorPrincess == true) {
@@ -171,8 +271,7 @@ class shapesState extends State<shapes> {
                         'All',
                         style: TextStyle(
                           fontSize: 10,
-                          color:
-                              changeColorAll ? Colors.white : Colors.black,
+                          color: changeColorAll ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       )
@@ -186,8 +285,7 @@ class shapesState extends State<shapes> {
                   padding: EdgeInsets.only(bottom: 1.0, left: 5.0, right: 5.0),
                   decoration: BoxDecoration(
                       border: Border.all(
-                          color:
-                              changeColorRound ? Colors.grey : Colors.grey),
+                          color: changeColorRound ? Colors.grey : Colors.grey),
                       color: changeColorRound
                           ? Colors.indigo[800]
                           : Colors.transparent),
@@ -198,14 +296,13 @@ class shapesState extends State<shapes> {
                           OzoneDiaicon.round,
                           size: 30.0,
                         ),
-                        color:
-                            changeColorRound ? Colors.white : Colors.black,
+                        color: changeColorRound ? Colors.white : Colors.black,
                         onPressed: () {
                           setState(() {
-                            if(changeColorRound==false){
-                              round="1";
-                            }else{
-                              round=null;
+                            if (changeColorRound == false) {
+                              round = "1";
+                            } else {
+                              round = null;
                             }
                             changeColorRound = !changeColorRound;
                           });
@@ -215,9 +312,7 @@ class shapesState extends State<shapes> {
                         'Round',
                         style: TextStyle(
                           fontSize: 10,
-                          color: changeColorRound
-                              ? Colors.white
-                              : Colors.black,
+                          color: changeColorRound ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       )
@@ -231,8 +326,8 @@ class shapesState extends State<shapes> {
                   padding: EdgeInsets.only(bottom: 1.0, left: 5.0, right: 5.0),
                   decoration: BoxDecoration(
                       border: Border.all(
-                          color: changeColorPrincess
-                              ? Colors.grey : Colors.grey),
+                          color:
+                              changeColorPrincess ? Colors.grey : Colors.grey),
                       color: changeColorPrincess
                           ? Colors.indigo[800]
                           : Colors.transparent),
@@ -243,17 +338,16 @@ class shapesState extends State<shapes> {
                           OzoneDiaicon.princess,
                           size: 30.0,
                         ),
-                        color: changeColorPrincess
-                            ? Colors.white
-                            : Colors.black,
+                        color:
+                            changeColorPrincess ? Colors.white : Colors.black,
                         onPressed: () {
                           setState(() {
-                            if(changeColorPrincess==false){
-                              princess="2";
-                            }else{
-                              princess=null;
+                            if (changeColorPrincess == false) {
+                              princess = "2";
+                            } else {
+                              princess = null;
                             }
-                            
+
                             changeColorPrincess = !changeColorPrincess;
                           });
                         },
@@ -262,9 +356,8 @@ class shapesState extends State<shapes> {
                         'Princess',
                         style: TextStyle(
                           fontSize: 10,
-                          color: changeColorPrincess
-                              ? Colors.white
-                              : Colors.black,
+                          color:
+                              changeColorPrincess ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       )
@@ -290,15 +383,13 @@ class shapesState extends State<shapes> {
                           OzoneDiaicon.cushion,
                           size: 30.0,
                         ),
-                        color: changeColorCushion
-                            ? Colors.white
-                            : Colors.black,
+                        color: changeColorCushion ? Colors.white : Colors.black,
                         onPressed: () {
                           setState(() {
-                            if(changeColorCushion==false){
-                              cushion="9";
-                            }else{
-                              cushion=null;
+                            if (changeColorCushion == false) {
+                              cushion = "9";
+                            } else {
+                              cushion = null;
                             }
                             changeColorCushion = !changeColorCushion;
                           });
@@ -308,9 +399,8 @@ class shapesState extends State<shapes> {
                         'Cushion',
                         style: TextStyle(
                           fontSize: 10,
-                          color: changeColorCushion
-                              ? Colors.white
-                              : Colors.black,
+                          color:
+                              changeColorCushion ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       )
@@ -335,14 +425,13 @@ class shapesState extends State<shapes> {
                           OzoneDiaicon.oval,
                           size: 30.0,
                         ),
-                        color:
-                            changeColorOval ? Colors.white : Colors.black,
+                        color: changeColorOval ? Colors.white : Colors.black,
                         onPressed: () {
                           setState(() {
-                             if(changeColorOval==false){
-                              oval="7";
-                            }else{
-                              oval=null;
+                            if (changeColorOval == false) {
+                              oval = "7";
+                            } else {
+                              oval = null;
                             }
                             changeColorOval = !changeColorOval;
                           });
@@ -352,8 +441,7 @@ class shapesState extends State<shapes> {
                         'Oval',
                         style: TextStyle(
                           fontSize: 10,
-                          color:
-                              changeColorOval ? Colors.white : Colors.black,
+                          color: changeColorOval ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       )
@@ -379,15 +467,13 @@ class shapesState extends State<shapes> {
                           OzoneDiaicon.emerald,
                           size: 30.0,
                         ),
-                        color: changeColorEmerald
-                            ? Colors.white
-                            : Colors.black,
+                        color: changeColorEmerald ? Colors.white : Colors.black,
                         onPressed: () {
                           setState(() {
-                             if(changeColorEmerald==false){
-                              emerald="4";
-                            }else{
-                              emerald=null;
+                            if (changeColorEmerald == false) {
+                              emerald = "4";
+                            } else {
+                              emerald = null;
                             }
                             changeColorEmerald = !changeColorEmerald;
                           });
@@ -397,9 +483,8 @@ class shapesState extends State<shapes> {
                         'Emerald',
                         style: TextStyle(
                           fontSize: 10,
-                          color: changeColorEmerald
-                              ? Colors.white
-                              : Colors.black,
+                          color:
+                              changeColorEmerald ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       )
@@ -407,7 +492,6 @@ class shapesState extends State<shapes> {
                   ),
                 ),
               ),
-            
             ],
           ),
         ),
@@ -432,14 +516,13 @@ class shapesState extends State<shapes> {
                           OzoneDiaicon.pear,
                           size: 30.0,
                         ),
-                        color:
-                            changeColorPear ? Colors.white : Colors.black,
+                        color: changeColorPear ? Colors.white : Colors.black,
                         onPressed: () {
                           setState(() {
-                             if(changeColorPear==false){
-                              pear="6";
-                            }else{
-                              pear=null;
+                            if (changeColorPear == false) {
+                              pear = "6";
+                            } else {
+                              pear = null;
                             }
                             changeColorPear = !changeColorPear;
                           });
@@ -449,8 +532,7 @@ class shapesState extends State<shapes> {
                         'Pear',
                         style: TextStyle(
                           fontSize: 10,
-                          color:
-                              changeColorPear ? Colors.white : Colors.black,
+                          color: changeColorPear ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       )
@@ -476,15 +558,13 @@ class shapesState extends State<shapes> {
                           OzoneDiaicon.asscher,
                           size: 30.0,
                         ),
-                        color: changeColorAsscher
-                            ? Colors.white
-                            : Colors.black,
+                        color: changeColorAsscher ? Colors.white : Colors.black,
                         onPressed: () {
                           setState(() {
-                             if(changeColorAsscher==false){
-                              asscher="28";
-                            }else{
-                              asscher=null;
+                            if (changeColorAsscher == false) {
+                              asscher = "28";
+                            } else {
+                              asscher = null;
                             }
                             changeColorAsscher = !changeColorAsscher;
                           });
@@ -494,9 +574,8 @@ class shapesState extends State<shapes> {
                         'Asscher',
                         style: TextStyle(
                           fontSize: 10,
-                          color: changeColorAsscher
-                              ? Colors.white
-                              : Colors.black,
+                          color:
+                              changeColorAsscher ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       )
@@ -510,8 +589,7 @@ class shapesState extends State<shapes> {
                   padding: EdgeInsets.only(bottom: 1.0, left: 5.0, right: 5.0),
                   decoration: BoxDecoration(
                       border: Border.all(
-                          color:
-                              changeColorHeart ? Colors.grey : Colors.grey),
+                          color: changeColorHeart ? Colors.grey : Colors.grey),
                       color: changeColorHeart
                           ? Colors.indigo[800]
                           : Colors.transparent),
@@ -522,14 +600,13 @@ class shapesState extends State<shapes> {
                           OzoneDiaicon.heart,
                           size: 30.0,
                         ),
-                        color:
-                            changeColorHeart ? Colors.white : Colors.black,
+                        color: changeColorHeart ? Colors.white : Colors.black,
                         onPressed: () {
                           setState(() {
-                             if(changeColorHeart==false){
-                              heart="15";
-                            }else{
-                              heart=null;
+                            if (changeColorHeart == false) {
+                              heart = "15";
+                            } else {
+                              heart = null;
                             }
                             changeColorHeart = !changeColorHeart;
                           });
@@ -539,9 +616,7 @@ class shapesState extends State<shapes> {
                         'Heart',
                         style: TextStyle(
                           fontSize: 10,
-                          color: changeColorHeart
-                              ? Colors.white
-                              : Colors.black,
+                          color: changeColorHeart ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       )
@@ -567,15 +642,13 @@ class shapesState extends State<shapes> {
                           OzoneDiaicon.radiant,
                           size: 30.0,
                         ),
-                        color: changeColorRadiant
-                            ? Colors.white
-                            : Colors.black,
+                        color: changeColorRadiant ? Colors.white : Colors.black,
                         onPressed: () {
                           setState(() {
-                             if(changeColorRadiant==false){
-                              radiant="13";
-                            }else{
-                              radiant=null;
+                            if (changeColorRadiant == false) {
+                              radiant = "13";
+                            } else {
+                              radiant = null;
                             }
                             changeColorRadiant = !changeColorRadiant;
                           });
@@ -585,55 +658,8 @@ class shapesState extends State<shapes> {
                         'Radiant',
                         style: TextStyle(
                           fontSize: 10,
-                          color: changeColorRadiant
-                              ? Colors.white
-                              : Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Spacer(),
-              InkWell(
-                child: Container(
-                  padding: EdgeInsets.only(bottom: 1.0, left: 5.0, right: 5.0),
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                          color: changeColorMarquise
-                              ? Colors.grey : Colors.grey),
-                      color: changeColorMarquise
-                          ? Colors.indigo[800]
-                          : Colors.transparent),
-                  child: Column(
-                    children: <Widget>[
-                      IconButton(
-                        icon: Icon(
-                          OzoneDiaicon.marquise,
-                          size: 30.0,
-                        ),
-                        color: changeColorMarquise
-                            ? Colors.white
-                            : Colors.black,
-                        onPressed: () {
-                          setState(() {
-                             if(changeColorMarquise==false){
-                              marquise="3";
-                            }else{
-                              marquise=null;
-                            }
-                            changeColorMarquise = !changeColorMarquise;
-                          });
-                        },
-                      ),
-                      Text(
-                        'Marquise',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: changeColorMarquise
-                              ? Colors.white
-                              : Colors.black,
+                          color:
+                              changeColorRadiant ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       )
@@ -648,7 +674,50 @@ class shapesState extends State<shapes> {
                   decoration: BoxDecoration(
                       border: Border.all(
                           color:
-                              changeColorOther ? Colors.grey : Colors.grey),
+                              changeColorMarquise ? Colors.grey : Colors.grey),
+                      color: changeColorMarquise
+                          ? Colors.indigo[800]
+                          : Colors.transparent),
+                  child: Column(
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(
+                          OzoneDiaicon.marquise,
+                          size: 30.0,
+                        ),
+                        color:
+                            changeColorMarquise ? Colors.white : Colors.black,
+                        onPressed: () {
+                          setState(() {
+                            if (changeColorMarquise == false) {
+                              marquise = "3";
+                            } else {
+                              marquise = null;
+                            }
+                            changeColorMarquise = !changeColorMarquise;
+                          });
+                        },
+                      ),
+                      Text(
+                        'Marquise',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color:
+                              changeColorMarquise ? Colors.white : Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Spacer(),
+              InkWell(
+                child: Container(
+                  padding: EdgeInsets.only(bottom: 1.0, left: 5.0, right: 5.0),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          color: changeColorOther ? Colors.grey : Colors.grey),
                       color: changeColorOther
                           ? Colors.indigo[800]
                           : Colors.transparent),
@@ -659,8 +728,7 @@ class shapesState extends State<shapes> {
                           OzoneDiaicon.other,
                           size: 30.0,
                         ),
-                        color:
-                            changeColorOther ? Colors.white : Colors.black,
+                        color: changeColorOther ? Colors.white : Colors.black,
                         onPressed: () {
                           setState(() {
                             changeColorOther = !changeColorOther;
@@ -671,9 +739,7 @@ class shapesState extends State<shapes> {
                         'Other',
                         style: TextStyle(
                           fontSize: 10,
-                          color: changeColorOther
-                              ? Colors.white
-                              : Colors.black,
+                          color: changeColorOther ? Colors.white : Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       )
@@ -681,7 +747,6 @@ class shapesState extends State<shapes> {
                   ),
                 ),
               ),
-              
             ],
           ),
         )

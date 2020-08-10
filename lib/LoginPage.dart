@@ -5,26 +5,38 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nice_button/NiceButton.dart';
+import 'package:ozone_diamonds/search_with_tabs.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'DashBoard.dart';
 import 'Login_API.dart';
+import 'StoneSearch.dart';
 
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
+String token, partyCode, allowBuy;
+LoginUser currentUser;
+
 class _LoginPageState extends State<LoginPage> {
   bool small = false;
-  bool _toggleVisibility = true;
+  bool _toggleVisibility = true, rememberMe = false;
   String email, password;
+
+  SharedPreferences pref;
 
   //Validation method
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final formKey = GlobalKey<FormState>();
   bool autovalidate = false;
-  bool isLoading = true;
+  bool isLoading = false;
+  TextEditingController pswdController, emailController;
   bool validateAndSave() {
+    setState(() {
+      isLoading = true;
+    });
     final form = formKey.currentState;
     form.save();
     if (form.validate()) {
@@ -32,7 +44,7 @@ class _LoginPageState extends State<LoginPage> {
       return true;
     } else {
       setState(() {
-        isLoading = true;
+        // isLoading = true;
       });
       return false;
     }
@@ -67,6 +79,7 @@ class _LoginPageState extends State<LoginPage> {
               child: SizedBox(
                 //height: (small)?50:55,
                 child: TextFormField(
+                  controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                       border: OutlineInputBorder(
@@ -98,6 +111,7 @@ class _LoginPageState extends State<LoginPage> {
               child: SizedBox(
                 //height: (small)?50:55,
                 child: TextFormField(
+                  controller: pswdController,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
@@ -134,32 +148,56 @@ class _LoginPageState extends State<LoginPage> {
             //Finish
 
             //Forgot Password
-            Padding(
-              padding: EdgeInsets.only(top: 10, right: 40.0),
-              child: InkWell(
-                child: Text(
-                  'Forgot Password',
-                  textAlign: TextAlign.end,
-                  style: TextStyle(color: Colors.redAccent),
-                ),
-              ),
-            ),
+
             //Finish
+
+            //Remember Me
+            Padding(
+                padding: EdgeInsets.only(top: 10, right: 40.0, left: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Checkbox(
+                            value: rememberMe,
+                            onChanged: (val) {
+                              setState(() {
+                                rememberMe = val;
+                              });
+                            }),
+                        Text('Remember Me'),
+                      ],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(right: 0),
+                      child: InkWell(
+                        child: Text(
+                          'Forgot Password',
+                          textAlign: TextAlign.end,
+                          style: TextStyle(color: Colors.redAccent),
+                        ),
+                      ),
+                    ),
+                  ],
+                )),
 
             //Login Button
             Padding(
               padding: EdgeInsets.only(top: 10.0, left: 40.0, right: 40.0),
               child: SizedBox(
                   height: (small) ? 50 : 55,
-                  child: NiceButton(
-                      elevation: 12.0,
-                      radius: 52.0,
-                      fontSize: (small) ? 20 : 22,
-                      onPressed: () {
-                        submit();
-                      },
-                      text: 'Login',
-                      background: Colors.blue)),
+                  child: isLoading
+                      ? Center(child: CircularProgressIndicator())
+                      : NiceButton(
+                          elevation: 12.0,
+                          radius: 52.0,
+                          fontSize: (small) ? 20 : 22,
+                          onPressed: () {
+                            submit();
+                          },
+                          text: 'Login',
+                          background: Colors.blue)),
             ),
             //Finish
 
@@ -206,12 +244,25 @@ class _LoginPageState extends State<LoginPage> {
 
   //submit method
   void submit() async {
+    if (rememberMe) {
+      pref.setString('userMail', email.trim());
+      pref.setString('userPswd', password.trim());
+    } else {
+      pref.setString('userMail', null);
+      pref.setString('userPswd', null);
+    }
     // initState();
     if (validateAndSave()) {
-      await loginAPI(email, password);
-      LoginUser user = LoginUser.fromJson(
-          LoginValue); //value come from loginAPI return value
+      await loginAPI(email.trim(), password.trim());
+      LoginUser user = LoginUser.fromJson(LoginValue);
+      //value come from loginAPI return value
       if (user.msgs != null) {
+        currentUser = user;
+        if (user.token != null) {
+          token = user.token;
+          partyCode = user.partycode;
+          allowBuy = user.buy;
+        }
         Navigator.pop(context, true);
         Navigator.push(
             context,
@@ -244,18 +295,15 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       onPressed: () {
                         Navigator.pop(context, true);
-                        Navigator.pop(context, true);
-                        Navigator.push(
-                            context,
-                            new MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    LoginPage()));
                       },
                     ),
                   ]);
             });
       }
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   //internet Connection Checking
@@ -264,6 +312,23 @@ class _LoginPageState extends State<LoginPage> {
   StreamSubscription<ConnectivityResult> subscription;
   @override
   void initState() {
+    emailController = TextEditingController();
+    pswdController = TextEditingController();
+
+    SharedPreferences.getInstance().then((value) {
+      pref = value;
+      if (pref.getString('userMail') != null) {
+        setState(() {
+          emailController.text = pref.getString('userMail');
+          pswdController.text = pref.getString('userPswd');
+          email = emailController.text;
+          password = pswdController.text;
+
+          rememberMe = true;
+        });
+      }
+      savedSearch = pref.getStringList('savedSearch');
+    });
     super.initState();
     connectivity = new Connectivity();
     subscription =

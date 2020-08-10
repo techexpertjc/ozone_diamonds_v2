@@ -10,14 +10,14 @@ import 'package:ozone_diamonds/search_with_tabs.dart';
 
 import 'DashBoard.dart';
 
-class searchlist extends StatefulWidget {
-  searchlist({Key key, this.fil}) : super(key: key);
+class NewArrivalList extends StatefulWidget {
+  NewArrivalList({Key key, this.fil}) : super(key: key);
   final fil;
   @override
-  _searchlistState createState() => _searchlistState();
+  _newArrivalListState createState() => _newArrivalListState();
 }
 
-class _searchlistState extends State<searchlist> {
+class _newArrivalListState extends State<NewArrivalList> {
   bool size = false;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> selectedList = List();
@@ -681,7 +681,7 @@ class _searchlistState extends State<searchlist> {
     };
     final msg = jsonEncode({
       "Token": token,
-      "StockType": "FULL",
+      "StockType": "NEW",
       "Start": "1",
       "WhereCondition": query
     });

@@ -38,6 +38,8 @@ dependencies:
   dio:
   giffy_dialog:
   url_launcher:
+  flutter_plugin_pdf_viewer: any
+  video_player: ^0.10.11+2
   
 
 
@@ -70,6 +72,7 @@ flutter:
     - asets/Jewel2.jpg
     - asets/New.jpg
     - asets/Serch.jpg
+    - asets/loading1.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

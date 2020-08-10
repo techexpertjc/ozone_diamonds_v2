@@ -6,7 +6,10 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ozone_diamonds/cart_page.dart';
+import 'package:ozone_diamonds/new_arrival.dart';
 import 'package:ozone_diamonds/search_with_tabs.dart';
+import 'package:ozone_diamonds/view_offer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'Drawer/AboutUs.dart';
@@ -16,7 +19,8 @@ import 'Login_API.dart';
 import 'StoneSearch.dart';
 
 class DashBoard extends StatefulWidget {
-  DashBoard({Key key, this.email, this.id, this.name}) : super(key: key);
+  DashBoard({Key key, this.email, this.id, this.name = 'User'})
+      : super(key: key);
   final String email, id, name;
 
   @override
@@ -139,7 +143,10 @@ class _DashBoardState extends State<DashBoard> {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => NewArrivalList()));
+                },
                 child: ListTile(
                   leading: Icon(Icons.new_releases),
                   title: Text("New Arrival"),
@@ -160,10 +167,13 @@ class _DashBoardState extends State<DashBoard> {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => MyCartList()));
+                },
                 child: ListTile(
                   leading: Icon(Icons.shopping_basket),
-                  title: Text("My Basket"),
+                  title: Text("My Cart"),
                 ),
               ),
               InkWell(
@@ -174,14 +184,10 @@ class _DashBoardState extends State<DashBoard> {
                 ),
               ),
               InkWell(
-                onTap: () {},
-                child: ListTile(
-                  leading: Icon(Icons.view_quilt),
-                  title: Text("Request For View"),
-                ),
-              ),
-              InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => OfferList()));
+                },
                 child: ListTile(
                   leading: Icon(Icons.local_offer),
                   title: Text("View Offer"),
@@ -199,20 +205,6 @@ class _DashBoardState extends State<DashBoard> {
                 child: ListTile(
                   leading: Icon(Icons.vpn_key),
                   title: Text("Change Password"),
-                ),
-              ),
-              InkWell(
-                onTap: () {},
-                child: ListTile(
-                  leading: Icon(Icons.event),
-                  title: Text("News & Events"),
-                ),
-              ),
-              InkWell(
-                onTap: () {},
-                child: ListTile(
-                  leading: Icon(Icons.settings),
-                  title: Text("Settings"),
                 ),
               ),
               InkWell(
@@ -381,11 +373,9 @@ class _DashBoardState extends State<DashBoard> {
                         flex: 1,
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        StoneSearch()));
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    NewArrivalList()));
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -465,11 +455,9 @@ class _DashBoardState extends State<DashBoard> {
                         flex: 1,
                         child: GestureDetector(
                           onTap: () {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (BuildContext context) =>
-                            //             StoneSearch()));
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    OfferList()));
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -505,11 +493,9 @@ class _DashBoardState extends State<DashBoard> {
                         flex: 1,
                         child: GestureDetector(
                           onTap: () {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (BuildContext context) =>
-                            //             stoneSearch()));
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    MyCartList()));
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),

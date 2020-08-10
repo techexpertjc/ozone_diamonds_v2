@@ -10,14 +10,14 @@ import 'package:ozone_diamonds/search_with_tabs.dart';
 
 import 'DashBoard.dart';
 
-class searchlist extends StatefulWidget {
-  searchlist({Key key, this.fil}) : super(key: key);
+class OfferList extends StatefulWidget {
+  OfferList({Key key, this.fil}) : super(key: key);
   final fil;
   @override
-  _searchlistState createState() => _searchlistState();
+  _offerListState createState() => _offerListState();
 }
 
-class _searchlistState extends State<searchlist> {
+class _offerListState extends State<OfferList> {
   bool size = false;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> selectedList = List();
@@ -679,19 +679,14 @@ class _searchlistState extends State<searchlist> {
     Map<String, String> aheaders = {
       'Content-Type': 'application/json; charset=utf-8',
     };
-    final msg = jsonEncode({
-      "Token": token,
-      "StockType": "FULL",
-      "Start": "1",
-      "WhereCondition": query
-    });
+    final msg = jsonEncode({"Token": token, "PartyCode": partyCode});
     http.Response response = await http.post(
-        'http://ozonediam.com/MobAppService.svc/GetStockapp',
+        'http://ozonediam.com/MobAppService.svc/GetViewOffer',
         headers: aheaders,
         body: msg);
     var responseJson = json.decode(response.body);
     print('inside result ' + msg);
-    return (responseJson['GetStockappResult']['Result'] as List)
+    return (responseJson['GetViewOfferResult']['Result'] as List)
         .map((p) => Stock.fromJson(p))
         .toList();
   }
