@@ -125,6 +125,7 @@ class _offerListState extends State<OfferList> {
                   if (snapshot.hasData) {
                     int numOfResult = snapshot.data.length;
                     List<Stock> posts = snapshot.data;
+
                     return Column(
                       children: <Widget>[
                         Card(
@@ -177,7 +178,7 @@ class _offerListState extends State<OfferList> {
                         // Column(children: <Widget>[Text(numOfResult.toString())],),
                         new Column(
                             children: posts
-                                .map((post) => new Column(
+                                .map((post) => Column(
                                       children: <Widget>[
                                         Card(
                                           elevation: selectedList
@@ -686,7 +687,8 @@ class _offerListState extends State<OfferList> {
         headers: aheaders,
         body: msg);
     var responseJson = json.decode(response.body);
-    print('inside result ' + msg);
+    log('inside result ' +
+        responseJson['GetViewOfferResult']['Result'][0].toString());
     return (responseJson['GetViewOfferResult']['Result'] as List)
         .map((p) => Stock.fromJson(p))
         .toList();

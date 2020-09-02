@@ -121,9 +121,11 @@ class _searchlistState extends State<searchlist> {
               new FutureBuilder<List<Stock>>(
                 future: fetchPosts(query),
                 builder: (context, snapshot) {
+                  // log('inside builder' + json.encode(snapshot.data));
                   if (snapshot.hasData) {
                     int numOfResult = snapshot.data.length;
                     List<Stock> posts = snapshot.data;
+
                     return Column(
                       children: <Widget>[
                         Card(
@@ -687,6 +689,7 @@ class _searchlistState extends State<searchlist> {
       "Token": token,
       "StockType": "FULL",
       "Start": "1",
+      "End": "",
       "WhereCondition": query
     });
     http.Response response = await http.post(
@@ -694,7 +697,8 @@ class _searchlistState extends State<searchlist> {
         headers: aheaders,
         body: msg);
     var responseJson = json.decode(response.body);
-    print('inside result ' + msg);
+    print('inside result ');
+    log(response.body);
     return (responseJson['GetStockappResult']['Result'] as List)
         .map((p) => Stock.fromJson(p))
         .toList();
@@ -836,11 +840,11 @@ class Stock {
         table_per: json['TablePer'].toString(),
         total_amt: json['TotalAmount'].toString(),
         video: json['Video'].toString(),
-        weight: json['Weight'].toString(),
-        width: json['Width'].toString(),
         pdfLink: json['Cert'].toString(),
         videoLink: json['Mp4Video'].toString(),
         imageLink: json['Image'].toString(),
-        comments: json['Comments'].toString());
+        comments: json['Comments'].toString(),
+        weight: json['Weight'].toString(),
+        width: json['Width'].toString());
   }
 }
