@@ -7,18 +7,17 @@ import 'package:ozone_diamonds/LoginPage.dart';
 import 'package:ozone_diamonds/dna_page.dart';
 import 'package:ozone_diamonds/ozone_diaicon_icons.dart';
 import 'package:ozone_diamonds/search_with_tabs.dart';
-import 'package:ozone_diamonds/search.dart';
 
 import 'DashBoard.dart';
 
-class NewArrivalList extends StatefulWidget {
-  NewArrivalList({Key key, this.fil}) : super(key: key);
+class MyOrder extends StatefulWidget {
+  MyOrder({Key key, this.fil}) : super(key: key);
   final fil;
   @override
-  _newArrivalListState createState() => _newArrivalListState();
+  _MyOrderState createState() => _MyOrderState();
 }
 
-class _newArrivalListState extends State<NewArrivalList> {
+class _MyOrderState extends State<MyOrder> {
   bool size = false;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> selectedList = List();
@@ -95,7 +94,7 @@ class _newArrivalListState extends State<NewArrivalList> {
                 }),
             centerTitle: true,
             title: Text(
-              'New Arrivals',
+              'My Orders and Invoice',
               style: TextStyle(
                   fontSize: (size) ? 22 : 22, fontWeight: FontWeight.w400),
             ),
@@ -122,9 +121,11 @@ class _newArrivalListState extends State<NewArrivalList> {
               new FutureBuilder<List<Stock>>(
                 future: fetchPosts(query),
                 builder: (context, snapshot) {
+                  // log('inside builder' + json.encode(snapshot.data));
                   if (snapshot.hasData) {
                     int numOfResult = snapshot.data.length;
                     List<Stock> posts = snapshot.data;
+
                     return Column(
                       children: <Widget>[
                         Card(
@@ -220,16 +221,23 @@ class _newArrivalListState extends State<NewArrivalList> {
                                                       double.parse(
                                                           element.total_amt);
                                                 });
-                                                discount = (discTotal /
-                                                        selectedList.length)
-                                                    .toStringAsFixed(2);
-                                                carat = caratTotal
-                                                    .toStringAsFixed(2);
-                                                amtCts =
-                                                    (amountTotal / caratTotal)
-                                                        .toStringAsFixed(2);
-                                                total = amountTotal
-                                                    .toStringAsFixed(0);
+                                                if (selectedList.length > 0) {
+                                                  discount = (discTotal /
+                                                          selectedList.length)
+                                                      .toStringAsFixed(2);
+                                                  carat = caratTotal
+                                                      .toStringAsFixed(2);
+                                                  amtCts =
+                                                      (amountTotal / caratTotal)
+                                                          .toStringAsFixed(2);
+                                                  total = amountTotal
+                                                      .toStringAsFixed(0);
+                                                } else {
+                                                  discount = '-';
+                                                  carat = '-';
+                                                  amtCts = '-';
+                                                  total = '-';
+                                                }
                                               });
                                               // print(selectedList.toString());
                                               // Navigator.push(
@@ -580,6 +588,10 @@ class _newArrivalListState extends State<NewArrivalList> {
                                                       ),
                                                     ],
                                                   ),
+                                                  new Divider(
+                                                    color: Colors.grey[100],
+                                                    thickness: 1.0,
+                                                  ),
                                                   Container(
                                                     child: InkWell(
                                                       onTap: () => Navigator.of(
@@ -682,18 +694,165 @@ class _newArrivalListState extends State<NewArrivalList> {
     };
     final msg = jsonEncode({
       "Token": token,
-      "StockType": "NEW",
+      "StockType": "BUY",
       "Start": "1",
-      "WhereCondition": query
+      "End": "",
+      "WhereCondition": "",
+      "SortBy": ""
     });
     http.Response response = await http.post(
-        'http://ozonediam.com/MobAppService.svc/GetStockapp',
+        'http://ozonediam.com/MobAppService.svc/GetConfirmList',
         headers: aheaders,
         body: msg);
     var responseJson = json.decode(response.body);
-    print('inside result ' + msg);
-    return (responseJson['GetStockappResult']['Result'] as List)
+    print('inside result ');
+    log(response.body);
+    return (responseJson['GetConfirmListResult']['Result'] as List)
         .map((p) => Stock.fromJson(p))
         .toList();
+  }
+}
+
+class Stock {
+  final String clarity,
+      colour,
+      cut,
+      symm,
+      flu,
+      certy,
+      polish,
+      shade,
+      carat,
+      ha,
+      discount,
+      cb,
+      cw,
+      color_description,
+      comments,
+      crown_angle,
+      crown_height,
+      depth,
+      depth_per,
+      eyeclean,
+      ktos,
+      lab,
+      lenght,
+      location,
+      milky,
+      pavilion_angle,
+      pavilion_height,
+      price_per_carat,
+      rap_price,
+      ratio,
+      report_date,
+      report_no,
+      sb,
+      sw,
+      shape,
+      stage,
+      stone_id,
+      table_per,
+      total_amt,
+      video,
+      weight,
+      pdfLink,
+      videoLink,
+      imageLink,
+      width;
+
+  Stock({
+    this.clarity,
+    this.colour,
+    this.cut,
+    this.polish,
+    this.symm,
+    this.flu,
+    this.certy,
+    this.shade,
+    this.carat,
+    this.ha,
+    this.discount,
+    this.cb,
+    this.cw,
+    this.color_description,
+    this.comments,
+    this.crown_angle,
+    this.crown_height,
+    this.depth,
+    this.depth_per,
+    this.eyeclean,
+    this.ktos,
+    this.lab,
+    this.lenght,
+    this.location,
+    this.milky,
+    this.pavilion_angle,
+    this.pavilion_height,
+    this.price_per_carat,
+    this.rap_price,
+    this.ratio,
+    this.report_date,
+    this.report_no,
+    this.sw,
+    this.sb,
+    this.shape,
+    this.stage,
+    this.stone_id,
+    this.table_per,
+    this.total_amt,
+    this.video,
+    this.pdfLink,
+    this.imageLink,
+    this.videoLink,
+    this.weight,
+    this.width,
+  });
+
+  factory Stock.fromJson(Map<String, dynamic> json) {
+    return new Stock(
+        clarity: json['Clarity'].toString(),
+        colour: json['Colour'].toString(),
+        cut: json['Cut'].toString(),
+        polish: json['Polish'].toString(),
+        symm: json['Symmetry'].toString(),
+        flu: json['Fluorescence'].toString(),
+        certy: json['Lab'].toString(),
+        shade: json['Shade'].toString(),
+        carat: json['Weight'].toString(),
+        ha: json['HA'].toString(),
+        discount: json['Discount'].toString(),
+        cb: json['CB'].toString(),
+        cw: json['CW'].toString(),
+        color_description: json['ColorDescription'].toString(),
+        crown_angle: json['CrownAngle'].toString(),
+        crown_height: json['CrownHeight'].toString(),
+        depth: json['Depth'].toString(),
+        eyeclean: json['EyeClean'].toString(),
+        ktos: json['KeyToSymbols'].toString(),
+        lab: json['Lab'].toString(),
+        lenght: json['Lenght'].toString(),
+        location: json['Location'].toString(),
+        milky: json['Milky'].toString(),
+        pavilion_angle: json['PavilionAngle'].toString(),
+        pavilion_height: json['PavilionHeight'].toString(),
+        price_per_carat: json['PricePerCarat'].toString(),
+        rap_price: json['RapPrice'].toString(),
+        ratio: json['Ratio'].toString(),
+        report_date: json['ReportDate'].toString(),
+        report_no: json['ReportNo'].toString(),
+        sw: json['SW'].toString(),
+        sb: json['SB'].toString(),
+        shape: json['Shape'].toString(),
+        stage: json['Stage'].toString(),
+        stone_id: json['StoneId'].toString(),
+        table_per: json['TablePer'].toString(),
+        total_amt: json['TotalAmount'].toString(),
+        video: json['Video'].toString(),
+        pdfLink: json['Cert'].toString(),
+        videoLink: json['Mp4Video'].toString(),
+        imageLink: json['Image'].toString(),
+        comments: json['Comments'].toString(),
+        weight: json['Weight'].toString(),
+        width: json['Width'].toString());
   }
 }

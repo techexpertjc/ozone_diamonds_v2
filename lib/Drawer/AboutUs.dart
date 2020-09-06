@@ -13,37 +13,34 @@ class _AboutUSState extends State<AboutUS> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: PreferredSize(
-          preferredSize: (size) ? Size.fromHeight(45.0) : Size.fromHeight(45.0),
-          child: AppBar(
-            leading: IconButton(
+        appBar: AppBar(
+          leading: IconButton(
+              icon: Icon(
+                Icons.chevron_left,
+                size: (size) ? 35 : 35,
+              ),
+              onPressed: () {
+                Navigator.pop(context, true);
+              }),
+          centerTitle: true,
+          title: Text(
+            'About Us',
+            style: TextStyle(
+                fontSize: (size) ? 22 : 22, fontWeight: FontWeight.w400),
+          ),
+          actions: <Widget>[
+            IconButton(
                 icon: Icon(
-                  Icons.chevron_left,
-                  size: (size) ? 35 : 35,
+                  Icons.home,
+                  size: (size) ? 32 : 32,
                 ),
                 onPressed: () {
-                  Navigator.pop(context, true);
-                }),
-            centerTitle: true,
-            title: Text(
-              'About Us',
-              style: TextStyle(
-                  fontSize: (size) ? 22 : 22, fontWeight: FontWeight.w400),
-            ),
-            actions: <Widget>[
-              IconButton(
-                  icon: Icon(
-                    Icons.home,
-                    size: (size) ? 32 : 32,
-                  ),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => DashBoard()));
-                  })
-            ],
-          ),
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => DashBoard()));
+                })
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),

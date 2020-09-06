@@ -73,6 +73,11 @@ flutter:
     - asets/New.jpg
     - asets/Serch.jpg
     - asets/loading1.gif
+    - asets/pair_search.png
+    - asets/specific_search.png
+    - asets/ORM.png
+    - asets/Ozonheader.png
+    - asets/Ozon-logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

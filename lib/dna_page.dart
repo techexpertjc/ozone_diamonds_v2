@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:ozone_diamonds/LoginPage.dart';
+import 'package:ozone_diamonds/cart_page.dart';
 import 'package:video_player/video_player.dart';
 import "package:http/http.dart" as http;
 
@@ -300,30 +301,157 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
                         child: Column(
                           children: [
                             Center(
-                              child: Container(child: Icon(Icons.local_offer)),
+                              child: Container(
+                                  child: Icon(Icons.local_offer,
+                                      color: Color(0XFF294ea3))),
                             ),
                             Center(
                               child: Container(
-                                child: Text('Make Offer'),
+                                child: Text('Make Offer',
+                                    style: TextStyle(fontSize: 15)),
                               ),
                             )
                           ],
                         ),
                       ),
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width / 3,
-                      child: Column(
-                        children: [
-                          Center(
-                              child:
-                                  Container(child: Icon(Icons.remove_red_eye))),
-                          Center(
-                            child: Container(
-                              child: Text('Request for View'),
-                            ),
-                          )
-                        ],
+                    InkWell(
+                      onTap: () async {
+                        var naration, instructedBy;
+                        final dialogKey = GlobalKey<ScaffoldState>();
+                        if (token != null &&
+                            token != '' &&
+                            partyCode != null &&
+                            partyCode != '') {
+                          showDialog(
+                              context: context,
+                              child: Padding(
+                                padding: EdgeInsets.all(15),
+                                child: Center(
+                                  child: SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              3,
+                                      child: Scaffold(
+                                          resizeToAvoidBottomPadding: false,
+                                          key: dialogKey,
+                                          body: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Container(
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                    child: Text('Confirm Stone',
+                                                        style: TextStyle(
+                                                            fontSize: 18)),
+                                                  ),
+                                                  TextFormField(
+                                                    onChanged: (val) =>
+                                                        naration = val,
+                                                    decoration: InputDecoration(
+                                                        hintText: 'Naration'),
+                                                  ),
+                                                  TextFormField(
+                                                    onChanged: (val) =>
+                                                        instructedBy = val,
+                                                    decoration: InputDecoration(
+                                                        hintText:
+                                                            'Instruction By'),
+                                                  ),
+                                                  Padding(
+                                                      padding: EdgeInsets.only(
+                                                          top: 20)),
+                                                  RaisedButton(
+                                                    onPressed: () async {
+                                                      dialogKey.currentState
+                                                          .showSnackBar(SnackBar(
+                                                              content: Text(
+                                                                  'Confirming stone please wait...')));
+                                                      var saveMap = Map();
+                                                      saveMap['Token'] = token;
+                                                      saveMap['PartyCode'] =
+                                                          partyCode;
+                                                      saveMap['ReportNoList'] =
+                                                          currStockObj.stone_id;
+                                                      saveMap['Narration'] =
+                                                          naration;
+                                                      saveMap['Instructionby'] =
+                                                          instructedBy;
+                                                      Map<String, String>
+                                                          aheaders = {
+                                                        'Content-Type':
+                                                            'application/json; charset=utf-8',
+                                                      };
+                                                      http.Response response =
+                                                          await http.post(
+                                                              'http://ozonediam.com/MobAppService.svc/ConfirmStone',
+                                                              headers: aheaders,
+                                                              body: json.encode(
+                                                                  saveMap));
+                                                      var responseJson =
+                                                          json.decode(
+                                                              response.body);
+                                                      print(responseJson
+                                                          .toString());
+                                                      if (responseJson[
+                                                              'SaveSearchResult']
+                                                          .toString()
+                                                          .toLowerCase()
+                                                          .contains(
+                                                              'success')) {
+                                                        Navigator.of(context,
+                                                                rootNavigator:
+                                                                    true)
+                                                            .pop();
+                                                        scaffoldKey.currentState
+                                                            .showSnackBar(SnackBar(
+                                                                content: Text(
+                                                                    'Stone Confirmed Successfully')));
+                                                      } else {
+                                                        dialogKey.currentState
+                                                            .showSnackBar(SnackBar(
+                                                                content: Text(
+                                                                    'Failed to confirm stone')));
+                                                      }
+                                                    },
+                                                    child: Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width -
+                                                            100,
+                                                        child: Text(
+                                                          'Confirm',
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        )),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ))),
+                                ),
+                              ));
+                        } else {
+                          scaffoldKey.currentState.showSnackBar(SnackBar(
+                              content: Text(
+                                  'You are not allowed to Confirm stone')));
+                        }
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width / 3,
+                        child: Column(
+                          children: [
+                            Center(
+                                child:
+                                    Container(child: Icon(Icons.attach_money))),
+                            Center(
+                              child: Container(
+                                child: Text('Confirm Stone'),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     InkWell(
@@ -378,7 +506,13 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
         ),
       ),
       appBar: AppBar(
-          backgroundColor: Colors.indigo[800],
+          actions: [
+            IconButton(
+                icon: Icon(Icons.shopping_cart),
+                onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => MyCartList())))
+          ],
+          backgroundColor: Color(0XFF294EA3),
           title: Text('Diamond Details - ' + currStockObj.stone_id)),
       body: SingleChildScrollView(
         child: Column(children: [
@@ -430,41 +564,44 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
           ),
           Padding(
             padding: EdgeInsets.all(10),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    width: 40,
-                    child: IconButton(
-                        icon: Icon(Icons.receipt),
-                        onPressed: () {
-                          imageTabController.animateTo(0);
-                        }),
-                  ),
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    width: 40,
-                    child: IconButton(
-                        icon: Icon(Icons.ondemand_video),
-                        onPressed: () {
-                          imageTabController.animateTo(1);
-                        }),
-                  ),
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    width: 40,
-                    child: IconButton(
-                        icon: Icon(Icons.photo),
-                        onPressed: () {
-                          imageTabController.animateTo(2);
-                        }),
-                  )
-                ]),
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <
+                Widget>[
+              Container(
+                margin: EdgeInsets.all(10),
+                width: 40,
+                child: IconButton(
+                    icon: Icon(Icons.receipt, color: Color(0XFF294ea3)),
+                    onPressed: () {
+                      imageTabController.animateTo(0);
+                    }),
+              ),
+              Container(
+                margin: EdgeInsets.all(10),
+                width: 40,
+                child: IconButton(
+                    icon: Icon(Icons.ondemand_video, color: Color(0XFF294ea3)),
+                    onPressed: () {
+                      imageTabController.animateTo(1);
+                    }),
+              ),
+              Container(
+                margin: EdgeInsets.all(10),
+                width: 40,
+                child: IconButton(
+                    icon: Icon(
+                      Icons.photo,
+                      color: Color(0XFF294ea3),
+                    ),
+                    onPressed: () {
+                      imageTabController.animateTo(2);
+                    }),
+              )
+            ]),
           ),
           Container(
             height: 40,
             child: TabBar(
+              indicatorColor: Color(0XFF294ea3),
               tabs: <Widget>[
                 Container(
                   height: 40,
@@ -539,7 +676,7 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
                       ),
                     ),
                     Container(
-                      color: Colors.blue[50],
+                      color: Color(0XFFEBEFFA),
                       child: Row(
                         children: [
                           Container(
@@ -617,7 +754,7 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
                       ),
                     ),
                     Container(
-                      color: Colors.blue[50],
+                      color: Color(0XFFEBEFFA),
                       child: Row(
                         children: [
                           Container(
@@ -695,7 +832,7 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
                       ),
                     ),
                     Container(
-                      color: Colors.blue[50],
+                      color: Color(0XFFEBEFFA),
                       child: Row(
                         children: [
                           Container(
@@ -780,7 +917,7 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
                       ),
                     ),
                     Container(
-                      color: Colors.blue[50],
+                      color: Color(0XFFEBEFFA),
                       child: Row(
                         children: [
                           Container(
@@ -864,7 +1001,7 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
                       ),
                     ),
                     Container(
-                      color: Colors.blue[50],
+                      color: Color(0XFFEBEFFA),
                       child: Row(
                         children: [
                           Container(
@@ -948,7 +1085,7 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
                       ),
                     ),
                     Container(
-                      color: Colors.blue[50],
+                      color: Color(0XFFEBEFFA),
                       child: Row(
                         children: [
                           Container(
@@ -1035,7 +1172,7 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
                       ),
                     ),
                     Container(
-                      color: Colors.blue[50],
+                      color: Color(0XFFEBEFFA),
                       child: Row(
                         children: [
                           Container(
@@ -1117,7 +1254,7 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
                       ),
                     ),
                     Container(
-                      color: Colors.blue[50],
+                      color: Color(0XFFEBEFFA),
                       child: Row(
                         children: [
                           Container(

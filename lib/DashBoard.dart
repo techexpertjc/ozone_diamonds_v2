@@ -7,7 +7,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ozone_diamonds/cart_page.dart';
+import 'package:ozone_diamonds/my_order.dart';
+import 'package:ozone_diamonds/my_profile.dart';
 import 'package:ozone_diamonds/new_arrival.dart';
+import 'package:ozone_diamonds/search.dart';
 import 'package:ozone_diamonds/search_with_tabs.dart';
 import 'package:ozone_diamonds/view_offer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -46,6 +49,8 @@ class _DashBoardState extends State<DashBoard> {
   //     print("Whatsapp não instalado");
   //   }
   // }
+
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     // var menu_one_url = new AssetImage('asets/Serch.jpg');
@@ -71,18 +76,30 @@ class _DashBoardState extends State<DashBoard> {
     );
     return SafeArea(
       child: Scaffold(
+        key: scaffoldKey,
         resizeToAvoidBottomPadding: false,
         backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: Colors.indigo[800],
-          centerTitle: true,
-          title: Text(
-            'WELCOME \n ${user.name}',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: (size) ? 20 : 20, fontWeight: FontWeight.w400),
+          leading: Container(
+            child: Image.asset('asets/Ozon-logo.png'),
+            padding: EdgeInsets.only(left: 5),
           ),
-
+          backgroundColor: Colors.grey[200],
+          // centerTitle: true,
+          actions: [
+            Container(
+              padding: EdgeInsets.only(right: 5),
+              child: InkWell(
+                onTap: () {
+                  scaffoldKey.currentState.openEndDrawer();
+                },
+                child: Icon(
+                  Icons.menu,
+                  color: Color(0XFF264796),
+                ),
+              ),
+            )
+          ],
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 //bottomRight: Radius.circular(25),
@@ -93,7 +110,7 @@ class _DashBoardState extends State<DashBoard> {
           iconTheme:
               IconThemeData(color: Colors.white, size: (small) ? 30 : 32),
         ),
-        drawer: Drawer(
+        endDrawer: Drawer(
           child: ListView(
             children: <Widget>[
               Container(
@@ -129,16 +146,15 @@ class _DashBoardState extends State<DashBoard> {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => MySearchPage()));
+                },
                 child: ListTile(
-                  leading: Icon(Icons.home),
-                  title: Text("Home"),
-                ),
-              ),
-              InkWell(
-                onTap: () {},
-                child: ListTile(
-                  leading: Icon(Icons.search),
+                  leading: Icon(
+                    Icons.search,
+                    color: Color(0XFF294ea3),
+                  ),
                   title: Text("Search"),
                 ),
               ),
@@ -148,21 +164,33 @@ class _DashBoardState extends State<DashBoard> {
                       builder: (BuildContext context) => NewArrivalList()));
                 },
                 child: ListTile(
-                  leading: Icon(Icons.new_releases),
+                  leading: Icon(
+                    Icons.new_releases,
+                    color: Color(0XFF294ea3),
+                  ),
                   title: Text("New Arrival"),
                 ),
               ),
               InkWell(
                 onTap: () {},
                 child: ListTile(
-                  leading: Icon(Icons.search),
+                  leading: Icon(
+                    Icons.search,
+                    color: Color(0XFF294ea3),
+                  ),
                   title: Text("Pair Search"),
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => MyOrder()));
+                },
                 child: ListTile(
-                  leading: Icon(Icons.card_travel),
+                  leading: Icon(
+                    Icons.card_travel,
+                    color: Color(0XFF294ea3),
+                  ),
                   title: Text("My Order & Invoice"),
                 ),
               ),
@@ -172,15 +200,23 @@ class _DashBoardState extends State<DashBoard> {
                       builder: (BuildContext context) => MyCartList()));
                 },
                 child: ListTile(
-                  leading: Icon(Icons.shopping_basket),
+                  leading: Icon(
+                    Icons.shopping_basket,
+                    color: Color(0XFF294ea3),
+                  ),
                   title: Text("My Cart"),
                 ),
               ),
               InkWell(
                 onTap: () {},
                 child: ListTile(
-                  leading: Icon(Icons.save_alt),
-                  title: Text("Save Your Demand"),
+                  leading: Icon(
+                    Icons.save_alt,
+                    color: Color(0XFF294ea3),
+                  ),
+                  title: Text(
+                    "Save Your Demand",
+                  ),
                 ),
               ),
               InkWell(
@@ -189,21 +225,33 @@ class _DashBoardState extends State<DashBoard> {
                       builder: (BuildContext context) => OfferList()));
                 },
                 child: ListTile(
-                  leading: Icon(Icons.local_offer),
+                  leading: Icon(
+                    Icons.local_offer,
+                    color: Color(0XFF294ea3),
+                  ),
                   title: Text("View Offer"),
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => MyProfile()));
+                },
                 child: ListTile(
-                  leading: Icon(Icons.person),
+                  leading: Icon(
+                    Icons.person,
+                    color: Color(0XFF294ea3),
+                  ),
                   title: Text("My Profile"),
                 ),
               ),
               InkWell(
                 onTap: () {},
                 child: ListTile(
-                  leading: Icon(Icons.vpn_key),
+                  leading: Icon(
+                    Icons.vpn_key,
+                    color: Color(0XFF294ea3),
+                  ),
                   title: Text("Change Password"),
                 ),
               ),
@@ -215,7 +263,10 @@ class _DashBoardState extends State<DashBoard> {
                           builder: (BuildContext context) => AboutUS()));
                 },
                 child: ListTile(
-                  leading: Icon(Icons.info),
+                  leading: Icon(
+                    Icons.info,
+                    color: Color(0XFF294ea3),
+                  ),
                   title: Text("About Us"),
                 ),
               ),
@@ -227,7 +278,10 @@ class _DashBoardState extends State<DashBoard> {
                           builder: (BuildContext context) => contactus()));
                 },
                 child: ListTile(
-                  leading: Icon(Icons.contact_phone),
+                  leading: Icon(
+                    Icons.contact_phone,
+                    color: Color(0XFF294ea3),
+                  ),
                   title: Text("Contact Us"),
                 ),
               ),
@@ -248,7 +302,7 @@ class _DashBoardState extends State<DashBoard> {
               //SearchField
               Padding(
                   padding: EdgeInsets.only(
-                      top: 5.0, bottom: 5.0, left: 10.0, right: 10.0),
+                      top: 15.0, bottom: 5.0, left: 10.0, right: 10.0),
                   child: Container(
                     decoration: BoxDecoration(
                         border: Border.all(color: Colors.white),
@@ -257,6 +311,15 @@ class _DashBoardState extends State<DashBoard> {
                     height: (size) ? 40 : 40,
                     // color: Colors.white,
                     child: TextFormField(
+                      onFieldSubmitted: (value) {
+                        print(
+                            'AND (REPORT_NO IN (\"${value}\") or VPACKET_NO IN(\"${value}\"))');
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) => searchlist(
+                                  fil:
+                                      'AND (REPORT_NO IN (\"${value}\") or VPACKET_NO IN(\"${value}\"))',
+                                )));
+                      },
                       autofocus: false,
                       decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
@@ -271,7 +334,7 @@ class _DashBoardState extends State<DashBoard> {
                           prefixIcon: IconButton(
                               icon: Icon(
                                 Icons.search,
-                                color: Colors.indigo[800],
+                                color: Color(0XFF294EA3),
                               ),
                               onPressed: () {}),
                           hintStyle: TextStyle(
@@ -287,128 +350,141 @@ class _DashBoardState extends State<DashBoard> {
               new Container(
                   child: new Column(
                 children: <Widget>[
-                  new Row(
-                    children: <Widget>[
-                      new Expanded(
-                        flex: 1,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        MySearchPage()));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              height: 100,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5))),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.search,
-                                      size: 40.0,
-                                      color: Colors.grey[800],
+                  Row(children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      MySearchPage()));
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            height: 70,
+                            decoration: BoxDecoration(
+                                color: Color(0XFF294EA3),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0XFFB8C6FF),
+                                    offset: Offset(0, 4), //(x,y)
+                                    blurRadius: 0.0,
+                                  ),
+                                ],
+                                // border: Border.all(color: Colors.grey),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: <Widget>[
+                                  Image.asset('asets/specific_search.png'),
+                                  SizedBox(height: 5.0),
+                                  Expanded(
+                                    child: Container(
+                                      // color: Colors.black,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 20.0),
+                                        child: Text("SPECIFIC SEARCH",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18.0),
+                                            textAlign: TextAlign.left),
+                                      ),
                                     ),
-                                    SizedBox(height: 5.0),
-                                    Text("SEARCH DIAMOND",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12.0),
-                                        textAlign: TextAlign.center)
-                                  ],
-                                ),
+                                  )
+                                ],
                               ),
                             ),
                           ),
                         ),
                       ),
-                      Expanded(
-                        flex: 1,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        StoneSearch()));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              height: 100,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5))),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.search,
-                                      size: 40.0,
-                                      color: Colors.grey[800],
-                                    ),
-                                    SizedBox(height: 5.0),
-                                    Text("PAIR SEARCH",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12.0),
-                                        textAlign: TextAlign.center)
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    NewArrivalList()));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              height: 100,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5))),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.new_releases,
-                                      size: 40.0,
-                                      color: Colors.grey[800],
-                                    ),
-                                    SizedBox(height: 5.0),
-                                    Text("NEW ARRIVAL",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12.0),
-                                        textAlign: TextAlign.center)
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                    //   Expanded(
+                    //     flex: 1,
+                    //     child: GestureDetector(
+                    //       onTap: () {
+                    //         Navigator.push(
+                    //             context,
+                    //             MaterialPageRoute(
+                    //                 builder: (BuildContext context) =>
+                    //                     StoneSearch()));
+                    //       },
+                    //       child: Padding(
+                    //         padding: const EdgeInsets.all(8.0),
+                    //         child: Container(
+                    //           height: 100,
+                    //           decoration: BoxDecoration(
+                    //               border: Border.all(color: Colors.grey),
+                    //               borderRadius:
+                    //                   BorderRadius.all(Radius.circular(5))),
+                    //           child: Padding(
+                    //             padding: const EdgeInsets.all(8.0),
+                    //             child: Column(
+                    //               children: <Widget>[
+                    //                 Icon(
+                    //                   Icons.search,
+                    //                   size: 40.0,
+                    //                   color: Colors.grey[800],
+                    //                 ),
+                    //                 SizedBox(height: 5.0),
+                    //                 Text("PAIR SEARCH",
+                    //                     style: TextStyle(
+                    //                         fontWeight: FontWeight.bold,
+                    //                         fontSize: 12.0),
+                    //                     textAlign: TextAlign.center)
+                    //               ],
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    //   Expanded(
+                    //     flex: 1,
+                    //     child: GestureDetector(
+                    //       onTap: () {
+                    //         Navigator.of(context).push(MaterialPageRoute(
+                    //             builder: (BuildContext context) =>
+                    //                 NewArrivalList()));
+                    //       },
+                    //       child: Padding(
+                    //         padding: const EdgeInsets.all(8.0),
+                    //         child: Container(
+                    //           height: 100,
+                    //           decoration: BoxDecoration(
+                    //               border: Border.all(color: Colors.grey),
+                    //               borderRadius:
+                    //                   BorderRadius.all(Radius.circular(5))),
+                    //           child: Padding(
+                    //             padding: const EdgeInsets.all(8.0),
+                    //             child: Column(
+                    //               children: <Widget>[
+                    //                 Icon(
+                    //                   Icons.new_releases,
+                    //                   size: 40.0,
+                    //                   color: Colors.grey[800],
+                    //                 ),
+                    //                 SizedBox(height: 5.0),
+                    //                 Text("NEW ARRIVAL",
+                    //                     style: TextStyle(
+                    //                         fontWeight: FontWeight.bold,
+                    //                         fontSize: 12.0),
+                    //                     textAlign: TextAlign.center)
+                    //               ],
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ],
+                  ]),
                   Row(
                     children: <Widget>[
                       new Expanded(
@@ -424,102 +500,37 @@ class _DashBoardState extends State<DashBoard> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
-                              height: 100,
+                              height: 70,
                               decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5))),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.star,
-                                      size: 40.0,
-                                      color: Colors.grey[800],
+                                  color: Color(0XFF294EA3),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey,
+                                      offset: Offset(0.0, 1.0), //(x,y)
+                                      blurRadius: 1.0,
                                     ),
-                                    SizedBox(height: 5.0),
-                                    Text("EXCLUSIVE DIAMOND",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12.0),
-                                        textAlign: TextAlign.center)
                                   ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    OfferList()));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              height: 100,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
+                                  // border: Border.all(color: Colors.grey),
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(5))),
+                                      BorderRadius.all(Radius.circular(15))),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: Column(
+                                child: Row(
                                   children: <Widget>[
-                                    Icon(
-                                      Icons.local_offer,
-                                      size: 40.0,
-                                      color: Colors.grey[800],
-                                    ),
+                                    Image.asset('asets/pair_search.png'),
                                     SizedBox(height: 5.0),
-                                    Text("VIEW OFFER",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12.0),
-                                        textAlign: TextAlign.center)
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    MyCartList()));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              height: 100,
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5))),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.shopping_basket,
-                                      size: 40.0,
-                                      color: Colors.grey[800],
-                                    ),
-                                    SizedBox(height: 5.0),
-                                    Text("MY BASKET",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12.0),
-                                        textAlign: TextAlign.center)
+                                    Expanded(
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 20.0),
+                                        child: Text("PAIR SEARCH",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18.0),
+                                            textAlign: TextAlign.left),
+                                      ),
+                                    )
                                   ],
                                 ),
                               ),
@@ -529,97 +540,220 @@ class _DashBoardState extends State<DashBoard> {
                       ),
                     ],
                   ),
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        // height: 70,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(15.0),
+                              bottom: Radius.circular(15.0)),
+                          color: Color(0XFF294EA3),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey,
+                              offset: Offset(0.0, 1.0), //(x,y)
+                              blurRadius: 1.0,
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Image.asset('asets/ORM.png'),
+                                    flex: 1,
+                                  ),
+                                  Expanded(
+                                    flex: 3,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Text(
+                                          "Rahul Vaghasiya",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                      flex: 3,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              IconButton(
+                                                onPressed: () =>
+                                                    launch("tel:$number"),
+                                                icon: CircleAvatar(
+                                                  backgroundColor:
+                                                      Color(0XFFEBEFFA),
+                                                  child: Icon(
+                                                    Icons.call,
+                                                    color: Color(0XFF294EA3),
+                                                    size: 20,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              IconButton(
+                                                onPressed: () =>
+                                                    launch("mailto:$email"),
+                                                icon: CircleAvatar(
+                                                  backgroundColor:
+                                                      Color(0XFFEBEFFA),
+                                                  child: Icon(
+                                                      Icons.mail_outline,
+                                                      color: Color(0XFF294EA3),
+                                                      size: 20),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              IconButton(
+                                                  icon: CircleAvatar(
+                                                    backgroundColor:
+                                                        Color(0XFFEBEFFA),
+                                                    child: FaIcon(
+                                                        FontAwesomeIcons
+                                                            .whatsapp,
+                                                        color:
+                                                            Color(0XFF294EA3),
+                                                        size: 20),
+                                                  ),
+                                                  onPressed: () async {
+                                                    const url =
+                                                        'https://wa.me/9722273818';
+                                                    if (await canLaunch(url)) {
+                                                      await launch(url);
+                                                    } else {
+                                                      throw 'Could not launch $url';
+                                                    }
+                                                  }),
+                                            ],
+                                          ),
+                                        ],
+                                      ))
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ))
             ],
           ),
         ]),
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey,
-                offset: Offset(0.0, 1.0), //(x,y)
-                blurRadius: 5.0,
-              ),
-            ],
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Row(
-              children: <Widget>[
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      "Rahulbhai",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      IconButton(
-                        onPressed: () => launch("tel:$number"),
-                        icon: Icon(
-                          Icons.call,
-                          color: Colors.green,
-                          size: 30,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      IconButton(
-                        onPressed: () => launch("mailto:$email"),
-                        icon: Icon(Icons.mail_outline,
-                            color: Colors.red, size: 30),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      IconButton(
-                          icon: FaIcon(FontAwesomeIcons.whatsappSquare,
-                              color: Colors.green, size: 30),
-                          onPressed: () async {
-                            const url = 'https://wa.me/9722273818';
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            } else {
-                              throw 'Could not launch $url';
-                            }
-                          }),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      IconButton(
-                          icon: FaIcon(FontAwesomeIcons.skype,
-                              color: Colors.blue, size: 30),
-                          onPressed: () {}),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        // bottomNavigationBar: Container(
+        //   decoration: BoxDecoration(
+        //     borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
+        //     color: Colors.white,
+        //     boxShadow: [
+        //       BoxShadow(
+        //         color: Colors.grey,
+        //         offset: Offset(0.0, 1.0), //(x,y)
+        //         blurRadius: 5.0,
+        //       ),
+        //     ],
+        //   ),
+        //   child: Padding(
+        //     padding: const EdgeInsets.only(left: 8.0),
+        //     child: Row(
+        //       children: <Widget>[
+        //         Column(
+        //           mainAxisSize: MainAxisSize.min,
+        //           children: <Widget>[
+        //             Text(
+        //               "Rahulbhai",
+        //               style:
+        //                   TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        //             ),
+        //           ],
+        //         ),
+        //         Expanded(
+        //           child: Column(
+        //             mainAxisSize: MainAxisSize.min,
+        //             children: <Widget>[
+        //               IconButton(
+        //                 onPressed: () => launch("tel:$number"),
+        //                 icon: Icon(
+        //                   Icons.call,
+        //                   color: Colors.green,
+        //                   size: 30,
+        //                 ),
+        //               ),
+        //             ],
+        //           ),
+        //         ),
+        //         Expanded(
+        //           child: Column(
+        //             mainAxisSize: MainAxisSize.min,
+        //             children: <Widget>[
+        //               IconButton(
+        //                 onPressed: () => launch("mailto:$email"),
+        //                 icon: Icon(Icons.mail_outline,
+        //                     color: Colors.red, size: 30),
+        //               ),
+        //             ],
+        //           ),
+        //         ),
+        //         Expanded(
+        //           child: Column(
+        //             mainAxisSize: MainAxisSize.min,
+        //             children: <Widget>[
+        //               IconButton(
+        //                   icon: FaIcon(FontAwesomeIcons.whatsappSquare,
+        //                       color: Colors.green, size: 30),
+        //                   onPressed: () async {
+        //                     const url = 'https://wa.me/9722273818';
+        //                     if (await canLaunch(url)) {
+        //                       await launch(url);
+        //                     } else {
+        //                       throw 'Could not launch $url';
+        //                     }
+        //                   }),
+        //             ],
+        //           ),
+        //         ),
+        //         Expanded(
+        //           child: Column(
+        //             mainAxisSize: MainAxisSize.min,
+        //             children: <Widget>[
+        //               IconButton(
+        //                   icon: FaIcon(FontAwesomeIcons.skype,
+        //                       color: Colors.blue, size: 30),
+        //                   onPressed: () {}),
+        //             ],
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
       ),
     );
   }
@@ -684,7 +818,7 @@ class CurvePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint();
-    paint.color = Colors.indigo[800];
+    paint.color = Color(0XFF294EA3);
     paint.style = PaintingStyle.fill;
 
     // TODO: implement paint

@@ -84,7 +84,7 @@ class _offerListState extends State<OfferList> {
         appBar: PreferredSize(
           preferredSize: (size) ? Size.fromHeight(45.0) : Size.fromHeight(45.0),
           child: AppBar(
-            backgroundColor: Colors.indigo[800],
+            backgroundColor: Color(0XFF294EA3),
             leading: IconButton(
                 icon: Icon(
                   Icons.chevron_left,

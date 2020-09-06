@@ -160,6 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                     Row(
                       children: <Widget>[
                         Checkbox(
+                            activeColor: Color(0XFF294EA3),
                             value: rememberMe,
                             onChanged: (val) {
                               setState(() {
@@ -175,7 +176,9 @@ class _LoginPageState extends State<LoginPage> {
                         child: Text(
                           'Forgot Password',
                           textAlign: TextAlign.end,
-                          style: TextStyle(color: Colors.redAccent),
+                          style: TextStyle(
+                            color: Color(0XFF294EA3),
+                          ),
                         ),
                       ),
                     ),
@@ -197,45 +200,12 @@ class _LoginPageState extends State<LoginPage> {
                             submit();
                           },
                           text: 'Login',
-                          background: Colors.blue)),
+                          background: Color(0XFF294EA3),
+                        )),
             ),
             //Finish
 
             //New User
-            Padding(
-              padding: EdgeInsets.only(top: 20.0, left: 100.0),
-              child: SizedBox(
-                  height: (small) ? 50 : 55,
-                  child: Row(
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          Text(
-                            'New User? ',
-                            style: TextStyle(
-                                fontSize: (small) ? 16 : 18,
-                                fontWeight: FontWeight.w500),
-                          )
-                        ],
-                      ),
-                      Column(
-                        children: <Widget>[
-                          InkWell(
-                            child: Text(
-                              'Register',
-                              style: TextStyle(
-                                  fontSize: (small) ? 18 : 18,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.redAccent),
-                            ),
-                            onTap: () {},
-                          )
-                        ],
-                      )
-                    ],
-                  )),
-            ),
-            //Finish
           ],
         ),
       ),

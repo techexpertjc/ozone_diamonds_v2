@@ -143,9 +143,8 @@ class shapesState extends State<shapes> {
                   decoration: BoxDecoration(
                     border: Border.all(
                         color: changeColorAll ? Colors.grey : Colors.grey),
-                    color: changeColorAll
-                        ? Colors.indigo[800]
-                        : Colors.transparent,
+                    color:
+                        changeColorAll ? Color(0XFF294EA3) : Color(0XFFEBEFFA),
                     // gradient: LinearGradient(
                     //     begin: Alignment.topCenter,
                     //     end: Alignment.bottomCenter,
@@ -287,8 +286,8 @@ class shapesState extends State<shapes> {
                       border: Border.all(
                           color: changeColorRound ? Colors.grey : Colors.grey),
                       color: changeColorRound
-                          ? Colors.indigo[800]
-                          : Colors.transparent),
+                          ? Color(0XFF294EA3)
+                          : Color(0XFFEBEFFA)),
                   child: Column(
                     children: <Widget>[
                       IconButton(
@@ -329,8 +328,8 @@ class shapesState extends State<shapes> {
                           color:
                               changeColorPrincess ? Colors.grey : Colors.grey),
                       color: changeColorPrincess
-                          ? Colors.indigo[800]
-                          : Colors.transparent),
+                          ? Color(0XFF294EA3)
+                          : Color(0XFFEBEFFA)),
                   child: Column(
                     children: <Widget>[
                       IconButton(
@@ -374,8 +373,8 @@ class shapesState extends State<shapes> {
                           color:
                               changeColorCushion ? Colors.grey : Colors.grey),
                       color: changeColorCushion
-                          ? Colors.indigo[800]
-                          : Colors.transparent),
+                          ? Color(0XFF294EA3)
+                          : Color(0XFFEBEFFA)),
                   child: Column(
                     children: <Widget>[
                       IconButton(
@@ -416,8 +415,8 @@ class shapesState extends State<shapes> {
                       border: Border.all(
                           color: changeColorOval ? Colors.grey : Colors.grey),
                       color: changeColorOval
-                          ? Colors.indigo[800]
-                          : Colors.transparent),
+                          ? Color(0XFF294EA3)
+                          : Color(0XFFEBEFFA)),
                   child: Column(
                     children: <Widget>[
                       IconButton(
@@ -458,8 +457,8 @@ class shapesState extends State<shapes> {
                           color:
                               changeColorEmerald ? Colors.grey : Colors.grey),
                       color: changeColorEmerald
-                          ? Colors.indigo[800]
-                          : Colors.transparent),
+                          ? Color(0XFF294EA3)
+                          : Color(0XFFEBEFFA)),
                   child: Column(
                     children: <Widget>[
                       IconButton(
@@ -507,8 +506,8 @@ class shapesState extends State<shapes> {
                       border: Border.all(
                           color: changeColorPear ? Colors.grey : Colors.grey),
                       color: changeColorPear
-                          ? Colors.indigo[800]
-                          : Colors.transparent),
+                          ? Color(0XFF294EA3)
+                          : Color(0XFFEBEFFA)),
                   child: Column(
                     children: <Widget>[
                       IconButton(
@@ -549,8 +548,8 @@ class shapesState extends State<shapes> {
                           color:
                               changeColorAsscher ? Colors.grey : Colors.grey),
                       color: changeColorAsscher
-                          ? Colors.indigo[800]
-                          : Colors.transparent),
+                          ? Color(0XFF294EA3)
+                          : Color(0XFFEBEFFA)),
                   child: Column(
                     children: <Widget>[
                       IconButton(
@@ -591,8 +590,8 @@ class shapesState extends State<shapes> {
                       border: Border.all(
                           color: changeColorHeart ? Colors.grey : Colors.grey),
                       color: changeColorHeart
-                          ? Colors.indigo[800]
-                          : Colors.transparent),
+                          ? Color(0XFF294EA3)
+                          : Color(0XFFEBEFFA)),
                   child: Column(
                     children: <Widget>[
                       IconButton(
@@ -633,8 +632,8 @@ class shapesState extends State<shapes> {
                           color:
                               changeColorRadiant ? Colors.grey : Colors.grey),
                       color: changeColorRadiant
-                          ? Colors.indigo[800]
-                          : Colors.transparent),
+                          ? Color(0XFF294EA3)
+                          : Color(0XFFEBEFFA)),
                   child: Column(
                     children: <Widget>[
                       IconButton(
@@ -676,8 +675,8 @@ class shapesState extends State<shapes> {
                           color:
                               changeColorMarquise ? Colors.grey : Colors.grey),
                       color: changeColorMarquise
-                          ? Colors.indigo[800]
-                          : Colors.transparent),
+                          ? Color(0XFF294EA3)
+                          : Color(0XFFEBEFFA)),
                   child: Column(
                     children: <Widget>[
                       IconButton(
@@ -719,8 +718,8 @@ class shapesState extends State<shapes> {
                       border: Border.all(
                           color: changeColorOther ? Colors.grey : Colors.grey),
                       color: changeColorOther
-                          ? Colors.indigo[800]
-                          : Colors.transparent),
+                          ? Color(0XFF294EA3)
+                          : Color(0XFFEBEFFA)),
                   child: Column(
                     children: <Widget>[
                       IconButton(

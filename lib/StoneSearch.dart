@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import "package:http/http.dart" as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -51,24 +52,15 @@ class _StoneSearchState extends State<StoneSearch>
       starLenFrom,
       starLenTo;
   String filquery = " ";
-  final titleFont = 16.0; //font of title
-  final titlebold = FontWeight.w400; //title font width
+  final titleFont = 18.0; //font of title
+  final titlebold = FontWeight.bold; //title font width
   final buttonFont = 12.0; //font size of button font
   final buttonbold = FontWeight.w400; //font bold of button font
   //clarity Field
-  List<String> clarityName = [
-    'FL',
-    'IF',
-    'VVS1',
-    'VVS2',
-    'VS1',
-    'VS2',
-    'SI1',
-    'SI2',
-    'SI3',
-    'I1',
-    'I2',
-    'I3'
+  List<List<String>> clarityName = [
+    ['FL', 'IF', 'VVS1', 'VVS2'],
+    ['VS1', 'VS2', 'SI1', 'SI2'],
+    ['SI3', 'I1', 'I2', 'I3']
   ];
   List<String> clarityValue = [
     '1',
@@ -101,18 +93,9 @@ class _StoneSearchState extends State<StoneSearch>
   List<String> clarityResult = [];
 
   //colour field
-  List<String> colourName = [
-    'D',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K',
-    'l',
-    'M',
-    'N'
+  List<List<String>> colourName = [
+    ['D', 'E', 'F', 'G', 'H', 'I'],
+    ['J', 'K', 'l', 'M', 'N']
   ];
   List<String> colourValue = [
     '1',
@@ -167,7 +150,10 @@ class _StoneSearchState extends State<StoneSearch>
   List<String> symmResult = [];
 
   //Fluorescence field
-  List<String> fluoreName = ['NON', 'FNT', 'MED', 'STG', 'VST', 'SL', 'VSL'];
+  List<List<String>> fluoreName = [
+    ['NON', 'FNT', 'MED', 'STG'],
+    ['VST', 'SL', 'VSL']
+  ];
   List<String> fluoreValue = ['1', '2', '3', '4', '5', '6', '7'];
   List<bool> fluoreColor = [false, false, false, false, false, false, false];
   List<String> fluoreResult = [];
@@ -179,19 +165,19 @@ class _StoneSearchState extends State<StoneSearch>
   List<String> certificateResult = [];
 
   //Luster field
-  List<String> lusterName = [
-    'EXCELLENT',
-    'VERY GOOD',
-    'GOOD',
-    'MILKY 1',
-    'MILKY 2'
+  List<List<String>> lusterName = [
+    ['EXCELLENT', 'VERY GOOD', 'GOOD'],
+    ['MILKY 1', 'MILKY 2']
   ];
   List<String> lusterValue = ['1', '2', '3', '4', '5', '6'];
   List<bool> lusterColor = [false, false, false, false, false, false];
   List<String> lusterResult = [];
 
   //Shades Field
-  List<String> shadesName = ['NONE', 'BROWN', 'GREEN', 'MIX TINGE'];
+  List<List<String>> shadesName = [
+    ['NONE', 'BROWN', 'GREEN'],
+    ['MIX TINGE']
+  ];
   List<String> shadesValue = [
     "''NONE''",
     "''BROWN''",
@@ -218,14 +204,9 @@ class _StoneSearchState extends State<StoneSearch>
   List<String> blackIncnResult = [];
 
   //white Inclustion field
-  List<String> whiteIncnName = [
-    'CW-0',
-    'CW-1',
-    'CW-2',
-    'SW-0',
-    'SW-1',
-    'SW-2',
-    'SW-4'
+  List<List<String>> whiteIncnName = [
+    ['CW-0', 'CW-1', 'CW-2', 'SW-0'],
+    ['SW-1', 'SW-2', 'SW-4']
   ];
   List<String> whiteIncnValue = ['1', '2', '3', '4', '5', '6', '7'];
   List<bool> whiteIncnColor = [false, false, false, false, false, false, false];
@@ -323,6 +304,282 @@ class _StoneSearchState extends State<StoneSearch>
       certiNoController;
 
   Map shapesMap;
+
+  Widget getWhiteIncOptionsWidget(BuildContext context) {
+    int initIndex = 0;
+    List<Widget> tempShadesRow = List();
+    whiteIncnName.forEach((element) {
+      tempShadesRow.add(Row(
+        children: List.generate(element.length, (index) {
+          int currIndex = initIndex;
+          initIndex++;
+          return Container(
+            padding: EdgeInsets.all(5),
+            width: (MediaQuery.of(context).size.width - 40) / 4,
+            child: RaisedButton(
+                elevation: 0.0,
+                shape: _shape,
+                color: whiteIncnColor[currIndex]
+                    ? Color(0XFF294EA3)
+                    : Color(0XFFEBEFFA),
+                onPressed: () {
+                  setState(() {
+                    whiteIncnColor[currIndex] = !whiteIncnColor[currIndex];
+                    if (whiteIncnResult
+                        .contains(whiteIncnValue[currIndex].toString())) {
+                      whiteIncnResult
+                          .remove(whiteIncnValue[currIndex].toString());
+                    } else {
+                      whiteIncnResult.add(whiteIncnValue[currIndex].toString());
+                    }
+                  });
+                },
+                child: Text(
+                  element[index].toString(),
+                  style: TextStyle(
+                      fontSize: buttonFont,
+                      color: whiteIncnColor[currIndex]
+                          ? Colors.white
+                          : Colors.black,
+                      fontWeight: buttonbold),
+                )),
+          );
+        }),
+      ));
+    });
+    return Column(
+      children: tempShadesRow,
+    );
+  }
+
+  Widget getShadesOptionsWidget(BuildContext context) {
+    int initIndex = 0;
+    List<Widget> tempShadesRow = List();
+    shadesName.forEach((element) {
+      tempShadesRow.add(Row(
+        children: List.generate(element.length, (index) {
+          int currIndex = initIndex;
+          initIndex++;
+          return Container(
+            padding: EdgeInsets.all(5),
+            width: (MediaQuery.of(context).size.width - 30) / 3,
+            child: RaisedButton(
+                elevation: 0.0,
+                shape: _shape,
+                color: shadesColor[currIndex]
+                    ? Color(0XFF294EA3)
+                    : Color(0XFFEBEFFA),
+                onPressed: () {
+                  setState(() {
+                    shadesColor[currIndex] = !shadesColor[currIndex];
+                    if (shadesResult
+                        .contains(shadesValue[currIndex].toString())) {
+                      shadesResult.remove(shadesValue[currIndex].toString());
+                    } else {
+                      shadesResult.add(shadesValue[currIndex].toString());
+                    }
+                  });
+                },
+                child: Text(
+                  element[index].toString(),
+                  style: TextStyle(
+                      fontSize: buttonFont,
+                      color:
+                          shadesColor[currIndex] ? Colors.white : Colors.black,
+                      fontWeight: buttonbold),
+                )),
+          );
+        }),
+      ));
+    });
+    return Column(
+      children: tempShadesRow,
+    );
+  }
+
+  Widget getLusterOptionsWidget(BuildContext context) {
+    int initIndex = 0;
+    List<Widget> tempLusterRow = List();
+    lusterName.forEach((element) {
+      tempLusterRow.add(Row(
+        children: List.generate(element.length, (index) {
+          int currIndex = initIndex;
+          initIndex++;
+          return Container(
+            padding: EdgeInsets.all(5),
+            width: (MediaQuery.of(context).size.width - 30) / 3,
+            child: RaisedButton(
+                elevation: 0.0,
+                shape: _shape,
+                color: lusterColor[currIndex]
+                    ? Color(0XFF294EA3)
+                    : Color(0XFFEBEFFA),
+                onPressed: () {
+                  setState(() {
+                    lusterColor[currIndex] = !lusterColor[currIndex];
+                    if (lusterResult
+                        .contains(lusterValue[currIndex].toString())) {
+                      lusterResult.remove(lusterValue[currIndex].toString());
+                    } else {
+                      lusterResult.add(lusterValue[currIndex].toString());
+                    }
+                  });
+                },
+                child: Text(
+                  element[index].toString(),
+                  style: TextStyle(
+                      fontSize: buttonFont,
+                      color:
+                          lusterColor[currIndex] ? Colors.white : Colors.black,
+                      fontWeight: buttonbold),
+                )),
+          );
+        }),
+      ));
+    });
+    return Column(
+      children: tempLusterRow,
+    );
+  }
+
+  Widget getFluoroOptionsWidget(BuildContext context) {
+    int initIndex = 0;
+    List<Widget> tempFloroRow = List();
+    fluoreName.forEach((element) {
+      tempFloroRow.add(Row(
+          children: List.generate(element.length, (index) {
+        int currIndex = initIndex;
+        initIndex++;
+        return Container(
+          padding: EdgeInsets.all(5),
+          width: (MediaQuery.of(context).size.width - 40) / 4,
+          child: RaisedButton(
+              elevation: 0.0,
+              shape: _shape,
+              color: fluoreColor[currIndex]
+                  ? Color(0XFF294EA3)
+                  : Color(0XFFEBEFFA),
+              onPressed: () {
+                setState(() {
+                  fluoreColor[currIndex] = !fluoreColor[currIndex];
+                  if (fluoreResult
+                      .contains(fluoreValue[currIndex].toString())) {
+                    fluoreResult.remove(fluoreValue[currIndex].toString());
+                  } else {
+                    fluoreResult.add(fluoreValue[currIndex].toString());
+                  }
+                });
+                // print(buttonVlaue[index].toString());
+              },
+              child: Text(
+                element[index].toString(),
+                style: TextStyle(
+                    fontSize: buttonFont,
+                    color: fluoreColor[currIndex] ? Colors.white : Colors.black,
+                    fontWeight: buttonbold),
+              )),
+        );
+      })));
+    });
+    return Column(
+      children: tempFloroRow,
+    );
+  }
+
+  Widget getColourOptionsWidget(BuildContext context) {
+    int initIndex = 0;
+    List<Widget> tempColourRow = List();
+    colourName.forEach((element) {
+      tempColourRow.add(Row(
+        children: List.generate(element.length, (index) {
+          int currIndex = initIndex;
+          initIndex++;
+          return Container(
+            padding: EdgeInsets.all(5),
+            width: (MediaQuery.of(context).size.width - 50) / 6,
+            child: RaisedButton(
+                elevation: 0.0,
+                shape: _shape,
+                color: colourColor[currIndex]
+                    ? Color(0XFF294EA3)
+                    : Color(0XFFEBEFFA),
+                onPressed: () {
+                  setState(() {
+                    colourColor[currIndex] = !colourColor[currIndex];
+                    if (colourResult
+                        .contains(colourValue[currIndex].toString())) {
+                      colourResult.remove(colourValue[currIndex].toString());
+                    } else {
+                      colourResult.add(colourValue[currIndex].toString());
+                    }
+                  });
+                  // print(buttonVlaue[index].toString());
+                },
+                child: Text(
+                  element[index].toString(),
+                  style: TextStyle(
+                      fontSize: buttonFont,
+                      color:
+                          colourColor[currIndex] ? Colors.white : Colors.black,
+                      fontWeight: buttonbold),
+                )),
+          );
+        }),
+      ));
+    });
+    return Column(
+      children: tempColourRow,
+    );
+  }
+
+  Widget getClarityOptionsWidget(BuildContext context) {
+    int initIndex = 0;
+    List<Widget> tempClarityRow = List();
+    clarityName.forEach((element) {
+      tempClarityRow.add(Row(
+        children: List.generate(element.length, (index) {
+          int currIndex = initIndex;
+          initIndex++;
+
+          return Container(
+            padding: EdgeInsets.all(5),
+            width: (MediaQuery.of(context).size.width - 20) / 4,
+            child: RaisedButton(
+                elevation: 0.0,
+                shape: _shape,
+                color: clarityColor[currIndex]
+                    ? Color(0XFF294EA3)
+                    : Color(0XFFEBEFFA),
+                onPressed: () {
+                  setState(() {
+                    clarityColor[currIndex] = !clarityColor[currIndex];
+                    if (clarityResult
+                        .contains(clarityValue[currIndex].toString())) {
+                      clarityResult.remove(clarityValue[currIndex].toString());
+                    } else {
+                      clarityResult.add(clarityValue[currIndex].toString());
+                    }
+                  });
+                  // print(buttonVlaue[index].toString());
+                },
+                child: Text(
+                  element[index].toString(),
+                  style: TextStyle(
+                      fontSize: buttonFont,
+                      fontWeight: buttonbold,
+                      color: clarityColor[currIndex]
+                          ? Colors.white
+                          : Colors.black),
+                )),
+          );
+        }),
+      ));
+    });
+    return Column(
+      children: tempClarityRow,
+    );
+  }
+
   void initiateFormValues() {
     currSavedObj = widget.currSavedObj;
     if (currSavedObj != null && isFromSaved) {
@@ -540,7 +797,7 @@ class _StoneSearchState extends State<StoneSearch>
     return SafeArea(
         child: Scaffold(
       key: scaffoldKey,
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Color(0XFFEBEFFA),
       body: Form(
         key: formKey,
         child: SingleChildScrollView(
@@ -582,6 +839,7 @@ class _StoneSearchState extends State<StoneSearch>
               Padding(
                 padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
                 child: Container(
+                    padding: EdgeInsets.only(top: 10, bottom: 10),
                     color: Colors.white,
                     child: Row(
                       children: <Widget>[
@@ -607,7 +865,7 @@ class _StoneSearchState extends State<StoneSearch>
                                   decimal: true),
                               decoration: InputDecoration(
                                   filled: true,
-                                  fillColor: Colors.grey[100],
+                                  fillColor: Color(0XFFEBEFFA),
                                   border: InputBorder.none,
                                   hintText: 'From',
                                   hintStyle:
@@ -632,7 +890,7 @@ class _StoneSearchState extends State<StoneSearch>
                                   decimal: true),
                               decoration: InputDecoration(
                                   filled: true,
-                                  fillColor: Colors.grey[100],
+                                  fillColor: Color(0XFFEBEFFA),
                                   border: InputBorder.none,
                                   hintText: 'To',
                                   hintStyle:
@@ -642,436 +900,375 @@ class _StoneSearchState extends State<StoneSearch>
                               },
                             ),
                           ),
-                        )
+                        ),
+                        // Padding(
+                        //     padding: EdgeInsets.all(0),
+                        //     child: Container(
+                        //       // padding: EdgeInsets.all(5),
+                        //       // color: Colors.blueAccent,
+                        //       child: MaterialButton(
+                        //         color: Color(0XFFEBEFFA),
+                        //         shape: CircleBorder(),
+                        //         onPressed: () {},
+                        //         child: Icon(Icons.add),
+                        //         // label: Text('')),
+                        //       ),
+                        //     ))
                       ],
                     )),
               ),
 
               //clarity field
               Padding(
-                padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-                child: Container(
-                    color: Colors.white,
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'Clarity',
-                          style: TextStyle(
-                              fontSize: titleFont, fontWeight: titlebold),
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children:
-                                List.generate(clarityName.length, (index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 8.0, bottom: 3.0, top: 3.0),
-                                child: SizedBox(
-                                  height: _height,
-                                  width:
-                                      (clarityName[index].toString().length > 2)
-                                          ? 70
-                                          : 50,
-                                  child: RaisedButton(
-                                      elevation: 0.0,
-                                      shape: _shape,
-                                      color: clarityColor[index]
-                                          ? Colors.indigo[800]
-                                          : Colors.grey[100],
-                                      onPressed: () {
-                                        setState(() {
-                                          clarityColor[index] =
-                                              !clarityColor[index];
-                                          if (clarityResult.contains(
-                                              clarityValue[index].toString())) {
-                                            clarityResult.remove(
-                                                clarityValue[index].toString());
-                                          } else {
-                                            clarityResult.add(
-                                                clarityValue[index].toString());
-                                          }
-                                        });
-                                        // print(buttonVlaue[index].toString());
-                                      },
-                                      child: Text(
-                                        clarityName[index].toString(),
-                                        style: TextStyle(
-                                            fontSize: buttonFont,
-                                            fontWeight: buttonbold,
-                                            color: clarityColor[index]
-                                                ? Colors.white
-                                                : Colors.black),
-                                      )),
-                                ),
-                              );
-                            }),
+                  padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                  child: Container(
+                      color: Colors.white,
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(top: 10, bottom: 10),
+                            child: Center(
+                              child: Text(
+                                'CLARITY',
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: titlebold),
+                              ),
+                            ),
                           ),
-                        )
-                      ],
-                    )),
-              ),
+                          getClarityOptionsWidget(context),
+                        ],
+                      ))),
 
               //colour field
               Padding(
-                padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-                child: Container(
+                  padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                  child: Container(
                     color: Colors.white,
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'Colour',
-                          style: TextStyle(
-                              fontSize: titleFont, fontWeight: titlebold),
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: List.generate(colourName.length, (index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 8.0, bottom: 3.0, top: 3.0),
-                                child: SizedBox(
-                                  height: _height,
-                                  width: (size) ? 35 : 40,
-                                  child: RaisedButton(
-                                      elevation: 0.0,
-                                      shape: _shape,
-                                      color: colourColor[index]
-                                          ? Colors.indigo[800]
-                                          : Colors.grey[100],
-                                      onPressed: () {
-                                        setState(() {
-                                          colourColor[index] =
-                                              !colourColor[index];
-                                          if (colourResult.contains(
-                                              colourValue[index].toString())) {
-                                            colourResult.remove(
-                                                colourValue[index].toString());
-                                          } else {
-                                            colourResult.add(
-                                                colourValue[index].toString());
-                                          }
-                                        });
-                                        // print(buttonVlaue[index].toString());
-                                      },
-                                      child: Text(
-                                        colourName[index].toString(),
-                                        style: TextStyle(
-                                            fontSize: buttonFont,
-                                            color: colourColor[index]
-                                                ? Colors.white
-                                                : Colors.black,
-                                            fontWeight: buttonbold),
-                                      )),
-                                ),
-                              );
-                            }),
-                          ),
-                        )
-                      ],
-                    )),
-              ),
+                    child: Container(
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        child: Column(
+                          children: <Widget>[
+                            Text(
+                              'COLOUR',
+                              style: TextStyle(
+                                  fontSize: titleFont, fontWeight: titlebold),
+                            ),
+                            getColourOptionsWidget(context)
+                          ],
+                        )),
+                  )),
 
               //finishing field
               Padding(
                 padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
                 child: Container(
                     color: Colors.white,
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'Finishing',
-                          style: TextStyle(
-                              fontSize: titleFont, fontWeight: titlebold),
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children:
-                                List.generate(finishingName.length, (index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 5.0, bottom: 3.0, top: 3.0),
-                                child: SizedBox(
-                                  height: _height,
-                                  width: (size) ? 62 : 90,
-                                  child: RaisedButton(
-                                      elevation: 0.0,
-                                      shape: _shape,
-                                      color: finishingColor[index]
-                                          ? Colors.indigo[800]
-                                          : Colors.grey[100],
-                                      onPressed: () {
-                                        setState(() {
-                                          finishingColor[index] =
-                                              !finishingColor[index];
-                                          if (finishingResult.contains(
-                                              finishingValue[index]
-                                                  .toString())) {
-                                            finishingResult.remove(
-                                                finishingValue[index]
-                                                    .toString());
-                                          } else {
-                                            finishingResult.add(
-                                                finishingValue[index]
-                                                    .toString());
-                                          }
+                    child: Container(
+                      padding: EdgeInsets.only(top: 10, bottom: 20),
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            'FINISHING',
+                            style: TextStyle(
+                                fontSize: titleFont, fontWeight: titlebold),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(top: 10),
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: List.generate(finishingName.length,
+                                    (index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 5.0, bottom: 3.0, top: 3.0),
+                                    child: SizedBox(
+                                      height: _height,
+                                      width: (size) ? 62 : 90,
+                                      child: RaisedButton(
+                                          elevation: 0.0,
+                                          shape: _shape,
+                                          color: finishingColor[index]
+                                              ? Color(0XFF294EA3)
+                                              : Color(0XFFEBEFFA),
+                                          onPressed: () {
+                                            setState(() {
+                                              finishingColor[index] =
+                                                  !finishingColor[index];
+                                              if (finishingResult.contains(
+                                                  finishingValue[index]
+                                                      .toString())) {
+                                                finishingResult.remove(
+                                                    finishingValue[index]
+                                                        .toString());
+                                              } else {
+                                                finishingResult.add(
+                                                    finishingValue[index]
+                                                        .toString());
+                                              }
 
-                                          if (finishingName[index] == '3EX') {
-                                            cutColor[0] = finishingColor[index];
-                                            polishColor[0] =
-                                                finishingColor[index];
-                                            symmColor[0] =
-                                                finishingColor[index];
-                                          } else if (finishingName[index] ==
-                                              '3VG+') {
-                                            cutColor[0] = finishingColor[index];
-                                            polishColor[0] =
-                                                finishingColor[index];
-                                            symmColor[0] =
-                                                finishingColor[index];
-                                            cutColor[1] = finishingColor[index];
-                                            polishColor[1] =
-                                                finishingColor[index];
-                                            symmColor[1] =
-                                                finishingColor[index];
-                                          } else if (finishingName[index] ==
-                                              '2EX') {
-                                            cutColor[0] = finishingColor[index];
-                                            polishColor[0] =
-                                                finishingColor[index];
-                                          }
-                                        });
-                                        // print(buttonVlaue[index].toString());
-                                      },
-                                      child: Text(
-                                        finishingName[index].toString(),
-                                        style: TextStyle(
-                                            fontSize: buttonFont,
-                                            color: finishingColor[index]
-                                                ? Colors.white
-                                                : Colors.black,
-                                            fontWeight: buttonbold),
-                                      )),
-                                ),
-                              );
-                            }),
+                                              if (finishingName[index] ==
+                                                  '3EX') {
+                                                cutColor[0] =
+                                                    finishingColor[index];
+                                                polishColor[0] =
+                                                    finishingColor[index];
+                                                symmColor[0] =
+                                                    finishingColor[index];
+                                              } else if (finishingName[index] ==
+                                                  '3VG+') {
+                                                cutColor[0] =
+                                                    finishingColor[index];
+                                                polishColor[0] =
+                                                    finishingColor[index];
+                                                symmColor[0] =
+                                                    finishingColor[index];
+                                                cutColor[1] =
+                                                    finishingColor[index];
+                                                polishColor[1] =
+                                                    finishingColor[index];
+                                                symmColor[1] =
+                                                    finishingColor[index];
+                                              } else if (finishingName[index] ==
+                                                  '2EX') {
+                                                cutColor[0] =
+                                                    finishingColor[index];
+                                                polishColor[0] =
+                                                    finishingColor[index];
+                                              }
+                                            });
+                                            // print(buttonVlaue[index].toString());
+                                          },
+                                          child: Text(
+                                            finishingName[index].toString(),
+                                            style: TextStyle(
+                                                fontSize: buttonFont,
+                                                color: finishingColor[index]
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                                fontWeight: buttonbold),
+                                          )),
+                                    ),
+                                  );
+                                }),
+                              ),
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
-                                child: SizedBox(
-                                  height: _height,
-                                  width: 50,
-                                  child: Text(
-                                    'Cut',
-                                    style: TextStyle(
-                                        fontSize: titleFont,
-                                        fontWeight: titlebold),
-                                    textAlign: TextAlign.start,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5.0),
+                                  child: SizedBox(
+                                    height: _height,
+                                    width: 50,
+                                    child: Text(
+                                      'Cut',
+                                      style: TextStyle(
+                                          fontSize: titleFont,
+                                          fontWeight: titlebold),
+                                      textAlign: TextAlign.start,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: _height,
-                                //width: _swidth,
-                                child: Row(
-                                  children:
-                                      List.generate(cutName.length, (index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 8.0, top: 3.0),
-                                      child: SizedBox(
-                                        height: _height,
-                                        width: (size) ? 60 : 55,
-                                        child: RaisedButton(
-                                            elevation: 0.0,
-                                            shape: _shape,
-                                            color: cutColor[index]
-                                                ? Colors.indigo[800]
-                                                : Colors.grey[100],
-                                            onPressed: () {
-                                              setState(() {
-                                                cutColor[index] =
-                                                    !cutColor[index];
-                                                if (cutResult.contains(
-                                                    cutValue[index]
-                                                        .toString())) {
-                                                  cutResult.remove(
+                                SizedBox(
+                                  height: _height,
+                                  //width: _swidth,
+                                  child: Row(
+                                    children:
+                                        List.generate(cutName.length, (index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 8.0, top: 3.0),
+                                        child: SizedBox(
+                                          height: _height,
+                                          width: (size) ? 60 : 55,
+                                          child: RaisedButton(
+                                              elevation: 0.0,
+                                              shape: _shape,
+                                              color: cutColor[index]
+                                                  ? Color(0XFF294EA3)
+                                                  : Color(0XFFEBEFFA),
+                                              onPressed: () {
+                                                setState(() {
+                                                  cutColor[index] =
+                                                      !cutColor[index];
+                                                  if (cutResult.contains(
                                                       cutValue[index]
-                                                          .toString());
-                                                } else {
-                                                  cutResult.add(cutValue[index]
-                                                      .toString());
-                                                }
-                                              });
-                                              // print(buttonVlaue[index].toString());
-                                            },
-                                            child: Text(
-                                              cutName[index].toString(),
-                                              style: TextStyle(
-                                                  fontSize: buttonFont,
-                                                  color: cutColor[index]
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                  fontWeight: buttonbold),
-                                            )),
-                                      ),
-                                    );
-                                  }),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
-                                child: SizedBox(
-                                  height: _height,
-                                  width: 50,
-                                  child: Text(
-                                    'Polish',
-                                    style: TextStyle(
-                                        fontSize: titleFont,
-                                        fontWeight: titlebold),
-                                    textAlign: TextAlign.start,
+                                                          .toString())) {
+                                                    cutResult.remove(
+                                                        cutValue[index]
+                                                            .toString());
+                                                  } else {
+                                                    cutResult.add(
+                                                        cutValue[index]
+                                                            .toString());
+                                                  }
+                                                });
+                                                // print(buttonVlaue[index].toString());
+                                              },
+                                              child: Text(
+                                                cutName[index].toString(),
+                                                style: TextStyle(
+                                                    fontSize: buttonFont,
+                                                    color: cutColor[index]
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    fontWeight: buttonbold),
+                                              )),
+                                        ),
+                                      );
+                                    }),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: _height,
-                                //width: _swidth,
-                                child: Row(
-                                  children:
-                                      List.generate(polishName.length, (index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 8.0, top: 3.0),
-                                      child: SizedBox(
-                                        height: _height,
-                                        width: (size) ? 60 : 55,
-                                        child: RaisedButton(
-                                            elevation: 0.0,
-                                            shape: _shape,
-                                            color: polishColor[index]
-                                                ? Colors.indigo[800]
-                                                : Colors.grey[100],
-                                            onPressed: () {
-                                              setState(() {
-                                                polishColor[index] =
-                                                    !polishColor[index];
-                                                if (polishResult.contains(
-                                                    polishValue[index]
-                                                        .toString())) {
-                                                  polishResult.remove(
-                                                      polishValue[index]
-                                                          .toString());
-                                                } else {
-                                                  polishResult.add(
-                                                      polishValue[index]
-                                                          .toString());
-                                                }
-                                              });
-                                              // print(buttonVlaue[index].toString());
-                                            },
-                                            child: Text(
-                                              polishName[index].toString(),
-                                              style: TextStyle(
-                                                  fontSize: buttonFont,
-                                                  color: polishColor[index]
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                  fontWeight: buttonbold),
-                                            )),
-                                      ),
-                                    );
-                                  }),
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(top: 5.0),
-                                child: SizedBox(
-                                  height: _height,
-                                  width: 50,
-                                  child: Text(
-                                    'Symm',
-                                    style: TextStyle(
-                                        fontSize: titleFont,
-                                        fontWeight: titlebold),
-                                    textAlign: TextAlign.start,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5.0),
+                                  child: SizedBox(
+                                    height: _height,
+                                    // width: 50,
+                                    child: Text(
+                                      'Polish',
+                                      style: TextStyle(
+                                          fontSize: titleFont,
+                                          fontWeight: titlebold),
+                                      textAlign: TextAlign.start,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                height: _height,
-                                //width: _swidth,
-                                child: Row(
-                                  children:
-                                      List.generate(symmName.length, (index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 8.0, top: 3.0),
-                                      child: SizedBox(
-                                        height: _height,
-                                        width: (size) ? 60 : 55,
-                                        child: RaisedButton(
-                                            elevation: 0.0,
-                                            shape: _shape,
-                                            color: symmColor[index]
-                                                ? Colors.indigo[800]
-                                                : Colors.grey[100],
-                                            onPressed: () {
-                                              setState(() {
-                                                symmColor[index] =
-                                                    !symmColor[index];
-                                                if (symmResult.contains(
-                                                    symmValue[index]
-                                                        .toString())) {
-                                                  symmResult.remove(
-                                                      symmValue[index]
-                                                          .toString());
-                                                } else {
-                                                  symmResult.add(
-                                                      symmValue[index]
-                                                          .toString());
-                                                }
-                                              });
-                                              // print(buttonVlaue[index].toString());
-                                            },
-                                            child: Text(
-                                              symmName[index].toString(),
-                                              style: TextStyle(
-                                                  fontSize: buttonFont,
-                                                  color: symmColor[index]
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                  fontWeight: buttonbold),
-                                            )),
-                                      ),
-                                    );
-                                  }),
+                                SizedBox(
+                                  height: _height,
+                                  //width: _swidth,
+                                  child: Row(
+                                    children: List.generate(polishName.length,
+                                        (index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 8.0, top: 3.0),
+                                        child: SizedBox(
+                                          height: _height,
+                                          width: (size) ? 60 : 55,
+                                          child: RaisedButton(
+                                              elevation: 0.0,
+                                              shape: _shape,
+                                              color: polishColor[index]
+                                                  ? Color(0XFF294EA3)
+                                                  : Color(0XFFEBEFFA),
+                                              onPressed: () {
+                                                setState(() {
+                                                  polishColor[index] =
+                                                      !polishColor[index];
+                                                  if (polishResult.contains(
+                                                      polishValue[index]
+                                                          .toString())) {
+                                                    polishResult.remove(
+                                                        polishValue[index]
+                                                            .toString());
+                                                  } else {
+                                                    polishResult.add(
+                                                        polishValue[index]
+                                                            .toString());
+                                                  }
+                                                });
+                                                // print(buttonVlaue[index].toString());
+                                              },
+                                              child: Text(
+                                                polishName[index].toString(),
+                                                style: TextStyle(
+                                                    fontSize: buttonFont,
+                                                    color: polishColor[index]
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    fontWeight: buttonbold),
+                                              )),
+                                        ),
+                                      );
+                                    }),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        )
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5.0),
+                                  child: SizedBox(
+                                    height: _height,
+                                    width: 50,
+                                    child: Text(
+                                      'Symm',
+                                      style: TextStyle(
+                                          fontSize: titleFont,
+                                          fontWeight: titlebold),
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: _height,
+                                  //width: _swidth,
+                                  child: Row(
+                                    children:
+                                        List.generate(symmName.length, (index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 8.0, top: 3.0),
+                                        child: SizedBox(
+                                          height: _height,
+                                          width: (size) ? 60 : 55,
+                                          child: RaisedButton(
+                                              elevation: 0.0,
+                                              shape: _shape,
+                                              color: symmColor[index]
+                                                  ? Color(0XFF294EA3)
+                                                  : Color(0XFFEBEFFA),
+                                              onPressed: () {
+                                                setState(() {
+                                                  symmColor[index] =
+                                                      !symmColor[index];
+                                                  if (symmResult.contains(
+                                                      symmValue[index]
+                                                          .toString())) {
+                                                    symmResult.remove(
+                                                        symmValue[index]
+                                                            .toString());
+                                                  } else {
+                                                    symmResult.add(
+                                                        symmValue[index]
+                                                            .toString());
+                                                  }
+                                                });
+                                                // print(buttonVlaue[index].toString());
+                                              },
+                                              child: Text(
+                                                symmName[index].toString(),
+                                                style: TextStyle(
+                                                    fontSize: buttonFont,
+                                                    color: symmColor[index]
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    fontWeight: buttonbold),
+                                              )),
+                                        ),
+                                      );
+                                    }),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     )),
               ),
 
@@ -1080,59 +1277,19 @@ class _StoneSearchState extends State<StoneSearch>
                 padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
                 child: Container(
                     color: Colors.white,
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'Fluorescence',
-                          style: TextStyle(
-                              fontSize: titleFont, fontWeight: titlebold),
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: List.generate(fluoreName.length, (index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 8.0, bottom: 3.0, top: 3.0),
-                                child: SizedBox(
-                                  height: _height,
-                                  width: (size) ? 62 : 75,
-                                  child: RaisedButton(
-                                      elevation: 0.0,
-                                      shape: _shape,
-                                      color: fluoreColor[index]
-                                          ? Colors.indigo[800]
-                                          : Colors.grey[100],
-                                      onPressed: () {
-                                        setState(() {
-                                          fluoreColor[index] =
-                                              !fluoreColor[index];
-                                          if (fluoreResult.contains(
-                                              fluoreValue[index].toString())) {
-                                            fluoreResult.remove(
-                                                fluoreValue[index].toString());
-                                          } else {
-                                            fluoreResult.add(
-                                                fluoreValue[index].toString());
-                                          }
-                                        });
-                                        // print(buttonVlaue[index].toString());
-                                      },
-                                      child: Text(
-                                        fluoreName[index].toString(),
-                                        style: TextStyle(
-                                            fontSize: buttonFont,
-                                            color: fluoreColor[index]
-                                                ? Colors.white
-                                                : Colors.black,
-                                            fontWeight: buttonbold),
-                                      )),
-                                ),
-                              );
-                            }),
+                    child: Container(
+                      padding: EdgeInsets.only(top: 10, bottom: 10),
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            // 'Fluorescence',
+                            'FLUORESCENCE',
+                            style: TextStyle(
+                                fontSize: titleFont, fontWeight: titlebold),
                           ),
-                        )
-                      ],
+                          getFluoroOptionsWidget(context)
+                        ],
+                      ),
                     )),
               ),
 
@@ -1140,14 +1297,18 @@ class _StoneSearchState extends State<StoneSearch>
               Padding(
                 padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
                 child: Container(
+                    padding: EdgeInsets.only(bottom: 10),
                     width: MediaQuery.of(context).size.width,
                     color: Colors.white,
                     child: Column(
                       children: <Widget>[
-                        Text(
-                          'Certificate',
-                          style: TextStyle(
-                              fontSize: titleFont, fontWeight: titlebold),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10.0, bottom: 10),
+                          child: Text(
+                            'CERTIFICATE',
+                            style: TextStyle(
+                                fontSize: titleFont, fontWeight: titlebold),
+                          ),
                         ),
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
@@ -1164,8 +1325,8 @@ class _StoneSearchState extends State<StoneSearch>
                                       elevation: 0.0,
                                       shape: _shape,
                                       color: certificateColor[index]
-                                          ? Colors.indigo[800]
-                                          : Colors.grey[100],
+                                          ? Color(0XFF294EA3)
+                                          : Color(0XFFEBEFFA),
                                       onPressed: () {
                                         setState(() {
                                           certificateColor[index] =
@@ -1206,58 +1367,18 @@ class _StoneSearchState extends State<StoneSearch>
                 padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
                 child: Container(
                     color: Colors.white,
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'Luster',
-                          style: TextStyle(
-                              fontSize: titleFont, fontWeight: titlebold),
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: List.generate(lusterName.length, (index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 8.0, bottom: 3.0, top: 3.0),
-                                child: SizedBox(
-                                  height: _height,
-                                  width: (size) ? 62 : 120,
-                                  child: RaisedButton(
-                                      elevation: 0.0,
-                                      shape: _shape,
-                                      color: lusterColor[index]
-                                          ? Colors.indigo[800]
-                                          : Colors.grey[100],
-                                      onPressed: () {
-                                        setState(() {
-                                          lusterColor[index] =
-                                              !lusterColor[index];
-                                          if (lusterResult.contains(
-                                              lusterValue[index].toString())) {
-                                            lusterResult.remove(
-                                                lusterValue[index].toString());
-                                          } else {
-                                            lusterResult.add(
-                                                lusterValue[index].toString());
-                                          }
-                                        });
-                                      },
-                                      child: Text(
-                                        lusterName[index].toString(),
-                                        style: TextStyle(
-                                            fontSize: buttonFont,
-                                            color: lusterColor[index]
-                                                ? Colors.white
-                                                : Colors.black,
-                                            fontWeight: buttonbold),
-                                      )),
-                                ),
-                              );
-                            }),
+                    child: Container(
+                      padding: EdgeInsets.only(top: 10, bottom: 10),
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            'LUSTER',
+                            style: TextStyle(
+                                fontSize: titleFont, fontWeight: titlebold),
                           ),
-                        )
-                      ],
+                          getLusterOptionsWidget(context)
+                        ],
+                      ),
                     )),
               ),
 
@@ -1266,58 +1387,18 @@ class _StoneSearchState extends State<StoneSearch>
                 padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
                 child: Container(
                     color: Colors.white,
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          'Shades',
-                          style: TextStyle(
-                              fontSize: titleFont, fontWeight: titlebold),
-                        ),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: List.generate(shadesName.length, (index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 8.0, bottom: 3.0, top: 3.0),
-                                child: SizedBox(
-                                  height: _height,
-                                  width: (size) ? 62 : 110,
-                                  child: RaisedButton(
-                                      elevation: 0.0,
-                                      shape: _shape,
-                                      color: shadesColor[index]
-                                          ? Colors.indigo[800]
-                                          : Colors.grey[100],
-                                      onPressed: () {
-                                        setState(() {
-                                          shadesColor[index] =
-                                              !shadesColor[index];
-                                          if (shadesResult.contains(
-                                              shadesValue[index].toString())) {
-                                            shadesResult.remove(
-                                                shadesValue[index].toString());
-                                          } else {
-                                            shadesResult.add(
-                                                shadesValue[index].toString());
-                                          }
-                                        });
-                                      },
-                                      child: Text(
-                                        shadesName[index].toString(),
-                                        style: TextStyle(
-                                            fontSize: buttonFont,
-                                            color: shadesColor[index]
-                                                ? Colors.white
-                                                : Colors.black,
-                                            fontWeight: buttonbold),
-                                      )),
-                                ),
-                              );
-                            }),
+                    child: Container(
+                      padding: EdgeInsets.only(top: 10, bottom: 10),
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            'SHADES',
+                            style: TextStyle(
+                                fontSize: titleFont, fontWeight: titlebold),
                           ),
-                        )
-                      ],
+                          getShadesOptionsWidget(context)
+                        ],
+                      ),
                     )),
               ),
 
@@ -1334,86 +1415,96 @@ class _StoneSearchState extends State<StoneSearch>
                                       padding: EdgeInsets.only(
                                           top: 5.0, left: 10.0, right: 10.0),
                                       child: Container(
-                                        height: 55.0,
+                                        // height: 55.0,
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 0.9444,
                                         decoration:
                                             BoxDecoration(color: Colors.white),
-                                        child: Column(
-                                          children: <Widget>[
-                                            Text(
-                                              'H&A',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: titleFont,
-                                                  fontWeight: titlebold),
-                                            ),
-                                            Center(
-                                              child: SingleChildScrollView(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                child: Row(
-                                                  children: List.generate(
-                                                      haName.length, (index) {
-                                                    return Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 8.0,
-                                                              bottom: 3.0,
-                                                              top: 3.0),
-                                                      child: SizedBox(
-                                                        height: _height,
-                                                        width: (size) ? 60 : 65,
-                                                        child: RaisedButton(
-                                                            elevation: 0.0,
-                                                            shape: _shape,
-                                                            color: haColor[
-                                                                    index]
-                                                                ? Colors
-                                                                    .indigo[800]
-                                                                : Colors
-                                                                    .grey[100],
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                haColor[index] =
-                                                                    !haColor[
-                                                                        index];
-                                                                if (haResult.contains(
-                                                                    haValue[index]
-                                                                        .toString())) {
-                                                                  haResult.remove(
-                                                                      haValue[index]
-                                                                          .toString());
-                                                                } else {
-                                                                  haResult.add(haValue[
-                                                                          index]
-                                                                      .toString());
-                                                                }
-                                                              });
-                                                            },
-                                                            child: Text(
-                                                              haName[index]
-                                                                  .toString(),
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      buttonFont,
-                                                                  color: haColor[
-                                                                          index]
-                                                                      ? Colors
-                                                                          .white
-                                                                      : Colors
-                                                                          .black,
-                                                                  fontWeight:
-                                                                      buttonbold),
-                                                            )),
-                                                      ),
-                                                    );
-                                                  }),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              bottom: 10.0),
+                                          child: Column(
+                                            children: <Widget>[
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(10.0),
+                                                child: Text(
+                                                  'H&A',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      fontSize: titleFont,
+                                                      fontWeight: titlebold),
                                                 ),
                                               ),
-                                            )
-                                          ],
+                                              Center(
+                                                child: SingleChildScrollView(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  child: Row(
+                                                    children: List.generate(
+                                                        haName.length, (index) {
+                                                      return Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 8.0,
+                                                                bottom: 3.0,
+                                                                top: 3.0),
+                                                        child: SizedBox(
+                                                          height: _height,
+                                                          width:
+                                                              (size) ? 60 : 65,
+                                                          child: RaisedButton(
+                                                              elevation: 0.0,
+                                                              shape: _shape,
+                                                              color: haColor[
+                                                                      index]
+                                                                  ? Color(
+                                                                      0XFF294EA3)
+                                                                  : Color(
+                                                                      0XFFEBEFFA),
+                                                              onPressed: () {
+                                                                setState(() {
+                                                                  haColor[index] =
+                                                                      !haColor[
+                                                                          index];
+                                                                  if (haResult.contains(
+                                                                      haValue[index]
+                                                                          .toString())) {
+                                                                    haResult.remove(
+                                                                        haValue[index]
+                                                                            .toString());
+                                                                  } else {
+                                                                    haResult.add(
+                                                                        haValue[index]
+                                                                            .toString());
+                                                                  }
+                                                                });
+                                                              },
+                                                              child: Text(
+                                                                haName[index]
+                                                                    .toString(),
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        buttonFont,
+                                                                    color: haColor[
+                                                                            index]
+                                                                        ? Colors
+                                                                            .white
+                                                                        : Colors
+                                                                            .black,
+                                                                    fontWeight:
+                                                                        buttonbold),
+                                                              )),
+                                                        ),
+                                                      );
+                                                    }),
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -1425,18 +1516,21 @@ class _StoneSearchState extends State<StoneSearch>
                               padding: EdgeInsets.only(
                                   top: 5.0, left: 10.0, right: 10.0),
                               child: Container(
-                                height: 55.0,
+                                // height: 55.0,
                                 width:
                                     MediaQuery.of(context).size.width * 0.9444,
                                 decoration: BoxDecoration(color: Colors.white),
                                 child: Column(
                                   children: <Widget>[
-                                    Text(
-                                      'Black Inclusion',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: titleFont,
-                                          fontWeight: titlebold),
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Text(
+                                        'BLACK INCLUSION',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: titleFont,
+                                            fontWeight: titlebold),
+                                      ),
                                     ),
                                     Center(
                                       child: SingleChildScrollView(
@@ -1456,8 +1550,8 @@ class _StoneSearchState extends State<StoneSearch>
                                                     elevation: 0.0,
                                                     shape: _shape,
                                                     color: blackIncnColor[index]
-                                                        ? Colors.indigo[800]
-                                                        : Colors.grey[100],
+                                                        ? Color(0XFF294EA3)
+                                                        : Color(0XFFEBEFFA),
                                                     onPressed: () {
                                                       setState(() {
                                                         blackIncnColor[index] =
@@ -1506,79 +1600,23 @@ class _StoneSearchState extends State<StoneSearch>
                               padding: EdgeInsets.only(
                                   top: 5.0, left: 10.0, right: 10.0),
                               child: Container(
-                                height: 55.0,
+                                // height: 55.0,
                                 width:
                                     MediaQuery.of(context).size.width * 0.9444,
                                 decoration: BoxDecoration(color: Colors.white),
                                 child: Column(
                                   children: <Widget>[
-                                    Text(
-                                      'White Inclusion',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: titleFont,
-                                          fontWeight: titlebold),
-                                    ),
-                                    Center(
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        child: Row(
-                                          children: List.generate(
-                                              whiteIncnName.length, (index) {
-                                            return Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 8.0,
-                                                  bottom: 3.0,
-                                                  top: 3.0),
-                                              child: SizedBox(
-                                                height: _height,
-                                                width: (size) ? 60 : 65,
-                                                child: RaisedButton(
-                                                    elevation: 0.0,
-                                                    shape: _shape,
-                                                    color: whiteIncnColor[index]
-                                                        ? Colors.indigo[800]
-                                                        : Colors.grey[100],
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        whiteIncnColor[index] =
-                                                            !whiteIncnColor[
-                                                                index];
-                                                        if (whiteIncnResult
-                                                            .contains(
-                                                                whiteIncnValue[
-                                                                        index]
-                                                                    .toString())) {
-                                                          whiteIncnResult.remove(
-                                                              whiteIncnValue[
-                                                                      index]
-                                                                  .toString());
-                                                        } else {
-                                                          whiteIncnResult.add(
-                                                              whiteIncnValue[
-                                                                      index]
-                                                                  .toString());
-                                                        }
-                                                      });
-                                                    },
-                                                    child: Text(
-                                                      whiteIncnName[index]
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize: buttonFont,
-                                                          color: whiteIncnColor[
-                                                                  index]
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                          fontWeight:
-                                                              buttonbold),
-                                                    )),
-                                              ),
-                                            );
-                                          }),
-                                        ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: Text(
+                                        'WHITE INCLUSION',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: titleFont,
+                                            fontWeight: titlebold),
                                       ),
-                                    )
+                                    ),
+                                    getWhiteIncOptionsWidget(context)
                                   ],
                                 ),
                               ),
@@ -1619,7 +1657,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'From',
                                                 hintStyle: TextStyle(
@@ -1652,7 +1690,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'To',
                                                 hintStyle: TextStyle(
@@ -1705,7 +1743,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'From',
                                                 hintStyle: TextStyle(
@@ -1738,7 +1776,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'To',
                                                 hintStyle: TextStyle(
@@ -1791,7 +1829,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'From',
                                                 hintStyle: TextStyle(
@@ -1824,7 +1862,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'To',
                                                 hintStyle: TextStyle(
@@ -1877,7 +1915,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'From',
                                                 hintStyle: TextStyle(
@@ -1910,7 +1948,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'To',
                                                 hintStyle: TextStyle(
@@ -1963,7 +2001,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'From',
                                                 hintStyle: TextStyle(
@@ -1996,7 +2034,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'To',
                                                 hintStyle: TextStyle(
@@ -2049,7 +2087,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'From',
                                                 hintStyle: TextStyle(
@@ -2082,7 +2120,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'To',
                                                 hintStyle: TextStyle(
@@ -2135,7 +2173,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'From',
                                                 hintStyle: TextStyle(
@@ -2168,7 +2206,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'To',
                                                 hintStyle: TextStyle(
@@ -2221,7 +2259,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'From',
                                                 hintStyle: TextStyle(
@@ -2254,7 +2292,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'To',
                                                 hintStyle: TextStyle(
@@ -2308,7 +2346,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'From',
                                                 hintStyle: TextStyle(
@@ -2341,7 +2379,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'To',
                                                 hintStyle: TextStyle(
@@ -2395,7 +2433,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'From',
                                                 hintStyle: TextStyle(
@@ -2428,7 +2466,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'To',
                                                 hintStyle: TextStyle(
@@ -2481,7 +2519,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'From',
                                                 hintStyle: TextStyle(
@@ -2514,7 +2552,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'To',
                                                 hintStyle: TextStyle(
@@ -2567,7 +2605,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'From',
                                                 hintStyle: TextStyle(
@@ -2600,7 +2638,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'To',
                                                 hintStyle: TextStyle(
@@ -2653,7 +2691,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'From',
                                                 hintStyle: TextStyle(
@@ -2686,7 +2724,7 @@ class _StoneSearchState extends State<StoneSearch>
                                                     decimal: true),
                                             decoration: InputDecoration(
                                                 filled: true,
-                                                fillColor: Colors.grey[100],
+                                                fillColor: Color(0XFFEBEFFA),
                                                 border: InputBorder.none,
                                                 hintText: 'To',
                                                 hintStyle: TextStyle(
@@ -2712,9 +2750,17 @@ class _StoneSearchState extends State<StoneSearch>
                       height: 30,
                       width: 310,
                       child: RaisedButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: BorderSide.none),
+                        color: Color(0XFF294EA3),
                         child: pressed
-                            ? Text("Hide Advance Search")
-                            : Text('Show Advance Search'),
+                            ? Text(
+                                "Hide Advance Search",
+                                style: TextStyle(color: Colors.white),
+                              )
+                            : Text('Show Advance Search',
+                                style: TextStyle(color: Colors.white)),
                         onPressed: () {
                           setState(() {
                             pressed = !pressed;
@@ -2801,7 +2847,7 @@ class _StoneSearchState extends State<StoneSearch>
                   icon: Icon(
                     Icons.search,
                     size: 30.0,
-                    color: Colors.indigo[800],
+                    color: Color(0XFF294EA3),
                   ),
                   label: Text(
                     "SEARCH",
@@ -3103,7 +3149,7 @@ class _StoneSearchState extends State<StoneSearch>
                           ));
                     },
                     icon: Icon(Icons.save_alt,
-                        size: 30.0, color: Colors.indigo[800]),
+                        size: 30.0, color: Color(0XFF294EA3)),
                     label: Text(
                       "SAVE",
                       style: TextStyle(
@@ -3121,14 +3167,14 @@ class _StoneSearchState extends State<StoneSearch>
                                   MySearchPage()));
                     },
                     icon: Icon(Icons.restore,
-                        size: 30.0, color: Colors.indigo[800]),
+                        size: 30.0, color: Color(0XFF294EA3)),
                     label: Text(
                       "RESET",
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.black),
                     ))),
             // IconButton(
-            //   icon: Icon(Icons.search,size: 30.0,color: Colors.indigo[800]),
+            //   icon: Icon(Icons.search,size: 30.0,color: Color(0XFF294EA3)),
             //   onPressed: () {
             //     _check(
             //         clarityResult,
@@ -3209,7 +3255,7 @@ class _StoneSearchState extends State<StoneSearch>
         headers: aheaders,
         body: json.encode(saveMap));
     var responseJson = json.decode(response.body);
-    print('result ' + responseJson.toString());
+    log('result ' + responseJson.toString());
     Scaffold.of(context).showSnackBar(SnackBar(content: Text('Saved')));
     MySearchPageState.loadSavedSearchList();
   }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -32,6 +33,11 @@ class MySearchPageState extends State<MySearchPage>
     });
     loadSavedSearchList();
     myTabController = TabController(length: 2, vsync: this);
+    myTabController.addListener(() {
+      Timer(Duration(milliseconds: 500), () {
+        setState(() {});
+      });
+    });
     super.initState();
   }
 
@@ -70,6 +76,7 @@ class MySearchPageState extends State<MySearchPage>
         'http://ozonediam.com/MObAppService.SVC/GetSaveSearchList',
         headers: aheaders,
         body: json.encode(saveMap));
+    print(response.body);
     var responseJson = json.decode(response.body);
     List serviceResultList = responseJson['GetSaveSearchListResult']['Result'];
     List<String> tempList = List(), tempSeqList = List();
@@ -111,7 +118,7 @@ class MySearchPageState extends State<MySearchPage>
                   ),
                 ),
               ]),
-          backgroundColor: Colors.indigo[800],
+          backgroundColor: Color(0XFF294EA3),
           leading: IconButton(
               icon: Icon(
                 Icons.chevron_left,
@@ -122,7 +129,7 @@ class MySearchPageState extends State<MySearchPage>
               }),
           centerTitle: true,
           title: Text(
-            'Stone Search',
+            'Specific Search',
             style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
           ),
           actions: <Widget>[
@@ -146,8 +153,11 @@ class MySearchPageState extends State<MySearchPage>
           ),
           Container(
             child: (savedSearch != null && savedSearch.length > 0)
-                ? ListView(
-                    children: _getSavedChildren(context),
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListView(
+                      children: _getSavedChildren(context),
+                    ),
                   )
                 : Center(
                     child: Container(
@@ -171,31 +181,41 @@ class MySearchPageState extends State<MySearchPage>
     int i = 0;
     tempMapList.forEach((key, value) {
       Map temp = key;
-      tempWidgetList.add(ListTile(
-        trailing: FlatButton.icon(
-            onPressed: () {
-              var tep = json.encode(key);
-              printWrapped('before remove ' + tempMapList.toString());
-              // var ind = savedSearch.removeAt(savedSearch.indexOf(tep));
+      tempWidgetList.add(Card(
+        elevation: 5,
+        child: ListTile(
+          trailing: FlatButton.icon(
+              onPressed: () {
+                var tep = json.encode(key);
+                printWrapped('before remove ' + tempMapList.toString());
+                // var ind = savedSearch.removeAt(savedSearch.indexOf(tep));
 
-              removeSavedSearch(tep);
-              setState(() {});
-              // pref.setStringList('savedSearch', savedSearch);
-            },
-            icon: Icon(Icons.delete),
-            label: Text('')),
-        onTap: () {
-          setState(() {
-            currSavedObj = temp[temp.keys.elementAt(0)];
-          });
+                removeSavedSearch(tep);
+                setState(() {});
+                // pref.setStringList('savedSearch', savedSearch);
+              },
+              icon: Icon(
+                Icons.delete,
+                color: Color(0XFF294ea3),
+              ),
+              label: Text('')),
+          onTap: () {
+            setState(() {
+              currSavedObj = temp[temp.keys.elementAt(0)];
+            });
 
-          print(currSavedObj);
-          myTabController.animateTo(0);
-          isFromSaved = true;
-          setState(() {});
-        },
-        title: Text(temp.keys.elementAt(0)),
+            print(currSavedObj);
+            myTabController.animateTo(0);
+            isFromSaved = true;
+            setState(() {});
+          },
+          title: Text(
+            temp.keys.elementAt(0),
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
       ));
+      // tempWidgetList.add(Divider());
       i++;
     });
     return tempWidgetList;
