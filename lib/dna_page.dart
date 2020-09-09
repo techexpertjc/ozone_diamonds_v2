@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:ozone_diamonds/LoginPage.dart';
 import 'package:ozone_diamonds/cart_page.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import "package:http/http.dart" as http;
 
@@ -23,6 +26,7 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
   VideoPlayerController myVideoController;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   PDFDocument certiPdf;
+  String dwnloadUrl;
   TextStyle tabTextStyle = TextStyle(color: Colors.black, fontSize: 15);
   bool pdfLoaded = false;
   @override
@@ -37,7 +41,7 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
   }
 
   double videoHeight = 100, videoWidth = 100;
-
+  var directory;
   bool videoLoaded = true, videoError = false;
   Widget pdfPage;
   void myInitFunc() async {
@@ -58,6 +62,14 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
         videoWidth = myVideoController.value.size.width / 2;
         setState(() {});
       });
+      dwnloadUrl = currStockObj.pdfLink;
+      directory = await getApplicationDocumentsDirectory();
+      if (!Directory(directory.path + Platform.pathSeparator + 'Download')
+          .existsSync()) {
+        Directory(directory.path + Platform.pathSeparator + 'Download')
+            .createSync();
+      }
+      FlutterDownloader.initialize();
 
       myVideoController.setLooping(true);
       myVideoController.play();
@@ -443,11 +455,13 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
                         child: Column(
                           children: [
                             Center(
-                                child:
-                                    Container(child: Icon(Icons.attach_money))),
+                                child: Container(
+                                    child: Icon(Icons.attach_money,
+                                        color: Color(0XFF294ea3)))),
                             Center(
                               child: Container(
-                                child: Text('Confirm Stone'),
+                                child: Text('Confirm Stone',
+                                    style: TextStyle(fontSize: 15)),
                               ),
                             )
                           ],
@@ -488,10 +502,12 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
                           children: [
                             Center(
                                 child: Container(
-                                    child: Icon(Icons.add_shopping_cart))),
+                                    child: Icon(Icons.add_shopping_cart,
+                                        color: Color(0XFF294ea3)))),
                             Center(
                               child: Container(
-                                child: Text('Add to Cart'),
+                                child: Text('Add to Cart',
+                                    style: TextStyle(fontSize: 15)),
                               ),
                             )
                           ],
@@ -519,48 +535,75 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
           Container(
             height: MediaQuery.of(context).size.height / 3,
             color: Colors.grey[100],
-            child: TabBarView(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.all(10),
-                  child: pdfLoaded
-                      ? pdfPage
-                      : Center(child: CircularProgressIndicator()),
-                  //Certificate
-                ),
-                videoLoaded
-                    ? Container(
-                        child: AspectRatio(
-                            aspectRatio: myVideoController.value.aspectRatio,
-                            child: Container(
-                                padding: EdgeInsets.only(left: 50, right: 50),
-                                width:
-                                    (MediaQuery.of(context).size.width) - 200,
-                                child: VideoPlayer(myVideoController))),
-                        //Certificate
-                      )
-                    : videoError
-                        ? Center(
-                            child: Text('Video not Available'),
-                          )
-                        : Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                Container(
-                  child: FadeInImage(
-                    imageErrorBuilder: (context, Obj, stackTrc) {
-                      return Center(
-                        child: Text('Cant load imaage'),
-                      );
-                    },
-                    image: NetworkImage(currStockObj.imageLink),
-                    placeholder: AssetImage('asets/loading1.gif'),
+            child: Stack(children: [
+              TabBarView(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    child: pdfLoaded
+                        ? pdfPage
+                        : Center(child: CircularProgressIndicator()),
+                    //Certificate
                   ),
-                  //Certificate
-                )
-              ],
-              controller: imageTabController,
-            ),
+                  videoLoaded
+                      ? Container(
+                          child: AspectRatio(
+                              aspectRatio: myVideoController.value.aspectRatio,
+                              child: Container(
+                                  padding: EdgeInsets.only(left: 50, right: 50),
+                                  width:
+                                      (MediaQuery.of(context).size.width) - 200,
+                                  child: VideoPlayer(myVideoController))),
+                          //Certificate
+                        )
+                      : videoError
+                          ? Center(
+                              child: Text('Video not Available'),
+                            )
+                          : Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                  Container(
+                    child: FadeInImage(
+                      imageErrorBuilder: (context, Obj, stackTrc) {
+                        return Center(
+                          child: Text('Cant load imaage'),
+                        );
+                      },
+                      image: NetworkImage(currStockObj.imageLink),
+                      placeholder: AssetImage('asets/loading1.gif'),
+                    ),
+                    //Certificate
+                  )
+                ],
+                controller: imageTabController,
+              ),
+              Positioned(
+                  right: 10,
+                  top: 10,
+                  child: Container(
+                    // padding: EdgeInsets.all(10),
+                    child: FloatingActionButton(
+                      backgroundColor: Color(0XFF294ea3),
+                      mini: true,
+                      onPressed: () async {
+                        final taskId = await FlutterDownloader.enqueue(
+                          url: dwnloadUrl,
+                          savedDir: directory.path +
+                              Platform.pathSeparator +
+                              'Download',
+                          showNotification:
+                              true, // show download progress in status bar (for Android)
+                          openFileFromNotification:
+                              true, // click on notification to open downloaded file (for Android)
+                        );
+                        scaffoldKey.currentState.showSnackBar(
+                            SnackBar(content: Text('Download Started')));
+                      },
+                      child: Icon(Icons.arrow_downward),
+                    ),
+                  ))
+            ]),
           ),
           Padding(
             padding: EdgeInsets.all(10),
@@ -573,6 +616,7 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
                     icon: Icon(Icons.receipt, color: Color(0XFF294ea3)),
                     onPressed: () {
                       imageTabController.animateTo(0);
+                      dwnloadUrl = currStockObj.pdfLink;
                     }),
               ),
               Container(
@@ -582,6 +626,7 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
                     icon: Icon(Icons.ondemand_video, color: Color(0XFF294ea3)),
                     onPressed: () {
                       imageTabController.animateTo(1);
+                      dwnloadUrl = currStockObj.videoLink;
                     }),
               ),
               Container(
@@ -594,6 +639,7 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
                     ),
                     onPressed: () {
                       imageTabController.animateTo(2);
+                      dwnloadUrl = currStockObj.imageLink;
                     }),
               )
             ]),

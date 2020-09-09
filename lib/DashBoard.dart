@@ -5,8 +5,10 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ozone_diamonds/cart_page.dart';
+import 'package:ozone_diamonds/change_password.dart';
 import 'package:ozone_diamonds/my_order.dart';
 import 'package:ozone_diamonds/my_profile.dart';
 import 'package:ozone_diamonds/new_arrival.dart';
@@ -246,7 +248,10 @@ class _DashBoardState extends State<DashBoard> {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => MyChangePassword()));
+                },
                 child: ListTile(
                   leading: Icon(
                     Icons.vpn_key,
@@ -776,6 +781,11 @@ class _DashBoardState extends State<DashBoard> {
         InternetError();
       }
     });
+    myInitFunc();
+  }
+
+  void myInitFunc() async {
+    await FlutterDownloader.initialize();
   }
 
   @override

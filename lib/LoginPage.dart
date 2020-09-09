@@ -173,6 +173,10 @@ class _LoginPageState extends State<LoginPage> {
                     Padding(
                       padding: EdgeInsets.only(right: 0),
                       child: InkWell(
+                        onTap: () async {
+                          scaffoldKey.currentState.showSnackBar(SnackBar(
+                              content: Text('Processing your request')));
+                        },
                         child: Text(
                           'Forgot Password',
                           textAlign: TextAlign.end,

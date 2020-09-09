@@ -37,7 +37,8 @@ class _MyProfileState extends State<MyProfile> {
     profileDetails =
         json.decode(response.body)['GetUserProfileResult']['Result'][0];
     profileDetails.forEach((key, value) {
-      if (profileDetails[key] == null) profileDetails[key] = 'null';
+      if (profileDetails[key] == null || profileDetails[key] == '')
+        profileDetails[key] = 'NA';
     });
     log(profileDetails.toString());
     setState(() {
@@ -49,443 +50,129 @@ class _MyProfileState extends State<MyProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text('My Profile'),
-        centerTitle: true,
-      ),
-      body: dataLoad
-          ? Stack(overflow: Overflow.visible, children: [
-              Container(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                // color: Colors.white,
-                child: CustomPaint(
-                  painter: CurvePainter(),
-                ),
-              ),
-              Positioned(
-                left: MediaQuery.of(context).size.width / 7,
-                top: MediaQuery.of(context).size.height / 7,
-                child: Row(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: Text('My Profile'),
+          centerTitle: true,
+        ),
+        body: dataLoad
+            ? Padding(
+                padding: const EdgeInsets.all(10),
+                child: SingleChildScrollView(
+                    child: Column(
                   children: [
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(0.0),
-                        child: Text(
-                          profileDetails['DISPLAY_NAME']
-                              .toString()
-                              .toUpperCase(),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold),
+                    Padding(padding: EdgeInsets.only(top: 20)),
+                    Container(
+                      child: CircleAvatar(
+                        minRadius: 50,
+                        child: Icon(
+                          Icons.person,
+                          size: 70,
                         ),
                       ),
                     ),
+                    TextFormField(
+                      initialValue: profileDetails['USER_NAME'],
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                          labelText: 'Username',
+                          labelStyle: TextStyle(
+                              color: Color(0XFF294ea3), fontSize: 20)),
+                      enabled: false,
+                    ),
+                    TextFormField(
+                      initialValue: profileDetails['EMAIL_ID'],
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                          labelText: 'Email',
+                          labelStyle: TextStyle(
+                              color: Color(0XFF294ea3), fontSize: 20)),
+                      enabled: false,
+                    ),
+                    TextFormField(
+                      initialValue: profileDetails['PHONE_NO'],
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                          labelText: 'Phone',
+                          labelStyle: TextStyle(
+                              color: Color(0XFF294ea3), fontSize: 20)),
+                      enabled: false,
+                    ),
+                    TextFormField(
+                      initialValue: profileDetails['PHONE_NO_1'],
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                          labelText: 'Phone 2',
+                          labelStyle: TextStyle(
+                              color: Color(0XFF294ea3), fontSize: 20)),
+                      enabled: false,
+                    ),
+                    TextFormField(
+                      initialValue: profileDetails['PHONE_NO_2'],
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                          labelText: 'Phone 3',
+                          labelStyle: TextStyle(
+                              color: Color(0XFF294ea3), fontSize: 20)),
+                      enabled: false,
+                    ),
+                    TextFormField(
+                      initialValue: profileDetails['DESIGNATION'],
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                          labelText: 'Designation',
+                          labelStyle: TextStyle(
+                              color: Color(0XFF294ea3), fontSize: 20)),
+                      enabled: false,
+                    ),
+                    TextFormField(
+                      initialValue: profileDetails['COMP_NAME'],
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                          labelText: 'Company Name',
+                          labelStyle: TextStyle(
+                              color: Color(0XFF294ea3), fontSize: 20)),
+                      enabled: false,
+                    ),
+                    TextFormField(
+                      initialValue: profileDetails['PIN_CODE'],
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                          labelText: 'Pin Code',
+                          labelStyle: TextStyle(
+                              color: Color(0XFF294ea3), fontSize: 20)),
+                      enabled: false,
+                    ),
+                    TextFormField(
+                      initialValue: profileDetails['COUNTRY'],
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                          labelText: 'Country',
+                          labelStyle: TextStyle(
+                              color: Color(0XFF294ea3), fontSize: 20)),
+                      enabled: false,
+                    ),
+                    TextFormField(
+                      initialValue: profileDetails['WEBSITE'],
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                          labelText: 'Website',
+                          labelStyle: TextStyle(
+                              color: Color(0XFF294ea3), fontSize: 20)),
+                      enabled: false,
+                    ),
+                    TextFormField(
+                      initialValue: profileDetails['FAX_NO'],
+                      style: TextStyle(fontSize: 20),
+                      decoration: InputDecoration(
+                          labelText: 'Fax',
+                          labelStyle: TextStyle(
+                              color: Color(0XFF294ea3), fontSize: 20)),
+                      enabled: false,
+                    ),
                   ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 200, right: 40, left: 40),
-                child: Card(
-                  child: SingleChildScrollView(
-                      child: Column(
-                    children: [
-                      Padding(padding: EdgeInsets.only(top: 20)),
-                      Card(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                // color: Colors.black,
-                                child: Text(
-                                  'Username',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Color(0XFF294ea3),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  child: Text(
-                                    profileDetails['USER_NAME'],
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      // color: Color(0XFF294ea3),
-                                    ),
-                                  ),
-                                ))
-                          ],
-                        ),
-                      )),
-                      Card(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                // color: Colors.black,
-                                child: Text(
-                                  'Email',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Color(0XFF294ea3),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  child: Text(
-                                    profileDetails['EMAIL_ID'],
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      // color: Color(0XFF294ea3),
-                                    ),
-                                  ),
-                                ))
-                          ],
-                        ),
-                      )),
-                      Card(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                // color: Colors.black,
-                                child: Text(
-                                  'Phone',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Color(0XFF294ea3),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  child: Text(
-                                    profileDetails['PHONE_NO'],
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      // color: Color(0XFF294ea3),
-                                    ),
-                                  ),
-                                ))
-                          ],
-                        ),
-                      )),
-                      Card(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                // color: Colors.black,
-                                child: Text(
-                                  'Phone 2',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Color(0XFF294ea3),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  child: Text(
-                                    profileDetails['PHONE_NO_1'],
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      // color: Color(0XFF294ea3),
-                                    ),
-                                  ),
-                                ))
-                          ],
-                        ),
-                      )),
-                      Card(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                // color: Colors.black,
-                                child: Text(
-                                  'Phone 3',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Color(0XFF294ea3),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  child: Text(
-                                    profileDetails['PHONE_NO_2'],
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      // color: Color(0XFF294ea3),
-                                    ),
-                                  ),
-                                ))
-                          ],
-                        ),
-                      )),
-                      Card(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                // color: Colors.black,
-                                child: Text(
-                                  'Designation',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Color(0XFF294ea3),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  child: Text(
-                                    profileDetails['DESIGNATION'],
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      // color: Color(0XFF294ea3),
-                                    ),
-                                  ),
-                                ))
-                          ],
-                        ),
-                      )),
-                      Card(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                // color: Colors.black,
-                                child: Text(
-                                  'Company Name',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Color(0XFF294ea3),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  child: Text(
-                                    profileDetails['COMP_NAME'],
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      // color: Color(0XFF294ea3),
-                                    ),
-                                  ),
-                                ))
-                          ],
-                        ),
-                      )),
-                      Card(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                // color: Colors.black,
-                                child: Text(
-                                  'Pin Code',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Color(0XFF294ea3),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  child: Text(
-                                    profileDetails['PIN_CODE'],
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      // color: Color(0XFF294ea3),
-                                    ),
-                                  ),
-                                ))
-                          ],
-                        ),
-                      )),
-                      Card(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                // color: Colors.black,
-                                child: Text(
-                                  'Country',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Color(0XFF294ea3),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  child: Text(
-                                    profileDetails['COUNTRY'],
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      // color: Color(0XFF294ea3),
-                                    ),
-                                  ),
-                                ))
-                          ],
-                        ),
-                      )),
-                      Card(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                // color: Colors.black,
-                                child: Text(
-                                  'Website',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Color(0XFF294ea3),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  child: Text(
-                                    profileDetails['WEBSITE'],
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      // color: Color(0XFF294ea3),
-                                    ),
-                                  ),
-                                ))
-                          ],
-                        ),
-                      )),
-                      Card(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: Container(
-                                // color: Colors.black,
-                                child: Text(
-                                  'Fax',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                    color: Color(0XFF294ea3),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  child: Text(
-                                    profileDetails['FAX_NO'],
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      // color: Color(0XFF294ea3),
-                                    ),
-                                  ),
-                                ))
-                          ],
-                        ),
-                      )),
-                    ],
-                  )),
-                ),
-              ),
-            ])
-          : Center(
-              child: CircularProgressIndicator(),
-            ),
-    );
+                )),
+              )
+            : Center(child: CircularProgressIndicator()));
   }
 }

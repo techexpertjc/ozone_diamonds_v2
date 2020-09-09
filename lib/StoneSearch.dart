@@ -274,6 +274,7 @@ class _StoneSearchState extends State<StoneSearch>
   }
 
   TextEditingController caratToController,
+      caratListController,
       caratFromController,
       discountFromController,
       discountToController,
@@ -744,6 +745,7 @@ class _StoneSearchState extends State<StoneSearch>
     super.setState(fn);
   }
 
+  Set<String> caratList = Set();
   @override
   void initState() {
     // TODO: implement initState
@@ -752,6 +754,7 @@ class _StoneSearchState extends State<StoneSearch>
     super.initState();
 
     SharedPreferences.getInstance().then((value) {
+      caratListController = TextEditingController();
       caratToController = TextEditingController();
       caratFromController = TextEditingController();
       discountFromController = TextEditingController();
@@ -901,6 +904,92 @@ class _StoneSearchState extends State<StoneSearch>
                             ),
                           ),
                         ),
+                        Container(
+                            child: FloatingActionButton(
+                          heroTag: 'addBtn',
+                          backgroundColor: Color(0XFFEBEFFA),
+                          mini: true,
+                          onPressed: () {
+                            setState(() {
+                              if (caratFromController.text != null &&
+                                  caratFromController.text != '' &&
+                                  caratToController.text != null &&
+                                  caratToController.text != '')
+                                caratList.add(caratFromController.text +
+                                    '-' +
+                                    caratToController.text);
+                              caratListController.text = caratList.join(',');
+                            });
+                          },
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.black,
+                          ),
+                        ))
+
+                        // Padding(
+                        //     padding: EdgeInsets.all(0),
+                        //     child: Container(
+                        //       // padding: EdgeInsets.all(5),
+                        //       // color: Colors.blueAccent,
+                        //       child: MaterialButton(
+                        //         color: Color(0XFFEBEFFA),
+                        //         shape: CircleBorder(),
+                        //         onPressed: () {},
+                        //         child: Icon(Icons.add),
+                        //         // label: Text('')),
+                        //       ),
+                        //     ))
+                      ],
+                    )),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                child: Container(
+                    padding: EdgeInsets.only(top: 10, bottom: 10),
+                    color: Colors.white,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 4,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 5.0, bottom: 5.0, left: 30),
+                            child: Container(
+                              height: 30,
+                              // width: MediaQuery.of(context).size.width - 100,
+                              color: Colors.black,
+                              child: TextFormField(
+                                controller: caratListController,
+                                inputFormatters: [DecimalTextInputFormatter()],
+                                keyboardType: TextInputType.numberWithOptions(
+                                    decimal: true),
+                                decoration: InputDecoration(
+                                    filled: true,
+                                    fillColor: Color(0XFFEBEFFA),
+                                    border: InputBorder.none,
+                                    // hintText: 'From',
+                                    hintStyle:
+                                        TextStyle(fontSize: (size) ? 14 : 14)),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                            child: FloatingActionButton(
+                                heroTag: 'clearBtn',
+                                backgroundColor: Color(0XFFEBEFFA),
+                                onPressed: () {
+                                  setState(() {
+                                    caratListController.text = '';
+                                    caratList.clear();
+                                  });
+                                },
+                                mini: true,
+                                child: Icon(
+                                  Icons.clear,
+                                  color: Colors.black,
+                                )))
                         // Padding(
                         //     padding: EdgeInsets.all(0),
                         //     child: Container(
@@ -3414,12 +3503,27 @@ class _StoneSearchState extends State<StoneSearch>
         filquery += '$result';
         print(result);
       }
-      if (caratFrom != null && caratTo != null) {
-        String valfrom = caratFrom;
-        String valTo = caratTo;
-        var result =
-            "AND WGT BETWEEN ${valfrom.toString()} AND ${valTo.toString()}";
-        filquery += '$result';
+      if (caratList.length == 0) {
+        if (caratFrom != null && caratTo != null) {
+          String valfrom = caratFrom;
+          String valTo = caratTo;
+          var result =
+              "AND WGT BETWEEN ${valfrom.toString()} AND ${valTo.toString()}";
+          filquery += '$result';
+        }
+      } else {
+        List<String> caratQueryList = List();
+        if (caratFrom != null && caratTo != null) {
+          String valfrom = caratFrom;
+          String valTo = caratTo;
+          caratQueryList
+              .add("WGT BETWEEN ${valfrom.toString()} AND ${valTo.toString()}");
+        }
+        caratList.forEach((element) {
+          caratQueryList.add(
+              "WGT BETWEEN ${element.split('-')[0]} AND ${element.split('-')[1]}");
+        });
+        filquery += 'AND (${caratQueryList.join(" OR ")})';
       }
       if (haResult.length > 0) {
         String val = getvalue(haResult);

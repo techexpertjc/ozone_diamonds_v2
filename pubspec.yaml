@@ -26,6 +26,8 @@ dependencies:
   carousel_pro:
   gradient_text:
   nice_button:
+  flutter_downloader: ^1.4.4
+  path_provider: ^1.6.11
   flutter_open_whatsapp:
   
   flutter_signin_button:
