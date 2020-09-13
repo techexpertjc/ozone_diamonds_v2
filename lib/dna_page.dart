@@ -63,13 +63,12 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
         setState(() {});
       });
       dwnloadUrl = currStockObj.pdfLink;
-      directory = await getApplicationDocumentsDirectory();
+      directory = await getExternalStorageDirectory();
       if (!Directory(directory.path + Platform.pathSeparator + 'Download')
           .existsSync()) {
         Directory(directory.path + Platform.pathSeparator + 'Download')
             .createSync();
       }
-      FlutterDownloader.initialize();
 
       myVideoController.setLooping(true);
       myVideoController.play();

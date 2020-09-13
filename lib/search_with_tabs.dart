@@ -13,6 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'LoginPage.dart';
 
 class MySearchPage extends StatefulWidget {
+  final isPair;
+  MySearchPage({Key key, this.isPair}) : super(key: key);
   @override
   MySearchPageState createState() => MySearchPageState();
 }
@@ -149,6 +151,7 @@ class MySearchPageState extends State<MySearchPage>
         ),
         body: TabBarView(controller: myTabController, children: [
           StoneSearch(
+            isPair: widget.isPair,
             currSavedObj: currSavedObj,
           ),
           Container(

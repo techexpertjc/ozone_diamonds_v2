@@ -500,7 +500,7 @@ class _DashBoardState extends State<DashBoard> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (BuildContext context) =>
-                                        StoneSearch()));
+                                        MySearchPage(isPair: true)));
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),

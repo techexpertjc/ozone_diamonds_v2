@@ -159,6 +159,9 @@ class shapesState extends State<shapes> {
                         ),
                         color: changeColorAll ? Colors.white : Colors.black,
                         onPressed: () {
+                          if (!FocusScope.of(context).hasPrimaryFocus) {
+                            FocusScope.of(context).unfocus();
+                          }
                           setState(() {
                             if (changeColorAll == false) {
                               changeColorAll = !changeColorAll;
@@ -297,6 +300,9 @@ class shapesState extends State<shapes> {
                         ),
                         color: changeColorRound ? Colors.white : Colors.black,
                         onPressed: () {
+                          if (!FocusScope.of(context).hasPrimaryFocus) {
+                            FocusScope.of(context).unfocus();
+                          }
                           setState(() {
                             if (changeColorRound == false) {
                               round = "1";
@@ -340,6 +346,9 @@ class shapesState extends State<shapes> {
                         color:
                             changeColorPrincess ? Colors.white : Colors.black,
                         onPressed: () {
+                          if (!FocusScope.of(context).hasPrimaryFocus) {
+                            FocusScope.of(context).unfocus();
+                          }
                           setState(() {
                             if (changeColorPrincess == false) {
                               princess = "2";
@@ -384,6 +393,9 @@ class shapesState extends State<shapes> {
                         ),
                         color: changeColorCushion ? Colors.white : Colors.black,
                         onPressed: () {
+                          if (!FocusScope.of(context).hasPrimaryFocus) {
+                            FocusScope.of(context).unfocus();
+                          }
                           setState(() {
                             if (changeColorCushion == false) {
                               cushion = "9";
@@ -426,6 +438,9 @@ class shapesState extends State<shapes> {
                         ),
                         color: changeColorOval ? Colors.white : Colors.black,
                         onPressed: () {
+                          if (!FocusScope.of(context).hasPrimaryFocus) {
+                            FocusScope.of(context).unfocus();
+                          }
                           setState(() {
                             if (changeColorOval == false) {
                               oval = "7";
@@ -468,6 +483,9 @@ class shapesState extends State<shapes> {
                         ),
                         color: changeColorEmerald ? Colors.white : Colors.black,
                         onPressed: () {
+                          if (!FocusScope.of(context).hasPrimaryFocus) {
+                            FocusScope.of(context).unfocus();
+                          }
                           setState(() {
                             if (changeColorEmerald == false) {
                               emerald = "4";
@@ -517,6 +535,9 @@ class shapesState extends State<shapes> {
                         ),
                         color: changeColorPear ? Colors.white : Colors.black,
                         onPressed: () {
+                          if (!FocusScope.of(context).hasPrimaryFocus) {
+                            FocusScope.of(context).unfocus();
+                          }
                           setState(() {
                             if (changeColorPear == false) {
                               pear = "6";
@@ -559,6 +580,9 @@ class shapesState extends State<shapes> {
                         ),
                         color: changeColorAsscher ? Colors.white : Colors.black,
                         onPressed: () {
+                          if (!FocusScope.of(context).hasPrimaryFocus) {
+                            FocusScope.of(context).unfocus();
+                          }
                           setState(() {
                             if (changeColorAsscher == false) {
                               asscher = "28";
@@ -601,6 +625,9 @@ class shapesState extends State<shapes> {
                         ),
                         color: changeColorHeart ? Colors.white : Colors.black,
                         onPressed: () {
+                          if (!FocusScope.of(context).hasPrimaryFocus) {
+                            FocusScope.of(context).unfocus();
+                          }
                           setState(() {
                             if (changeColorHeart == false) {
                               heart = "15";
@@ -643,6 +670,9 @@ class shapesState extends State<shapes> {
                         ),
                         color: changeColorRadiant ? Colors.white : Colors.black,
                         onPressed: () {
+                          if (!FocusScope.of(context).hasPrimaryFocus) {
+                            FocusScope.of(context).unfocus();
+                          }
                           setState(() {
                             if (changeColorRadiant == false) {
                               radiant = "13";
@@ -687,6 +717,9 @@ class shapesState extends State<shapes> {
                         color:
                             changeColorMarquise ? Colors.white : Colors.black,
                         onPressed: () {
+                          if (!FocusScope.of(context).hasPrimaryFocus) {
+                            FocusScope.of(context).unfocus();
+                          }
                           setState(() {
                             if (changeColorMarquise == false) {
                               marquise = "3";
@@ -729,6 +762,9 @@ class shapesState extends State<shapes> {
                         ),
                         color: changeColorOther ? Colors.white : Colors.black,
                         onPressed: () {
+                          if (!FocusScope.of(context).hasPrimaryFocus) {
+                            FocusScope.of(context).unfocus();
+                          }
                           setState(() {
                             changeColorOther = !changeColorOther;
                           });
