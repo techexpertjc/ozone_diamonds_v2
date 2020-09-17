@@ -31,8 +31,8 @@ dependencies:
   flutter_open_whatsapp:
   
   flutter_signin_button:
-   
-  
+  keyboard_actions: "^3.3.0"
+  share: ^0.6.5
   font_awesome_flutter:
   http:
   connectivity:

@@ -8,6 +8,7 @@ import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:ozone_diamonds/LoginPage.dart';
 import 'package:ozone_diamonds/cart_page.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share/share.dart';
 import 'package:video_player/video_player.dart';
 import "package:http/http.dart" as http;
 
@@ -582,24 +583,43 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
                   top: 10,
                   child: Container(
                     // padding: EdgeInsets.all(10),
-                    child: FloatingActionButton(
-                      backgroundColor: Color(0XFF294ea3),
-                      mini: true,
-                      onPressed: () async {
-                        final taskId = await FlutterDownloader.enqueue(
-                          url: dwnloadUrl,
-                          savedDir: directory.path +
-                              Platform.pathSeparator +
-                              'Download',
-                          showNotification:
-                              true, // show download progress in status bar (for Android)
-                          openFileFromNotification:
-                              true, // click on notification to open downloaded file (for Android)
-                        );
-                        scaffoldKey.currentState.showSnackBar(
-                            SnackBar(content: Text('Download Started')));
-                      },
-                      child: Icon(Icons.arrow_downward),
+                    child: Column(
+                      children: [
+                        FloatingActionButton(
+                          heroTag: 'downloadBtn',
+                          backgroundColor: Color(0XFF294ea3),
+                          mini: true,
+                          onPressed: () async {
+                            final taskId = await FlutterDownloader.enqueue(
+                              url: dwnloadUrl,
+                              savedDir: directory.path +
+                                  Platform.pathSeparator +
+                                  'Download',
+                              showNotification:
+                                  true, // show download progress in status bar (for Android)
+                              openFileFromNotification:
+                                  true, // click on notification to open downloaded file (for Android)
+                            );
+                            scaffoldKey.currentState.showSnackBar(
+                                SnackBar(content: Text('Download Started')));
+                          },
+                          child: Icon(Icons.arrow_downward),
+                        ),
+                        FloatingActionButton(
+                          heroTag: 'shareBtn',
+                          backgroundColor: Color(0XFF294ea3),
+                          mini: true,
+                          onPressed: () async {
+                            String fileName = dwnloadUrl
+                                .substring(dwnloadUrl.lastIndexOf('/'));
+                            print(fileName);
+
+                            Share.share(
+                                currStockObj.stone_id + ' \n' + dwnloadUrl);
+                          },
+                          child: Icon(Icons.share),
+                        ),
+                      ],
                     ),
                   ))
             ]),

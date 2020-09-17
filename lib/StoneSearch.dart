@@ -3,6 +3,7 @@ import 'dart:developer';
 import "package:http/http.dart" as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:ozone_diamonds/LoginPage.dart';
 import 'package:ozone_diamonds/pair_search_result.dart';
 
@@ -29,6 +30,31 @@ bool isFromSaved = false;
 class _StoneSearchState extends State<StoneSearch>
     with AutomaticKeepAliveClientMixin {
   Map currSavedObj;
+  final FocusNode _nodeText1 = FocusNode();
+  KeyboardActionsConfig _buildConfig(BuildContext context) {
+    return KeyboardActionsConfig(
+        keyboardActionsPlatform: KeyboardActionsPlatform.IOS,
+        keyboardBarColor: Colors.grey[200],
+        nextFocus: true,
+        actions: [
+          KeyboardActionsItem(focusNode: _nodeText1, toolbarButtons: [
+            (node) {
+              return GestureDetector(
+                onTap: () => node.unfocus(),
+                child: Container(
+                  color: Colors.black,
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    "DONE",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              );
+            }
+          ])
+        ]);
+  }
+
   final _height = 26.0;
   final _shape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(5), side: BorderSide.none);
@@ -832,175 +858,73 @@ class _StoneSearchState extends State<StoneSearch>
             FocusScope.of(context).unfocus();
           }
         },
-        child: Form(
-          key: formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                //SearchField
-                Padding(
-                    padding:
-                        EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-                    child: Container(
-                      height: (size) ? 30 : 35,
-                      color: Colors.white,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 15.0),
-                        child: TextFormField(
-                          controller: certiNoController,
-                          autofocus: false,
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Stone ID / Cert No.',
-                              hintStyle: TextStyle(
-                                  fontSize: (size) ? 14 : 14,
-                                  fontWeight: FontWeight.w500)),
+        child: KeyboardActions(
+          config: _buildConfig(context),
+          child: Form(
+            key: formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  //SearchField
+                  Padding(
+                      padding:
+                          EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+                      child: Container(
+                        height: (size) ? 30 : 35,
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 15.0),
+                          child: TextFormField(
+                            controller: certiNoController,
+                            autofocus: false,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Stone ID / Cert No.',
+                                hintStyle: TextStyle(
+                                    fontSize: (size) ? 14 : 14,
+                                    fontWeight: FontWeight.w500)),
+                          ),
                         ),
-                      ),
-                    )),
+                      )),
 
-                //shape container
-                Padding(
+                  //shape container
+                  Padding(
+                      padding:
+                          EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                      child: Container(
+                          color: Colors.white,
+                          child: shapes(
+                            customFunction: _syncShapeSelected,
+                            shapeMap: shapesMap,
+                            loadfromSaved: isFromSaved,
+                          ))),
+
+                  //Carat Field
+                  Padding(
                     padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
                     child: Container(
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
                         color: Colors.white,
-                        child: shapes(
-                          customFunction: _syncShapeSelected,
-                          shapeMap: shapesMap,
-                          loadfromSaved: isFromSaved,
-                        ))),
-
-                //Carat Field
-                Padding(
-                  padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-                  child: Container(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      color: Colors.white,
-                      child: Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 5.0, left: 20.0, bottom: 5.0),
-                            child: Text(
-                              'Carat',
-                              style: TextStyle(
-                                  fontSize: titleFont, fontWeight: titlebold),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 5.0, bottom: 5.0, left: 30),
-                            child: Container(
-                              height: 30,
-                              width: 100,
-                              child: TextFormField(
-                                controller: caratFromController,
-                                inputFormatters: [DecimalTextInputFormatter()],
-                                keyboardType: TextInputType.numberWithOptions(
-                                    decimal: true),
-                                decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Color(0XFFEBEFFA),
-                                    border: InputBorder.none,
-                                    hintText: 'From',
-                                    hintStyle:
-                                        TextStyle(fontSize: (size) ? 14 : 14)),
-                                onChanged: (value) {
-                                  caratFrom = value.toString();
-                                },
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 5.0, left: 20.0, bottom: 5.0),
+                              child: Text(
+                                'Carat',
+                                style: TextStyle(
+                                    fontSize: titleFont, fontWeight: titlebold),
                               ),
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                top: 5.0, bottom: 5.0, left: 30),
-                            child: Container(
-                              height: 30,
-                              width: 100,
-                              child: TextFormField(
-                                controller: caratToController,
-                                // initialValue: caratTo != null ? caratTo : null,
-                                inputFormatters: [DecimalTextInputFormatter()],
-                                keyboardType: TextInputType.numberWithOptions(
-                                    decimal: true),
-                                decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: Color(0XFFEBEFFA),
-                                    border: InputBorder.none,
-                                    hintText: 'To',
-                                    hintStyle:
-                                        TextStyle(fontSize: (size) ? 14 : 14)),
-                                onChanged: (value) {
-                                  caratTo = value.toString();
-                                },
-                              ),
-                            ),
-                          ),
-                          Container(
-                              child: FloatingActionButton(
-                            heroTag: 'addBtn',
-                            backgroundColor: Color(0XFFEBEFFA),
-                            mini: true,
-                            onPressed: () {
-                              if (!FocusScope.of(context).hasPrimaryFocus) {
-                                FocusScope.of(context).unfocus();
-                              }
-                              setState(() {
-                                if (caratFromController.text != null &&
-                                    caratFromController.text != '' &&
-                                    caratToController.text != null &&
-                                    caratToController.text != '')
-                                  caratList.add(caratFromController.text +
-                                      '-' +
-                                      caratToController.text);
-                                caratListController.text = caratList.join(',');
-                                caratFromController.text = '';
-                                caratToController.text = '';
-                              });
-                              if (!FocusScope.of(context).hasPrimaryFocus) {
-                                FocusScope.of(context).unfocus();
-                              }
-                            },
-                            child: Icon(
-                              Icons.add,
-                              color: Colors.black,
-                            ),
-                          ))
-
-                          // Padding(
-                          //     padding: EdgeInsets.all(0),
-                          //     child: Container(
-                          //       // padding: EdgeInsets.all(5),
-                          //       // color: Colors.blueAccent,
-                          //       child: MaterialButton(
-                          //         color: Color(0XFFEBEFFA),
-                          //         shape: CircleBorder(),
-                          //         onPressed: () {  if (!FocusScope.of(context).hasPrimaryFocus) {FocusScope.of(context).unfocus();}},
-                          //         child: Icon(Icons.add),
-                          //         // label: Text('')),
-                          //       ),
-                          //     ))
-                        ],
-                      )),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-                  child: Container(
-                      padding: EdgeInsets.only(top: 10, bottom: 10),
-                      color: Colors.white,
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 4,
-                            child: Padding(
+                            Padding(
                               padding: const EdgeInsets.only(
                                   top: 5.0, bottom: 5.0, left: 30),
                               child: Container(
                                 height: 30,
-                                // width: MediaQuery.of(context).size.width - 100,
-                                color: Colors.black,
+                                width: 100,
                                 child: TextFormField(
-                                  controller: caratListController,
+                                  focusNode: _nodeText1,
+                                  controller: caratFromController,
                                   inputFormatters: [
                                     DecimalTextInputFormatter()
                                   ],
@@ -1010,2001 +934,2159 @@ class _StoneSearchState extends State<StoneSearch>
                                       filled: true,
                                       fillColor: Color(0XFFEBEFFA),
                                       border: InputBorder.none,
-                                      // hintText: 'From',
+                                      hintText: 'From',
                                       hintStyle: TextStyle(
                                           fontSize: (size) ? 14 : 14)),
+                                  onChanged: (value) {
+                                    caratFrom = value.toString();
+                                  },
                                 ),
                               ),
                             ),
-                          ),
-                          Expanded(
-                              child: FloatingActionButton(
-                                  heroTag: 'clearBtn',
-                                  backgroundColor: Color(0XFFEBEFFA),
-                                  onPressed: () {
-                                    if (!FocusScope.of(context)
-                                        .hasPrimaryFocus) {
-                                      FocusScope.of(context).unfocus();
-                                    }
-                                    setState(() {
-                                      caratListController.text = '';
-                                      caratList.clear();
-                                    });
-                                  },
-                                  mini: true,
-                                  child: Icon(
-                                    Icons.clear,
-                                    color: Colors.black,
-                                  )))
-                          // Padding(
-                          //     padding: EdgeInsets.all(0),
-                          //     child: Container(
-                          //       // padding: EdgeInsets.all(5),
-                          //       // color: Colors.blueAccent,
-                          //       child: MaterialButton(
-                          //         color: Color(0XFFEBEFFA),
-                          //         shape: CircleBorder(),
-                          //         onPressed: () {  if (!FocusScope.of(context).hasPrimaryFocus) {FocusScope.of(context).unfocus();}},
-                          //         child: Icon(Icons.add),
-                          //         // label: Text('')),
-                          //       ),
-                          //     ))
-                        ],
-                      )),
-                ),
 
-                //clarity field
-                Padding(
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 5.0, bottom: 5.0, left: 30),
+                              child: Container(
+                                height: 30,
+                                width: 100,
+                                child: TextFormField(
+                                  controller: caratToController,
+                                  // initialValue: caratTo != null ? caratTo : null,
+                                  inputFormatters: [
+                                    DecimalTextInputFormatter()
+                                  ],
+                                  keyboardType: TextInputType.numberWithOptions(
+                                      decimal: true),
+                                  decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Color(0XFFEBEFFA),
+                                      border: InputBorder.none,
+                                      hintText: 'To',
+                                      hintStyle: TextStyle(
+                                          fontSize: (size) ? 14 : 14)),
+                                  onChanged: (value) {
+                                    caratTo = value.toString();
+                                  },
+                                ),
+                              ),
+                            ),
+                            Container(
+                                child: FloatingActionButton(
+                              heroTag: 'addBtn',
+                              backgroundColor: Color(0XFFEBEFFA),
+                              mini: true,
+                              onPressed: () {
+                                if (!FocusScope.of(context).hasPrimaryFocus) {
+                                  FocusScope.of(context).unfocus();
+                                }
+                                setState(() {
+                                  if (caratFromController.text != null &&
+                                      caratFromController.text != '' &&
+                                      caratToController.text != null &&
+                                      caratToController.text != '')
+                                    caratList.add(caratFromController.text +
+                                        '-' +
+                                        caratToController.text);
+                                  caratListController.text =
+                                      caratList.join(',');
+                                  caratFromController.text = '';
+                                  caratToController.text = '';
+                                });
+                                if (!FocusScope.of(context).hasPrimaryFocus) {
+                                  FocusScope.of(context).unfocus();
+                                }
+                              },
+                              child: Icon(
+                                Icons.add,
+                                color: Colors.black,
+                              ),
+                            ))
+
+                            // Padding(
+                            //     padding: EdgeInsets.all(0),
+                            //     child: Container(
+                            //       // padding: EdgeInsets.all(5),
+                            //       // color: Colors.blueAccent,
+                            //       child: MaterialButton(
+                            //         color: Color(0XFFEBEFFA),
+                            //         shape: CircleBorder(),
+                            //         onPressed: () {  if (!FocusScope.of(context).hasPrimaryFocus) {FocusScope.of(context).unfocus();}},
+                            //         child: Icon(Icons.add),
+                            //         // label: Text('')),
+                            //       ),
+                            //     ))
+                          ],
+                        )),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                    child: Container(
+                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        color: Colors.white,
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              flex: 4,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 5.0, bottom: 5.0, left: 30),
+                                child: Container(
+                                  height: 30,
+                                  // width: MediaQuery.of(context).size.width - 100,
+                                  color: Colors.black,
+                                  child: TextFormField(
+                                    controller: caratListController,
+                                    inputFormatters: [
+                                      DecimalTextInputFormatter()
+                                    ],
+                                    keyboardType:
+                                        TextInputType.numberWithOptions(
+                                            decimal: true),
+                                    decoration: InputDecoration(
+                                        filled: true,
+                                        fillColor: Color(0XFFEBEFFA),
+                                        border: InputBorder.none,
+                                        // hintText: 'From',
+                                        hintStyle: TextStyle(
+                                            fontSize: (size) ? 14 : 14)),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                                child: FloatingActionButton(
+                                    heroTag: 'clearBtn',
+                                    backgroundColor: Color(0XFFEBEFFA),
+                                    onPressed: () {
+                                      if (!FocusScope.of(context)
+                                          .hasPrimaryFocus) {
+                                        FocusScope.of(context).unfocus();
+                                      }
+                                      setState(() {
+                                        caratListController.text = '';
+                                        caratList.clear();
+                                      });
+                                    },
+                                    mini: true,
+                                    child: Icon(
+                                      Icons.clear,
+                                      color: Colors.black,
+                                    )))
+                            // Padding(
+                            //     padding: EdgeInsets.all(0),
+                            //     child: Container(
+                            //       // padding: EdgeInsets.all(5),
+                            //       // color: Colors.blueAccent,
+                            //       child: MaterialButton(
+                            //         color: Color(0XFFEBEFFA),
+                            //         shape: CircleBorder(),
+                            //         onPressed: () {  if (!FocusScope.of(context).hasPrimaryFocus) {FocusScope.of(context).unfocus();}},
+                            //         child: Icon(Icons.add),
+                            //         // label: Text('')),
+                            //       ),
+                            //     ))
+                          ],
+                        )),
+                  ),
+
+                  //clarity field
+                  Padding(
+                      padding:
+                          EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                      child: Container(
+                          color: Colors.white,
+                          child: Column(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.only(top: 10, bottom: 10),
+                                child: Center(
+                                  child: Text(
+                                    'CLARITY',
+                                    style: TextStyle(
+                                        fontSize: 18, fontWeight: titlebold),
+                                  ),
+                                ),
+                              ),
+                              getClarityOptionsWidget(context),
+                            ],
+                          ))),
+
+                  //colour field
+                  Padding(
+                      padding:
+                          EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                      child: Container(
+                        color: Colors.white,
+                        child: Container(
+                            padding: EdgeInsets.only(top: 10, bottom: 10),
+                            child: Column(
+                              children: <Widget>[
+                                Text(
+                                  'COLOUR',
+                                  style: TextStyle(
+                                      fontSize: titleFont,
+                                      fontWeight: titlebold),
+                                ),
+                                getColourOptionsWidget(context)
+                              ],
+                            )),
+                      )),
+
+                  //finishing field
+                  Padding(
                     padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
                     child: Container(
                         color: Colors.white,
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(top: 10, bottom: 10),
-                              child: Center(
-                                child: Text(
-                                  'CLARITY',
-                                  style: TextStyle(
-                                      fontSize: 18, fontWeight: titlebold),
+                        child: Container(
+                          padding: EdgeInsets.only(top: 10, bottom: 20),
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                'FINISHING',
+                                style: TextStyle(
+                                    fontSize: titleFont, fontWeight: titlebold),
+                              ),
+                              Container(
+                                padding: EdgeInsets.only(top: 10),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: List.generate(
+                                        finishingName.length, (index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 5.0, bottom: 3.0, top: 3.0),
+                                        child: SizedBox(
+                                          height: _height,
+                                          width: (size) ? 62 : 90,
+                                          child: RaisedButton(
+                                              elevation: 0.0,
+                                              shape: _shape,
+                                              color: finishingColor[index]
+                                                  ? Color(0XFF294EA3)
+                                                  : Color(0XFFEBEFFA),
+                                              onPressed: () {
+                                                if (!FocusScope.of(context)
+                                                    .hasPrimaryFocus) {
+                                                  FocusScope.of(context)
+                                                      .unfocus();
+                                                }
+                                                setState(() {
+                                                  finishingColor[index] =
+                                                      !finishingColor[index];
+                                                  if (finishingResult.contains(
+                                                      finishingValue[index]
+                                                          .toString())) {
+                                                    finishingResult.remove(
+                                                        finishingValue[index]
+                                                            .toString());
+                                                  } else {
+                                                    finishingResult.add(
+                                                        finishingValue[index]
+                                                            .toString());
+                                                  }
+
+                                                  if (finishingName[index] ==
+                                                      '3EX') {
+                                                    cutColor[0] =
+                                                        finishingColor[index];
+                                                    polishColor[0] =
+                                                        finishingColor[index];
+                                                    symmColor[0] =
+                                                        finishingColor[index];
+                                                  } else if (finishingName[
+                                                          index] ==
+                                                      '3VG+') {
+                                                    cutColor[0] =
+                                                        finishingColor[index];
+                                                    polishColor[0] =
+                                                        finishingColor[index];
+                                                    symmColor[0] =
+                                                        finishingColor[index];
+                                                    cutColor[1] =
+                                                        finishingColor[index];
+                                                    polishColor[1] =
+                                                        finishingColor[index];
+                                                    symmColor[1] =
+                                                        finishingColor[index];
+                                                  } else if (finishingName[
+                                                          index] ==
+                                                      '2EX') {
+                                                    cutColor[0] =
+                                                        finishingColor[index];
+                                                    polishColor[0] =
+                                                        finishingColor[index];
+                                                  }
+                                                });
+                                                // print(buttonVlaue[index].toString());
+                                              },
+                                              child: Text(
+                                                finishingName[index].toString(),
+                                                style: TextStyle(
+                                                    fontSize: buttonFont,
+                                                    color: finishingColor[index]
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    fontWeight: buttonbold),
+                                              )),
+                                        ),
+                                      );
+                                    }),
+                                  ),
                                 ),
                               ),
-                            ),
-                            getClarityOptionsWidget(context),
-                          ],
-                        ))),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 5.0),
+                                      child: SizedBox(
+                                        height: _height,
+                                        width: 50,
+                                        child: Text(
+                                          'Cut',
+                                          style: TextStyle(
+                                              fontSize: titleFont,
+                                              fontWeight: titlebold),
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: _height,
+                                      //width: _swidth,
+                                      child: Row(
+                                        children: List.generate(cutName.length,
+                                            (index) {
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0, top: 3.0),
+                                            child: SizedBox(
+                                              height: _height,
+                                              width: (size) ? 60 : 55,
+                                              child: RaisedButton(
+                                                  elevation: 0.0,
+                                                  shape: _shape,
+                                                  color: cutColor[index]
+                                                      ? Color(0XFF294EA3)
+                                                      : Color(0XFFEBEFFA),
+                                                  onPressed: () {
+                                                    if (!FocusScope.of(context)
+                                                        .hasPrimaryFocus) {
+                                                      FocusScope.of(context)
+                                                          .unfocus();
+                                                    }
+                                                    setState(() {
+                                                      cutColor[index] =
+                                                          !cutColor[index];
+                                                      if (cutResult.contains(
+                                                          cutValue[index]
+                                                              .toString())) {
+                                                        cutResult.remove(
+                                                            cutValue[index]
+                                                                .toString());
+                                                      } else {
+                                                        cutResult.add(
+                                                            cutValue[index]
+                                                                .toString());
+                                                      }
+                                                    });
+                                                    // print(buttonVlaue[index].toString());
+                                                  },
+                                                  child: Text(
+                                                    cutName[index].toString(),
+                                                    style: TextStyle(
+                                                        fontSize: buttonFont,
+                                                        color: cutColor[index]
+                                                            ? Colors.white
+                                                            : Colors.black,
+                                                        fontWeight: buttonbold),
+                                                  )),
+                                            ),
+                                          );
+                                        }),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 5.0),
+                                      child: SizedBox(
+                                        height: _height,
+                                        // width: 50,
+                                        child: Text(
+                                          'Polish',
+                                          style: TextStyle(
+                                              fontSize: titleFont,
+                                              fontWeight: titlebold),
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: _height,
+                                      //width: _swidth,
+                                      child: Row(
+                                        children: List.generate(
+                                            polishName.length, (index) {
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0, top: 3.0),
+                                            child: SizedBox(
+                                              height: _height,
+                                              width: (size) ? 60 : 55,
+                                              child: RaisedButton(
+                                                  elevation: 0.0,
+                                                  shape: _shape,
+                                                  color: polishColor[index]
+                                                      ? Color(0XFF294EA3)
+                                                      : Color(0XFFEBEFFA),
+                                                  onPressed: () {
+                                                    if (!FocusScope.of(context)
+                                                        .hasPrimaryFocus) {
+                                                      FocusScope.of(context)
+                                                          .unfocus();
+                                                    }
+                                                    setState(() {
+                                                      polishColor[index] =
+                                                          !polishColor[index];
+                                                      if (polishResult.contains(
+                                                          polishValue[index]
+                                                              .toString())) {
+                                                        polishResult.remove(
+                                                            polishValue[index]
+                                                                .toString());
+                                                      } else {
+                                                        polishResult.add(
+                                                            polishValue[index]
+                                                                .toString());
+                                                      }
+                                                    });
+                                                    // print(buttonVlaue[index].toString());
+                                                  },
+                                                  child: Text(
+                                                    polishName[index]
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        fontSize: buttonFont,
+                                                        color:
+                                                            polishColor[index]
+                                                                ? Colors.white
+                                                                : Colors.black,
+                                                        fontWeight: buttonbold),
+                                                  )),
+                                            ),
+                                          );
+                                        }),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Row(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 5.0),
+                                      child: SizedBox(
+                                        height: _height,
+                                        width: 50,
+                                        child: Text(
+                                          'Symm',
+                                          style: TextStyle(
+                                              fontSize: titleFont,
+                                              fontWeight: titlebold),
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: _height,
+                                      //width: _swidth,
+                                      child: Row(
+                                        children: List.generate(symmName.length,
+                                            (index) {
+                                          return Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0, top: 3.0),
+                                            child: SizedBox(
+                                              height: _height,
+                                              width: (size) ? 60 : 55,
+                                              child: RaisedButton(
+                                                  elevation: 0.0,
+                                                  shape: _shape,
+                                                  color: symmColor[index]
+                                                      ? Color(0XFF294EA3)
+                                                      : Color(0XFFEBEFFA),
+                                                  onPressed: () {
+                                                    if (!FocusScope.of(context)
+                                                        .hasPrimaryFocus) {
+                                                      FocusScope.of(context)
+                                                          .unfocus();
+                                                    }
+                                                    setState(() {
+                                                      symmColor[index] =
+                                                          !symmColor[index];
+                                                      if (symmResult.contains(
+                                                          symmValue[index]
+                                                              .toString())) {
+                                                        symmResult.remove(
+                                                            symmValue[index]
+                                                                .toString());
+                                                      } else {
+                                                        symmResult.add(
+                                                            symmValue[index]
+                                                                .toString());
+                                                      }
+                                                    });
+                                                    // print(buttonVlaue[index].toString());
+                                                  },
+                                                  child: Text(
+                                                    symmName[index].toString(),
+                                                    style: TextStyle(
+                                                        fontSize: buttonFont,
+                                                        color: symmColor[index]
+                                                            ? Colors.white
+                                                            : Colors.black,
+                                                        fontWeight: buttonbold),
+                                                  )),
+                                            ),
+                                          );
+                                        }),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        )),
+                  ),
 
-                //colour field
-                Padding(
+                  //Fluorescence field
+                  Padding(
                     padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
                     child: Container(
-                      color: Colors.white,
-                      child: Container(
+                        color: Colors.white,
+                        child: Container(
                           padding: EdgeInsets.only(top: 10, bottom: 10),
                           child: Column(
                             children: <Widget>[
                               Text(
-                                'COLOUR',
+                                // 'Fluorescence',
+                                'FLUORESCENCE',
                                 style: TextStyle(
                                     fontSize: titleFont, fontWeight: titlebold),
                               ),
-                              getColourOptionsWidget(context)
+                              getFluoroOptionsWidget(context)
                             ],
-                          )),
-                    )),
+                          ),
+                        )),
+                  ),
 
-                //finishing field
-                Padding(
-                  padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-                  child: Container(
-                      color: Colors.white,
-                      child: Container(
-                        padding: EdgeInsets.only(top: 10, bottom: 20),
+                  // Certificate field
+                  Padding(
+                    padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                    child: Container(
+                        padding: EdgeInsets.only(bottom: 10),
+                        width: MediaQuery.of(context).size.width,
+                        color: Colors.white,
                         child: Column(
                           children: <Widget>[
-                            Text(
-                              'FINISHING',
-                              style: TextStyle(
-                                  fontSize: titleFont, fontWeight: titlebold),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 10.0, bottom: 10),
+                              child: Text(
+                                'CERTIFICATE',
+                                style: TextStyle(
+                                    fontSize: titleFont, fontWeight: titlebold),
+                              ),
                             ),
-                            Container(
-                              padding: EdgeInsets.only(top: 10),
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  children: List.generate(finishingName.length,
-                                      (index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 5.0, bottom: 3.0, top: 3.0),
-                                      child: SizedBox(
-                                        height: _height,
-                                        width: (size) ? 62 : 90,
-                                        child: RaisedButton(
-                                            elevation: 0.0,
-                                            shape: _shape,
-                                            color: finishingColor[index]
-                                                ? Color(0XFF294EA3)
-                                                : Color(0XFFEBEFFA),
-                                            onPressed: () {
-                                              if (!FocusScope.of(context)
-                                                  .hasPrimaryFocus) {
-                                                FocusScope.of(context)
-                                                    .unfocus();
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: List.generate(certificateName.length,
+                                    (index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 8.0, bottom: 3.0, top: 3.0),
+                                    child: SizedBox(
+                                      height: _height,
+                                      width: (size) ? 60 : 65,
+                                      child: RaisedButton(
+                                          elevation: 0.0,
+                                          shape: _shape,
+                                          color: certificateColor[index]
+                                              ? Color(0XFF294EA3)
+                                              : Color(0XFFEBEFFA),
+                                          onPressed: () {
+                                            if (!FocusScope.of(context)
+                                                .hasPrimaryFocus) {
+                                              FocusScope.of(context).unfocus();
+                                            }
+                                            setState(() {
+                                              certificateColor[index] =
+                                                  !certificateColor[index];
+                                              if (certificateResult.contains(
+                                                  certificateValue[index]
+                                                      .toString())) {
+                                                certificateResult.remove(
+                                                    certificateValue[index]
+                                                        .toString());
+                                              } else {
+                                                certificateResult.add(
+                                                    certificateValue[index]
+                                                        .toString());
                                               }
-                                              setState(() {
-                                                finishingColor[index] =
-                                                    !finishingColor[index];
-                                                if (finishingResult.contains(
-                                                    finishingValue[index]
-                                                        .toString())) {
-                                                  finishingResult.remove(
-                                                      finishingValue[index]
-                                                          .toString());
-                                                } else {
-                                                  finishingResult.add(
-                                                      finishingValue[index]
-                                                          .toString());
-                                                }
-
-                                                if (finishingName[index] ==
-                                                    '3EX') {
-                                                  cutColor[0] =
-                                                      finishingColor[index];
-                                                  polishColor[0] =
-                                                      finishingColor[index];
-                                                  symmColor[0] =
-                                                      finishingColor[index];
-                                                } else if (finishingName[
-                                                        index] ==
-                                                    '3VG+') {
-                                                  cutColor[0] =
-                                                      finishingColor[index];
-                                                  polishColor[0] =
-                                                      finishingColor[index];
-                                                  symmColor[0] =
-                                                      finishingColor[index];
-                                                  cutColor[1] =
-                                                      finishingColor[index];
-                                                  polishColor[1] =
-                                                      finishingColor[index];
-                                                  symmColor[1] =
-                                                      finishingColor[index];
-                                                } else if (finishingName[
-                                                        index] ==
-                                                    '2EX') {
-                                                  cutColor[0] =
-                                                      finishingColor[index];
-                                                  polishColor[0] =
-                                                      finishingColor[index];
-                                                }
-                                              });
-                                              // print(buttonVlaue[index].toString());
-                                            },
-                                            child: Text(
-                                              finishingName[index].toString(),
-                                              style: TextStyle(
-                                                  fontSize: buttonFont,
-                                                  color: finishingColor[index]
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                  fontWeight: buttonbold),
-                                            )),
-                                      ),
-                                    );
-                                  }),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 5.0),
-                                    child: SizedBox(
-                                      height: _height,
-                                      width: 50,
-                                      child: Text(
-                                        'Cut',
-                                        style: TextStyle(
-                                            fontSize: titleFont,
-                                            fontWeight: titlebold),
-                                        textAlign: TextAlign.start,
-                                      ),
+                                            });
+                                          },
+                                          child: Text(
+                                            certificateName[index].toString(),
+                                            style: TextStyle(
+                                                fontSize: buttonFont,
+                                                color: certificateColor[index]
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                                fontWeight: buttonbold),
+                                          )),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    height: _height,
-                                    //width: _swidth,
-                                    child: Row(
-                                      children: List.generate(cutName.length,
-                                          (index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 8.0, top: 3.0),
-                                          child: SizedBox(
-                                            height: _height,
-                                            width: (size) ? 60 : 55,
-                                            child: RaisedButton(
-                                                elevation: 0.0,
-                                                shape: _shape,
-                                                color: cutColor[index]
-                                                    ? Color(0XFF294EA3)
-                                                    : Color(0XFFEBEFFA),
-                                                onPressed: () {
-                                                  if (!FocusScope.of(context)
-                                                      .hasPrimaryFocus) {
-                                                    FocusScope.of(context)
-                                                        .unfocus();
-                                                  }
-                                                  setState(() {
-                                                    cutColor[index] =
-                                                        !cutColor[index];
-                                                    if (cutResult.contains(
-                                                        cutValue[index]
-                                                            .toString())) {
-                                                      cutResult.remove(
-                                                          cutValue[index]
-                                                              .toString());
-                                                    } else {
-                                                      cutResult.add(
-                                                          cutValue[index]
-                                                              .toString());
-                                                    }
-                                                  });
-                                                  // print(buttonVlaue[index].toString());
-                                                },
-                                                child: Text(
-                                                  cutName[index].toString(),
-                                                  style: TextStyle(
-                                                      fontSize: buttonFont,
-                                                      color: cutColor[index]
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      fontWeight: buttonbold),
-                                                )),
-                                          ),
-                                        );
-                                      }),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 5.0),
-                                    child: SizedBox(
-                                      height: _height,
-                                      // width: 50,
-                                      child: Text(
-                                        'Polish',
-                                        style: TextStyle(
-                                            fontSize: titleFont,
-                                            fontWeight: titlebold),
-                                        textAlign: TextAlign.start,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: _height,
-                                    //width: _swidth,
-                                    child: Row(
-                                      children: List.generate(polishName.length,
-                                          (index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 8.0, top: 3.0),
-                                          child: SizedBox(
-                                            height: _height,
-                                            width: (size) ? 60 : 55,
-                                            child: RaisedButton(
-                                                elevation: 0.0,
-                                                shape: _shape,
-                                                color: polishColor[index]
-                                                    ? Color(0XFF294EA3)
-                                                    : Color(0XFFEBEFFA),
-                                                onPressed: () {
-                                                  if (!FocusScope.of(context)
-                                                      .hasPrimaryFocus) {
-                                                    FocusScope.of(context)
-                                                        .unfocus();
-                                                  }
-                                                  setState(() {
-                                                    polishColor[index] =
-                                                        !polishColor[index];
-                                                    if (polishResult.contains(
-                                                        polishValue[index]
-                                                            .toString())) {
-                                                      polishResult.remove(
-                                                          polishValue[index]
-                                                              .toString());
-                                                    } else {
-                                                      polishResult.add(
-                                                          polishValue[index]
-                                                              .toString());
-                                                    }
-                                                  });
-                                                  // print(buttonVlaue[index].toString());
-                                                },
-                                                child: Text(
-                                                  polishName[index].toString(),
-                                                  style: TextStyle(
-                                                      fontSize: buttonFont,
-                                                      color: polishColor[index]
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      fontWeight: buttonbold),
-                                                )),
-                                          ),
-                                        );
-                                      }),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: Row(
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 5.0),
-                                    child: SizedBox(
-                                      height: _height,
-                                      width: 50,
-                                      child: Text(
-                                        'Symm',
-                                        style: TextStyle(
-                                            fontSize: titleFont,
-                                            fontWeight: titlebold),
-                                        textAlign: TextAlign.start,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: _height,
-                                    //width: _swidth,
-                                    child: Row(
-                                      children: List.generate(symmName.length,
-                                          (index) {
-                                        return Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 8.0, top: 3.0),
-                                          child: SizedBox(
-                                            height: _height,
-                                            width: (size) ? 60 : 55,
-                                            child: RaisedButton(
-                                                elevation: 0.0,
-                                                shape: _shape,
-                                                color: symmColor[index]
-                                                    ? Color(0XFF294EA3)
-                                                    : Color(0XFFEBEFFA),
-                                                onPressed: () {
-                                                  if (!FocusScope.of(context)
-                                                      .hasPrimaryFocus) {
-                                                    FocusScope.of(context)
-                                                        .unfocus();
-                                                  }
-                                                  setState(() {
-                                                    symmColor[index] =
-                                                        !symmColor[index];
-                                                    if (symmResult.contains(
-                                                        symmValue[index]
-                                                            .toString())) {
-                                                      symmResult.remove(
-                                                          symmValue[index]
-                                                              .toString());
-                                                    } else {
-                                                      symmResult.add(
-                                                          symmValue[index]
-                                                              .toString());
-                                                    }
-                                                  });
-                                                  // print(buttonVlaue[index].toString());
-                                                },
-                                                child: Text(
-                                                  symmName[index].toString(),
-                                                  style: TextStyle(
-                                                      fontSize: buttonFont,
-                                                      color: symmColor[index]
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      fontWeight: buttonbold),
-                                                )),
-                                          ),
-                                        );
-                                      }),
-                                    ),
-                                  ),
-                                ],
+                                  );
+                                }),
                               ),
                             )
                           ],
-                        ),
-                      )),
-                ),
+                        )),
+                  ),
 
-                //Fluorescence field
-                Padding(
-                  padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-                  child: Container(
-                      color: Colors.white,
-                      child: Container(
-                        padding: EdgeInsets.only(top: 10, bottom: 10),
-                        child: Column(
-                          children: <Widget>[
-                            Text(
-                              // 'Fluorescence',
-                              'FLUORESCENCE',
-                              style: TextStyle(
-                                  fontSize: titleFont, fontWeight: titlebold),
-                            ),
-                            getFluoroOptionsWidget(context)
-                          ],
-                        ),
-                      )),
-                ),
-
-                // Certificate field
-                Padding(
-                  padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-                  child: Container(
-                      padding: EdgeInsets.only(bottom: 10),
-                      width: MediaQuery.of(context).size.width,
-                      color: Colors.white,
-                      child: Column(
-                        children: <Widget>[
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(top: 10.0, bottom: 10),
-                            child: Text(
-                              'CERTIFICATE',
-                              style: TextStyle(
-                                  fontSize: titleFont, fontWeight: titlebold),
-                            ),
-                          ),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: List.generate(certificateName.length,
-                                  (index) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 8.0, bottom: 3.0, top: 3.0),
-                                  child: SizedBox(
-                                    height: _height,
-                                    width: (size) ? 60 : 65,
-                                    child: RaisedButton(
-                                        elevation: 0.0,
-                                        shape: _shape,
-                                        color: certificateColor[index]
-                                            ? Color(0XFF294EA3)
-                                            : Color(0XFFEBEFFA),
-                                        onPressed: () {
-                                          if (!FocusScope.of(context)
-                                              .hasPrimaryFocus) {
-                                            FocusScope.of(context).unfocus();
-                                          }
-                                          setState(() {
-                                            certificateColor[index] =
-                                                !certificateColor[index];
-                                            if (certificateResult.contains(
-                                                certificateValue[index]
-                                                    .toString())) {
-                                              certificateResult.remove(
-                                                  certificateValue[index]
-                                                      .toString());
-                                            } else {
-                                              certificateResult.add(
-                                                  certificateValue[index]
-                                                      .toString());
-                                            }
-                                          });
-                                        },
-                                        child: Text(
-                                          certificateName[index].toString(),
-                                          style: TextStyle(
-                                              fontSize: buttonFont,
-                                              color: certificateColor[index]
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              fontWeight: buttonbold),
-                                        )),
-                                  ),
-                                );
-                              }),
-                            ),
-                          )
-                        ],
-                      )),
-                ),
-
-                //Luster field
-                Padding(
-                  padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-                  child: Container(
-                      color: Colors.white,
-                      child: Container(
-                        padding: EdgeInsets.only(top: 10, bottom: 10),
-                        child: Column(
-                          children: <Widget>[
-                            Text(
-                              'LUSTER',
-                              style: TextStyle(
-                                  fontSize: titleFont, fontWeight: titlebold),
-                            ),
-                            getLusterOptionsWidget(context)
-                          ],
-                        ),
-                      )),
-                ),
-
-                //Shades field
-                Padding(
-                  padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-                  child: Container(
-                      color: Colors.white,
-                      child: Container(
-                        padding: EdgeInsets.only(top: 10, bottom: 10),
-                        child: Column(
-                          children: <Widget>[
-                            Text(
-                              'SHADES',
-                              style: TextStyle(
-                                  fontSize: titleFont, fontWeight: titlebold),
-                            ),
-                            getShadesOptionsWidget(context)
-                          ],
-                        ),
-                      )),
-                ),
-
-                Column(
-                  children: <Widget>[
-                    pressed
-                        ? Column(
+                  //Luster field
+                  Padding(
+                    padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                    child: Container(
+                        color: Colors.white,
+                        child: Container(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: Column(
                             children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            top: 5.0, left: 10.0, right: 10.0),
-                                        child: Container(
-                                          // height: 55.0,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.9444,
-                                          decoration: BoxDecoration(
-                                              color: Colors.white),
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 10.0),
-                                            child: Column(
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      10.0),
-                                                  child: Text(
-                                                    'H&A',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize: titleFont,
-                                                        fontWeight: titlebold),
-                                                  ),
-                                                ),
-                                                Center(
-                                                  child: SingleChildScrollView(
-                                                    scrollDirection:
-                                                        Axis.horizontal,
-                                                    child: Row(
-                                                      children: List.generate(
-                                                          haName.length,
-                                                          (index) {
-                                                        return Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 8.0,
-                                                                  bottom: 3.0,
-                                                                  top: 3.0),
-                                                          child: SizedBox(
-                                                            height: _height,
-                                                            width: (size)
-                                                                ? 60
-                                                                : 65,
-                                                            child: RaisedButton(
-                                                                elevation: 0.0,
-                                                                shape: _shape,
-                                                                color: haColor[
-                                                                        index]
-                                                                    ? Color(
-                                                                        0XFF294EA3)
-                                                                    : Color(
-                                                                        0XFFEBEFFA),
-                                                                onPressed: () {
-                                                                  if (!FocusScope.of(
-                                                                          context)
-                                                                      .hasPrimaryFocus) {
-                                                                    FocusScope.of(
-                                                                            context)
-                                                                        .unfocus();
-                                                                  }
-                                                                  setState(() {
-                                                                    haColor[index] =
-                                                                        !haColor[
-                                                                            index];
-                                                                    if (haResult
-                                                                        .contains(
-                                                                            haValue[index].toString())) {
-                                                                      haResult.remove(
-                                                                          haValue[index]
-                                                                              .toString());
-                                                                    } else {
-                                                                      haResult.add(
-                                                                          haValue[index]
-                                                                              .toString());
-                                                                    }
-                                                                  });
-                                                                },
-                                                                child: Text(
-                                                                  haName[index]
-                                                                      .toString(),
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          buttonFont,
-                                                                      color: haColor[
-                                                                              index]
-                                                                          ? Colors
-                                                                              .white
-                                                                          : Colors
-                                                                              .black,
-                                                                      fontWeight:
-                                                                          buttonbold),
-                                                                )),
-                                                          ),
-                                                        );
-                                                      }),
+                              Text(
+                                'LUSTER',
+                                style: TextStyle(
+                                    fontSize: titleFont, fontWeight: titlebold),
+                              ),
+                              getLusterOptionsWidget(context)
+                            ],
+                          ),
+                        )),
+                  ),
+
+                  //Shades field
+                  Padding(
+                    padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                    child: Container(
+                        color: Colors.white,
+                        child: Container(
+                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                'SHADES',
+                                style: TextStyle(
+                                    fontSize: titleFont, fontWeight: titlebold),
+                              ),
+                              getShadesOptionsWidget(context)
+                            ],
+                          ),
+                        )),
+                  ),
+
+                  Column(
+                    children: <Widget>[
+                      pressed
+                          ? Column(
+                              children: <Widget>[
+                                Row(
+                                  children: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                              top: 5.0,
+                                              left: 10.0,
+                                              right: 10.0),
+                                          child: Container(
+                                            // height: 55.0,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.9444,
+                                            decoration: BoxDecoration(
+                                                color: Colors.white),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 10.0),
+                                              child: Column(
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10.0),
+                                                    child: Text(
+                                                      'H&A',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontSize: titleFont,
+                                                          fontWeight:
+                                                              titlebold),
                                                     ),
                                                   ),
-                                                )
-                                              ],
+                                                  Center(
+                                                    child:
+                                                        SingleChildScrollView(
+                                                      scrollDirection:
+                                                          Axis.horizontal,
+                                                      child: Row(
+                                                        children: List.generate(
+                                                            haName.length,
+                                                            (index) {
+                                                          return Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 8.0,
+                                                                    bottom: 3.0,
+                                                                    top: 3.0),
+                                                            child: SizedBox(
+                                                              height: _height,
+                                                              width: (size)
+                                                                  ? 60
+                                                                  : 65,
+                                                              child:
+                                                                  RaisedButton(
+                                                                      elevation:
+                                                                          0.0,
+                                                                      shape:
+                                                                          _shape,
+                                                                      color: haColor[
+                                                                              index]
+                                                                          ? Color(
+                                                                              0XFF294EA3)
+                                                                          : Color(
+                                                                              0XFFEBEFFA),
+                                                                      onPressed:
+                                                                          () {
+                                                                        if (!FocusScope.of(context)
+                                                                            .hasPrimaryFocus) {
+                                                                          FocusScope.of(context)
+                                                                              .unfocus();
+                                                                        }
+                                                                        setState(
+                                                                            () {
+                                                                          haColor[index] =
+                                                                              !haColor[index];
+                                                                          if (haResult
+                                                                              .contains(haValue[index].toString())) {
+                                                                            haResult.remove(haValue[index].toString());
+                                                                          } else {
+                                                                            haResult.add(haValue[index].toString());
+                                                                          }
+                                                                        });
+                                                                      },
+                                                                      child:
+                                                                          Text(
+                                                                        haName[index]
+                                                                            .toString(),
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                buttonFont,
+                                                                            color: haColor[index]
+                                                                                ? Colors.white
+                                                                                : Colors.black,
+                                                                            fontWeight: buttonbold),
+                                                                      )),
+                                                            ),
+                                                          );
+                                                        }),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    top: 5.0, left: 10.0, right: 10.0),
-                                child: Container(
-                                  // height: 55.0,
-                                  width: MediaQuery.of(context).size.width *
-                                      0.9444,
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Text(
-                                          'BLACK INCLUSION',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: titleFont,
-                                              fontWeight: titlebold),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      top: 5.0, left: 10.0, right: 10.0),
+                                  child: Container(
+                                    // height: 55.0,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.9444,
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Text(
+                                            'BLACK INCLUSION',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: titleFont,
+                                                fontWeight: titlebold),
+                                          ),
                                         ),
-                                      ),
-                                      Center(
-                                        child: SingleChildScrollView(
-                                          scrollDirection: Axis.horizontal,
-                                          child: Row(
-                                            children: List.generate(
-                                                blackIncnName.length, (index) {
-                                              return Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 8.0,
-                                                    bottom: 3.0,
-                                                    top: 3.0),
-                                                child: SizedBox(
-                                                  height: _height,
-                                                  width: (size) ? 60 : 70,
-                                                  child: RaisedButton(
-                                                      elevation: 0.0,
-                                                      shape: _shape,
-                                                      color: blackIncnColor[
-                                                              index]
-                                                          ? Color(0XFF294EA3)
-                                                          : Color(0XFFEBEFFA),
-                                                      onPressed: () {
-                                                        if (!FocusScope.of(
-                                                                context)
-                                                            .hasPrimaryFocus) {
-                                                          FocusScope.of(context)
-                                                              .unfocus();
-                                                        }
-                                                        setState(() {
-                                                          blackIncnColor[
-                                                                  index] =
-                                                              !blackIncnColor[
-                                                                  index];
-                                                          if (blackIncnResult
-                                                              .contains(
+                                        Center(
+                                          child: SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: Row(
+                                              children: List.generate(
+                                                  blackIncnName.length,
+                                                  (index) {
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 8.0,
+                                                          bottom: 3.0,
+                                                          top: 3.0),
+                                                  child: SizedBox(
+                                                    height: _height,
+                                                    width: (size) ? 60 : 70,
+                                                    child: RaisedButton(
+                                                        elevation: 0.0,
+                                                        shape: _shape,
+                                                        color: blackIncnColor[
+                                                                index]
+                                                            ? Color(0XFF294EA3)
+                                                            : Color(0XFFEBEFFA),
+                                                        onPressed: () {
+                                                          if (!FocusScope.of(
+                                                                  context)
+                                                              .hasPrimaryFocus) {
+                                                            FocusScope.of(
+                                                                    context)
+                                                                .unfocus();
+                                                          }
+                                                          setState(() {
+                                                            blackIncnColor[
+                                                                    index] =
+                                                                !blackIncnColor[
+                                                                    index];
+                                                            if (blackIncnResult.contains(
+                                                                blackIncnValue[
+                                                                        index]
+                                                                    .toString())) {
+                                                              blackIncnResult.remove(
                                                                   blackIncnValue[
                                                                           index]
-                                                                      .toString())) {
-                                                            blackIncnResult.remove(
-                                                                blackIncnValue[
-                                                                        index]
-                                                                    .toString());
-                                                          } else {
-                                                            blackIncnResult.add(
-                                                                blackIncnValue[
-                                                                        index]
-                                                                    .toString());
-                                                          }
-                                                        });
-                                                      },
-                                                      child: Text(
-                                                        blackIncnName[index]
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                            fontSize:
-                                                                buttonFont,
-                                                            color:
-                                                                blackIncnColor[
-                                                                        index]
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .black,
-                                                            fontWeight:
-                                                                buttonbold),
-                                                      )),
-                                                ),
-                                              );
-                                            }),
+                                                                      .toString());
+                                                            } else {
+                                                              blackIncnResult.add(
+                                                                  blackIncnValue[
+                                                                          index]
+                                                                      .toString());
+                                                            }
+                                                          });
+                                                        },
+                                                        child: Text(
+                                                          blackIncnName[index]
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                                  buttonFont,
+                                                              color:
+                                                                  blackIncnColor[
+                                                                          index]
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
+                                                              fontWeight:
+                                                                  buttonbold),
+                                                        )),
+                                                  ),
+                                                );
+                                              }),
+                                            ),
                                           ),
-                                        ),
-                                      )
-                                    ],
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    top: 5.0, left: 10.0, right: 10.0),
-                                child: Container(
-                                  // height: 55.0,
-                                  width: MediaQuery.of(context).size.width *
-                                      0.9444,
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Text(
-                                          'WHITE INCLUSION',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: titleFont,
-                                              fontWeight: titlebold),
-                                        ),
-                                      ),
-                                      getWhiteIncOptionsWidget(context)
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 5.0, left: 10.0, right: 10.0),
-                                child: Container(
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 5.0),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      top: 5.0, left: 10.0, right: 10.0),
+                                  child: Container(
+                                    // height: 55.0,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.9444,
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
                                           child: Text(
-                                            'Discount in %',
+                                            'WHITE INCLUSION',
+                                            textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 fontSize: titleFont,
                                                 fontWeight: titlebold),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 30.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 50,
-                                            child: TextFormField(
-                                              controller:
-                                                  discountFromController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'From',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                discountFrom = value.toString();
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 20,
-                                              right: 10.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 100,
-                                            child: TextFormField(
-                                              controller: discountToController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'To',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                discountTo = value.toString();
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    ],
+                                        getWhiteIncOptionsWidget(context)
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 5.0, left: 10.0, right: 10.0),
-                                child: Container(
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 5.0),
-                                          child: Text(
-                                            'Dollar/ct %',
-                                            style: TextStyle(
-                                                fontSize: titleFont,
-                                                fontWeight: titlebold),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 30.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 100,
-                                            child: TextFormField(
-                                              controller: ctFromController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'From',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                dollarFrom = value.toString();
-                                              },
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 5.0, left: 10.0, right: 10.0),
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0),
+                                            child: Text(
+                                              'Discount in %',
+                                              style: TextStyle(
+                                                  fontSize: titleFont,
+                                                  fontWeight: titlebold),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 20,
-                                              right: 10.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 100,
-                                            child: TextFormField(
-                                              controller: ctToController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'To',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                dollarTo = value.toString();
-                                              },
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 30.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 50,
+                                              child: TextFormField(
+                                                controller:
+                                                    discountFromController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'From',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  discountFrom =
+                                                      value.toString();
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      )
-                                    ],
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 20,
+                                                right: 10.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 100,
+                                              child: TextFormField(
+                                                controller:
+                                                    discountToController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'To',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  discountTo = value.toString();
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 5.0, left: 10.0, right: 10.0),
-                                child: Container(
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 5.0),
-                                          child: Text(
-                                            'Ratio',
-                                            style: TextStyle(
-                                                fontSize: titleFont,
-                                                fontWeight: titlebold),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 30.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 50,
-                                            child: TextFormField(
-                                              controller: ratioFromController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'From',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                ratioFrom = value.toString();
-                                              },
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 5.0, left: 10.0, right: 10.0),
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0),
+                                            child: Text(
+                                              'Dollar/ct %',
+                                              style: TextStyle(
+                                                  fontSize: titleFont,
+                                                  fontWeight: titlebold),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 20,
-                                              right: 10.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 100,
-                                            child: TextFormField(
-                                              controller: ratioToController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'To',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                ratioTo = value.toString();
-                                              },
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 30.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 100,
+                                              child: TextFormField(
+                                                controller: ctFromController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'From',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  dollarFrom = value.toString();
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      )
-                                    ],
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 20,
+                                                right: 10.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 100,
+                                              child: TextFormField(
+                                                controller: ctToController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'To',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  dollarTo = value.toString();
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 5.0, left: 10.0, right: 10.0),
-                                child: Container(
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 5.0),
-                                          child: Text(
-                                            'Length',
-                                            style: TextStyle(
-                                                fontSize: titleFont,
-                                                fontWeight: titlebold),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 30.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 50,
-                                            child: TextFormField(
-                                              controller: lengthFromController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'From',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                lengthFrom = value.toString();
-                                              },
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 5.0, left: 10.0, right: 10.0),
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0),
+                                            child: Text(
+                                              'Ratio',
+                                              style: TextStyle(
+                                                  fontSize: titleFont,
+                                                  fontWeight: titlebold),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 20,
-                                              right: 10.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 100,
-                                            child: TextFormField(
-                                              controller: lengthToController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'To',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                lengthTo = value.toString();
-                                              },
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 30.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 50,
+                                              child: TextFormField(
+                                                controller: ratioFromController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'From',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  ratioFrom = value.toString();
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      )
-                                    ],
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 20,
+                                                right: 10.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 100,
+                                              child: TextFormField(
+                                                controller: ratioToController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'To',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  ratioTo = value.toString();
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 5.0, left: 10.0, right: 10.0),
-                                child: Container(
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 5.0),
-                                          child: Text(
-                                            'Width',
-                                            style: TextStyle(
-                                                fontSize: titleFont,
-                                                fontWeight: titlebold),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 30.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 50,
-                                            child: TextFormField(
-                                              controller: widthFromController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'From',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                widthFrom = value.toString();
-                                              },
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 5.0, left: 10.0, right: 10.0),
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0),
+                                            child: Text(
+                                              'Length',
+                                              style: TextStyle(
+                                                  fontSize: titleFont,
+                                                  fontWeight: titlebold),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 20,
-                                              right: 10.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 100,
-                                            child: TextFormField(
-                                              controller: widthToController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'To',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                widthTo = value.toString();
-                                              },
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 30.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 50,
+                                              child: TextFormField(
+                                                controller:
+                                                    lengthFromController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'From',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  lengthFrom = value.toString();
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      )
-                                    ],
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 20,
+                                                right: 10.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 100,
+                                              child: TextFormField(
+                                                controller: lengthToController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'To',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  lengthTo = value.toString();
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 5.0, left: 10.0, right: 10.0),
-                                child: Container(
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 5.0),
-                                          child: Text(
-                                            'Height',
-                                            style: TextStyle(
-                                                fontSize: titleFont,
-                                                fontWeight: titlebold),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 30.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 50,
-                                            child: TextFormField(
-                                              controller: heightFromController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'From',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                heightFrom = value.toString();
-                                              },
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 5.0, left: 10.0, right: 10.0),
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0),
+                                            child: Text(
+                                              'Width',
+                                              style: TextStyle(
+                                                  fontSize: titleFont,
+                                                  fontWeight: titlebold),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 20,
-                                              right: 10.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 100,
-                                            child: TextFormField(
-                                              controller: heightToController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'To',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                heightTo = value.toString();
-                                              },
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 30.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 50,
+                                              child: TextFormField(
+                                                controller: widthFromController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'From',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  widthFrom = value.toString();
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      )
-                                    ],
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 20,
+                                                right: 10.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 100,
+                                              child: TextFormField(
+                                                controller: widthToController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'To',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  widthTo = value.toString();
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 5.0, left: 10.0, right: 10.0),
-                                child: Container(
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 5.0),
-                                          child: Text(
-                                            'Pavilion Height',
-                                            style: TextStyle(
-                                                fontSize: titleFont,
-                                                fontWeight: titlebold),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 30.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 50,
-                                            child: TextFormField(
-                                              controller:
-                                                  pavHeightFromController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'From',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                pavHigFrom = value.toString();
-                                              },
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 5.0, left: 10.0, right: 10.0),
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0),
+                                            child: Text(
+                                              'Height',
+                                              style: TextStyle(
+                                                  fontSize: titleFont,
+                                                  fontWeight: titlebold),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 20,
-                                              right: 10.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 100,
-                                            child: TextFormField(
-                                              controller: pavHeightToController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'To',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                pavHigTo = value.toString();
-                                              },
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 30.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 50,
+                                              child: TextFormField(
+                                                controller:
+                                                    heightFromController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'From',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  heightFrom = value.toString();
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      )
-                                    ],
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 20,
+                                                right: 10.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 100,
+                                              child: TextFormField(
+                                                controller: heightToController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'To',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  heightTo = value.toString();
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 5.0, left: 10.0, right: 10.0),
-                                child: Container(
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 5.0),
-                                          child: Text(
-                                            'Pavilion Angle',
-                                            style: TextStyle(
-                                                fontSize: titleFont,
-                                                fontWeight: titlebold),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 30.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 50,
-                                            child: TextFormField(
-                                              controller:
-                                                  pavAngleFromController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'From',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                pavAngFrom = value.toString();
-                                              },
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 5.0, left: 10.0, right: 10.0),
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0),
+                                            child: Text(
+                                              'Pavilion Height',
+                                              style: TextStyle(
+                                                  fontSize: titleFont,
+                                                  fontWeight: titlebold),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 20,
-                                              right: 10.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 100,
-                                            child: TextFormField(
-                                              controller: pavAngleToController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'To',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                pavAngTo = value.toString();
-                                              },
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 30.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 50,
+                                              child: TextFormField(
+                                                controller:
+                                                    pavHeightFromController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'From',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  pavHigFrom = value.toString();
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      )
-                                    ],
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 20,
+                                                right: 10.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 100,
+                                              child: TextFormField(
+                                                controller:
+                                                    pavHeightToController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'To',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  pavHigTo = value.toString();
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 5.0, left: 10.0, right: 10.0),
-                                child: Container(
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 5.0),
-                                          child: Text(
-                                            'Crown Height',
-                                            style: TextStyle(
-                                                fontSize: titleFont,
-                                                fontWeight: titlebold),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 30.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 50,
-                                            child: TextFormField(
-                                              controller:
-                                                  crownHeightFromController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'From',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                crownHigFrom = value.toString();
-                                              },
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 5.0, left: 10.0, right: 10.0),
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0),
+                                            child: Text(
+                                              'Pavilion Angle',
+                                              style: TextStyle(
+                                                  fontSize: titleFont,
+                                                  fontWeight: titlebold),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 20,
-                                              right: 10.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 100,
-                                            child: TextFormField(
-                                              controller:
-                                                  crownHeightToController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'To',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                crownHigTo = value.toString();
-                                              },
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 30.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 50,
+                                              child: TextFormField(
+                                                controller:
+                                                    pavAngleFromController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'From',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  pavAngFrom = value.toString();
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      )
-                                    ],
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 20,
+                                                right: 10.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 100,
+                                              child: TextFormField(
+                                                controller:
+                                                    pavAngleToController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'To',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  pavAngTo = value.toString();
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 5.0, left: 10.0, right: 10.0),
-                                child: Container(
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 5.0),
-                                          child: Text(
-                                            'Crown Angle',
-                                            style: TextStyle(
-                                                fontSize: titleFont,
-                                                fontWeight: titlebold),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 30.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 50,
-                                            child: TextFormField(
-                                              controller:
-                                                  crownAngleFromController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'From',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                crownAngFrom = value.toString();
-                                              },
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 5.0, left: 10.0, right: 10.0),
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0),
+                                            child: Text(
+                                              'Crown Height',
+                                              style: TextStyle(
+                                                  fontSize: titleFont,
+                                                  fontWeight: titlebold),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 20,
-                                              right: 10.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 100,
-                                            child: TextFormField(
-                                              controller:
-                                                  crownAngleToController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'To',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                crownAngTo = value.toString();
-                                              },
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 30.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 50,
+                                              child: TextFormField(
+                                                controller:
+                                                    crownHeightFromController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'From',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  crownHigFrom =
+                                                      value.toString();
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      )
-                                    ],
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 20,
+                                                right: 10.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 100,
+                                              child: TextFormField(
+                                                controller:
+                                                    crownHeightToController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'To',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  crownHigTo = value.toString();
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 5.0, left: 10.0, right: 10.0),
-                                child: Container(
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 5.0),
-                                          child: Text(
-                                            'Gridle %',
-                                            style: TextStyle(
-                                                fontSize: titleFont,
-                                                fontWeight: titlebold),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 30.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 50,
-                                            child: TextFormField(
-                                              controller: gridleFromController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'From',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                gridleFrom = value.toString();
-                                              },
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 5.0, left: 10.0, right: 10.0),
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0),
+                                            child: Text(
+                                              'Crown Angle',
+                                              style: TextStyle(
+                                                  fontSize: titleFont,
+                                                  fontWeight: titlebold),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 20,
-                                              right: 10.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 100,
-                                            child: TextFormField(
-                                              controller: gridleToController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'To',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                gridleTo = value.toString();
-                                              },
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 30.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 50,
+                                              child: TextFormField(
+                                                controller:
+                                                    crownAngleFromController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'From',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  crownAngFrom =
+                                                      value.toString();
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      )
-                                    ],
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 20,
+                                                right: 10.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 100,
+                                              child: TextFormField(
+                                                controller:
+                                                    crownAngleToController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'To',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  crownAngTo = value.toString();
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 5.0, left: 10.0, right: 10.0),
-                                child: Container(
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 5.0),
-                                          child: Text(
-                                            'Table %',
-                                            style: TextStyle(
-                                                fontSize: titleFont,
-                                                fontWeight: titlebold),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 30.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 50,
-                                            child: TextFormField(
-                                              controller: tableFromController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'From',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                tableFrom = value.toString();
-                                              },
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 5.0, left: 10.0, right: 10.0),
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0),
+                                            child: Text(
+                                              'Gridle %',
+                                              style: TextStyle(
+                                                  fontSize: titleFont,
+                                                  fontWeight: titlebold),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 20,
-                                              right: 10.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 100,
-                                            child: TextFormField(
-                                              controller: tableToController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'To',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                tableTo = value.toString();
-                                              },
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 30.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 50,
+                                              child: TextFormField(
+                                                controller:
+                                                    gridleFromController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'From',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  gridleFrom = value.toString();
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      )
-                                    ],
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 20,
+                                                right: 10.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 100,
+                                              child: TextFormField(
+                                                controller: gridleToController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'To',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  gridleTo = value.toString();
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 5.0, left: 10.0, right: 10.0),
-                                child: Container(
-                                  decoration:
-                                      BoxDecoration(color: Colors.white),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 5.0),
-                                          child: Text(
-                                            'Star Length',
-                                            style: TextStyle(
-                                                fontSize: titleFont,
-                                                fontWeight: titlebold),
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 30.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 50,
-                                            child: TextFormField(
-                                              controller: starLenFromController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'From',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                starLenFrom = value.toString();
-                                              },
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 5.0, left: 10.0, right: 10.0),
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0),
+                                            child: Text(
+                                              'Table %',
+                                              style: TextStyle(
+                                                  fontSize: titleFont,
+                                                  fontWeight: titlebold),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 5.0,
-                                              bottom: 5.0,
-                                              left: 20,
-                                              right: 10.0),
-                                          child: Container(
-                                            height: 40,
-                                            // width: 100,
-                                            child: TextFormField(
-                                              controller: starLenToController,
-                                              inputFormatters: [
-                                                DecimalTextInputFormatter()
-                                              ],
-                                              keyboardType: TextInputType
-                                                  .numberWithOptions(
-                                                      decimal: true),
-                                              decoration: InputDecoration(
-                                                  filled: true,
-                                                  fillColor: Color(0XFFEBEFFA),
-                                                  border: InputBorder.none,
-                                                  hintText: 'To',
-                                                  hintStyle: TextStyle(
-                                                      fontSize:
-                                                          (size) ? 14 : 14)),
-                                              onChanged: (value) {
-                                                starLenTo = value.toString();
-                                              },
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 30.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 50,
+                                              child: TextFormField(
+                                                controller: tableFromController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'From',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  tableFrom = value.toString();
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      )
-                                    ],
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 20,
+                                                right: 10.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 100,
+                                              child: TextFormField(
+                                                controller: tableToController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'To',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  tableTo = value.toString();
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          )
-                        : SizedBox(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        height: 30,
-                        width: 310,
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              side: BorderSide.none),
-                          color: Color(0XFF294EA3),
-                          child: pressed
-                              ? Text(
-                                  "Hide Advance Search",
-                                  style: TextStyle(color: Colors.white),
-                                )
-                              : Text('Show Advance Search',
-                                  style: TextStyle(color: Colors.white)),
-                          onPressed: () {
-                            if (!FocusScope.of(context).hasPrimaryFocus) {
-                              FocusScope.of(context).unfocus();
-                            }
-                            setState(() {
-                              pressed = !pressed;
-                            });
-                          },
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 5.0, left: 10.0, right: 10.0),
+                                  child: Container(
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 5.0),
+                                            child: Text(
+                                              'Star Length',
+                                              style: TextStyle(
+                                                  fontSize: titleFont,
+                                                  fontWeight: titlebold),
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 30.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 50,
+                                              child: TextFormField(
+                                                controller:
+                                                    starLenFromController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'From',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  starLenFrom =
+                                                      value.toString();
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 5.0,
+                                                bottom: 5.0,
+                                                left: 20,
+                                                right: 10.0),
+                                            child: Container(
+                                              height: 40,
+                                              // width: 100,
+                                              child: TextFormField(
+                                                controller: starLenToController,
+                                                inputFormatters: [
+                                                  DecimalTextInputFormatter()
+                                                ],
+                                                keyboardType: TextInputType
+                                                    .numberWithOptions(
+                                                        decimal: true),
+                                                decoration: InputDecoration(
+                                                    filled: true,
+                                                    fillColor:
+                                                        Color(0XFFEBEFFA),
+                                                    border: InputBorder.none,
+                                                    hintText: 'To',
+                                                    hintStyle: TextStyle(
+                                                        fontSize:
+                                                            (size) ? 14 : 14)),
+                                                onChanged: (value) {
+                                                  starLenTo = value.toString();
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : SizedBox(),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          height: 30,
+                          width: 310,
+                          child: RaisedButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: BorderSide.none),
+                            color: Color(0XFF294EA3),
+                            child: pressed
+                                ? Text(
+                                    "Hide Advance Search",
+                                    style: TextStyle(color: Colors.white),
+                                  )
+                                : Text('Show Advance Search',
+                                    style: TextStyle(color: Colors.white)),
+                            onPressed: () {
+                              if (!FocusScope.of(context).hasPrimaryFocus) {
+                                FocusScope.of(context).unfocus();
+                              }
+                              setState(() {
+                                pressed = !pressed;
+                              });
+                            },
+                          ),
                         ),
-                      ),
-                    )
-                  ],
-                ),
-              ],
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
