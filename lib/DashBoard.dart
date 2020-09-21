@@ -394,7 +394,7 @@ class _DashBoardState extends State<DashBoard> {
                                       child: Padding(
                                         padding:
                                             const EdgeInsets.only(left: 20.0),
-                                        child: Text("SPECIFIC SEARCH",
+                                        child: Text("Specific Search",
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,
@@ -528,7 +528,7 @@ class _DashBoardState extends State<DashBoard> {
                                       child: Padding(
                                         padding:
                                             const EdgeInsets.only(left: 20.0),
-                                        child: Text("PAIR SEARCH",
+                                        child: Text("Pair Search",
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,

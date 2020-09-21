@@ -100,54 +100,58 @@ class MySearchPageState extends State<MySearchPage>
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
-        appBar: AppBar(
-          bottom: TabBar(
-              controller: myTabController,
-              onTap: (i) {
-                setState(() {});
-              },
-              tabs: [
-                Container(
-                  height: 50,
-                  child: Center(
-                    child: Text('SEARCH'),
+        appBar: PreferredSize(
+          preferredSize: Size(MediaQuery.of(context).size.width,
+              MediaQuery.of(context).size.height / 10),
+          child: AppBar(
+            bottom: TabBar(
+                controller: myTabController,
+                onTap: (i) {
+                  setState(() {});
+                },
+                tabs: [
+                  Container(
+                    height: 40,
+                    child: Center(
+                      child: Text('Search'),
+                    ),
                   ),
-                ),
-                Container(
-                  height: 50,
-                  child: Center(
-                    child: Text('SAVED'),
+                  Container(
+                    height: 40,
+                    child: Center(
+                      child: Text('Saved'),
+                    ),
                   ),
-                ),
-              ]),
-          backgroundColor: Color(0XFF294EA3),
-          leading: IconButton(
-              icon: Icon(
-                Icons.chevron_left,
-                size: 35,
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              }),
-          centerTitle: true,
-          title: Text(
-            'Specific Search',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
-          ),
-          actions: <Widget>[
-            IconButton(
+                ]),
+            backgroundColor: Color(0XFF294EA3),
+            leading: IconButton(
                 icon: Icon(
-                  Icons.home,
-                  size: 32,
+                  Icons.chevron_left,
+                  size: 35,
                 ),
                 onPressed: () {
-                  Navigator.pop(context, true);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => DashBoard()));
-                })
-          ],
+                  Navigator.of(context).pop();
+                }),
+            centerTitle: true,
+            title: Text(
+              'Specific Search',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w400),
+            ),
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(
+                    Icons.home,
+                    size: 32,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => DashBoard()));
+                  })
+            ],
+          ),
         ),
         body: TabBarView(controller: myTabController, children: [
           StoneSearch(
@@ -165,7 +169,7 @@ class MySearchPageState extends State<MySearchPage>
                 : Center(
                     child: Container(
                       child: Text(
-                        'No data Saved Yet',
+                        'No data saved yet',
                         style: TextStyle(fontSize: 20),
                       ),
                     ),

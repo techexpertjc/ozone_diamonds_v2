@@ -629,7 +629,7 @@ class _offerListState extends State<OfferList> {
                     //     child: AlertDialog(
                     //       title: Text('Ozone Diamonds'),
                     //       content:
-                    //           Text('0 Stone(s) found for your Search Criteria'),
+                    //           Text('0 Stone(s) found for your search criteria'),
                     //       actions: <Widget>[
                     //         FlatButton(
                     //             onPressed: () {
@@ -647,7 +647,7 @@ class _offerListState extends State<OfferList> {
                         child: AlertDialog(
                           title: Text('Ozone Diamonds'),
                           content:
-                              Text('0 Stone(s) found for your Search Criteria'),
+                              Text('0 Stone(s) found for your search criteria'),
                           actions: <Widget>[
                             FlatButton(
                                 onPressed: () {

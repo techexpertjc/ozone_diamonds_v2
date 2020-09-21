@@ -79,8 +79,8 @@ class _StoneSearchState extends State<StoneSearch>
       starLenFrom,
       starLenTo;
   String filquery = " ";
-  final titleFont = 18.0; //font of title
-  final titlebold = FontWeight.bold; //title font width
+  final titleFont = 14.0; //font of title
+  final titlebold = FontWeight.normal; //title font width
   final buttonFont = 12.0; //font size of button font
   final buttonbold = FontWeight.w400; //font bold of button font
   //clarity Field
@@ -122,7 +122,7 @@ class _StoneSearchState extends State<StoneSearch>
   //colour field
   List<List<String>> colourName = [
     ['D', 'E', 'F', 'G', 'H', 'I'],
-    ['J', 'K', 'l', 'M', 'N']
+    ['J', 'K', 'l', 'M', 'N-Z', 'Fancy']
   ];
   List<String> colourValue = [
     '1',
@@ -135,9 +135,11 @@ class _StoneSearchState extends State<StoneSearch>
     '8',
     '9',
     '10',
-    '11'
+    '11,12,13,14,15,16,17,18,19,20,21,22,23',
+    '25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,59,61,62,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,92,93,94'
   ];
   List<bool> colourColor = [
+    false,
     false,
     false,
     false,
@@ -153,9 +155,9 @@ class _StoneSearchState extends State<StoneSearch>
   List<String> colourResult = [];
 
   //finishing field
-  List<String> finishingName = ['3EX', '3VG+', '2EX', 'NOBGM'];
-  List<String> finishingValue = ['1', '2', '3', '4'];
-  List<bool> finishingColor = [false, false, false, false];
+  List<String> finishingName = ['3EX', '3VG+', 'NOBGM'];
+  List<String> finishingValue = ['1', '2', '4'];
+  List<bool> finishingColor = [false, false, false];
   List<String> finishingResult = [];
 
   //cut field
@@ -186,42 +188,42 @@ class _StoneSearchState extends State<StoneSearch>
   List<String> fluoreResult = [];
 
   //Certificate field
-  List<String> certificateName = ['GIA', 'IGI', 'HRD'];
-  List<String> certificateValue = ['1', '2', '3'];
-  List<bool> certificateColor = [false, false, false];
+  List<String> certificateName = ['GIA', 'IGI', 'HRD', 'Other'];
+  List<String> certificateValue = ['1', '2', '3', '4'];
+  List<bool> certificateColor = [false, false, false, false];
   List<String> certificateResult = [];
 
   //Luster field
   List<List<String>> lusterName = [
-    ['EXCELLENT', 'VERY GOOD', 'GOOD'],
+    ['EXCELLENT', 'VERY GOOD'],
     ['MILKY 1', 'MILKY 2']
   ];
-  List<String> lusterValue = ['1', '2', '3', '4', '5', '6'];
-  List<bool> lusterColor = [false, false, false, false, false, false];
+  List<String> lusterValue = ['1', '2', '4', '5', '6'];
+  List<bool> lusterColor = [false, false, false, false, false];
   List<String> lusterResult = [];
 
   //Shades Field
   List<List<String>> shadesName = [
     ['NONE', 'BROWN', 'GREEN'],
-    ['MIX TINGE']
+    ['MIX TINGE', 'GREY']
   ];
   List<String> shadesValue = [
     "''NONE''",
     "''BROWN''",
     "''GREEN''",
     "''MIX TINGE''"
+        "''GREY''"
   ];
-  List<bool> shadesColor = [false, false, false, false];
+  List<bool> shadesColor = [false, false, false, false, false];
   List<String> shadesResult = [];
 
   //H&A field
-  List<String> haName = ['EX', 'VG', 'GD'];
+  List<String> haName = ['EX', 'VG'];
   List<String> haValue = [
     "''EX''",
     "''VG''",
-    "''GD''",
   ];
-  List<bool> haColor = [false, false, false];
+  List<bool> haColor = [false, false];
   List<String> haResult = [];
 
   //black Inclustion field
@@ -344,7 +346,7 @@ class _StoneSearchState extends State<StoneSearch>
           int currIndex = initIndex;
           initIndex++;
           return Container(
-            padding: EdgeInsets.all(5),
+            padding: EdgeInsets.all(1),
             width: (MediaQuery.of(context).size.width - 40) / 4,
             child: RaisedButton(
                 elevation: 0.0,
@@ -394,7 +396,7 @@ class _StoneSearchState extends State<StoneSearch>
           int currIndex = initIndex;
           initIndex++;
           return Container(
-            padding: EdgeInsets.all(5),
+            padding: EdgeInsets.all(1),
             width: (MediaQuery.of(context).size.width - 30) / 3,
             child: RaisedButton(
                 elevation: 0.0,
@@ -442,7 +444,7 @@ class _StoneSearchState extends State<StoneSearch>
           int currIndex = initIndex;
           initIndex++;
           return Container(
-            padding: EdgeInsets.all(5),
+            padding: EdgeInsets.all(1),
             width: (MediaQuery.of(context).size.width - 30) / 3,
             child: RaisedButton(
                 elevation: 0.0,
@@ -490,7 +492,7 @@ class _StoneSearchState extends State<StoneSearch>
         int currIndex = initIndex;
         initIndex++;
         return Container(
-          padding: EdgeInsets.all(5),
+          padding: EdgeInsets.all(1),
           width: (MediaQuery.of(context).size.width - 40) / 4,
           child: RaisedButton(
               elevation: 0.0,
@@ -537,7 +539,7 @@ class _StoneSearchState extends State<StoneSearch>
           int currIndex = initIndex;
           initIndex++;
           return Container(
-            padding: EdgeInsets.all(5),
+            padding: EdgeInsets.all(1),
             width: (MediaQuery.of(context).size.width - 50) / 6,
             child: RaisedButton(
                 elevation: 0.0,
@@ -563,7 +565,9 @@ class _StoneSearchState extends State<StoneSearch>
                 child: Text(
                   element[index].toString(),
                   style: TextStyle(
-                      fontSize: buttonFont,
+                      fontSize: element[index].length > 3
+                          ? buttonFont - 2
+                          : buttonFont,
                       color:
                           colourColor[currIndex] ? Colors.white : Colors.black,
                       fontWeight: buttonbold),
@@ -587,7 +591,7 @@ class _StoneSearchState extends State<StoneSearch>
           initIndex++;
 
           return Container(
-            padding: EdgeInsets.all(5),
+            padding: EdgeInsets.all(1),
             width: (MediaQuery.of(context).size.width - 20) / 4,
             child: RaisedButton(
                 elevation: 0.0,
@@ -901,19 +905,20 @@ class _StoneSearchState extends State<StoneSearch>
 
                   //Carat Field
                   Padding(
-                    padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                    padding: EdgeInsets.only(top: 2.0, left: 10.0, right: 10.0),
                     child: Container(
-                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        padding: EdgeInsets.only(top: 5, bottom: 5),
                         color: Colors.white,
                         child: Row(
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.only(
-                                  top: 5.0, left: 20.0, bottom: 5.0),
+                                  top: 2.0, left: 20.0, bottom: 2.0),
                               child: Text(
                                 'Carat',
                                 style: TextStyle(
-                                    fontSize: titleFont, fontWeight: titlebold),
+                                  fontSize: titleFont,
+                                ),
                               ),
                             ),
                             Padding(
@@ -1022,7 +1027,7 @@ class _StoneSearchState extends State<StoneSearch>
                   Padding(
                     padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
                     child: Container(
-                        padding: EdgeInsets.only(top: 10, bottom: 10),
+                        padding: EdgeInsets.only(top: 5, bottom: 5),
                         color: Colors.white,
                         child: Row(
                           children: <Widget>[
@@ -1093,18 +1098,19 @@ class _StoneSearchState extends State<StoneSearch>
                   //clarity field
                   Padding(
                       padding:
-                          EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                          EdgeInsets.only(top: 2.0, left: 10.0, right: 10.0),
                       child: Container(
                           color: Colors.white,
                           child: Column(
                             children: [
                               Container(
-                                padding: EdgeInsets.only(top: 10, bottom: 10),
+                                padding: EdgeInsets.only(top: 5, bottom: 5),
                                 child: Center(
                                   child: Text(
-                                    'CLARITY',
+                                    'Clarity',
                                     style: TextStyle(
-                                        fontSize: 18, fontWeight: titlebold),
+                                        fontSize: titleFont,
+                                        fontWeight: titlebold),
                                   ),
                                 ),
                               ),
@@ -1115,15 +1121,15 @@ class _StoneSearchState extends State<StoneSearch>
                   //colour field
                   Padding(
                       padding:
-                          EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                          EdgeInsets.only(top: 2.0, left: 10.0, right: 10.0),
                       child: Container(
                         color: Colors.white,
                         child: Container(
-                            padding: EdgeInsets.only(top: 10, bottom: 10),
+                            padding: EdgeInsets.only(top: 05, bottom: 05),
                             child: Column(
                               children: <Widget>[
                                 Text(
-                                  'COLOUR',
+                                  'Color',
                                   style: TextStyle(
                                       fontSize: titleFont,
                                       fontWeight: titlebold),
@@ -1135,15 +1141,15 @@ class _StoneSearchState extends State<StoneSearch>
 
                   //finishing field
                   Padding(
-                    padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                    padding: EdgeInsets.only(top: 2.0, left: 10.0, right: 10.0),
                     child: Container(
                         color: Colors.white,
                         child: Container(
-                          padding: EdgeInsets.only(top: 10, bottom: 20),
+                          padding: EdgeInsets.only(top: 05, bottom: 05),
                           child: Column(
                             children: <Widget>[
                               Text(
-                                'FINISHING',
+                                'Finishing',
                                 style: TextStyle(
                                     fontSize: titleFont, fontWeight: titlebold),
                               ),
@@ -1216,6 +1222,15 @@ class _StoneSearchState extends State<StoneSearch>
                                                     cutColor[0] =
                                                         finishingColor[index];
                                                     polishColor[0] =
+                                                        finishingColor[index];
+                                                  } else if (finishingName[
+                                                          index] ==
+                                                      'NOBGM') {
+                                                    lusterColor[0] =
+                                                        finishingColor[index];
+                                                    lusterColor[1] =
+                                                        finishingColor[index];
+                                                    shadesColor[0] =
                                                         finishingColor[index];
                                                   }
                                                 });
@@ -1320,7 +1335,7 @@ class _StoneSearchState extends State<StoneSearch>
                                       padding: const EdgeInsets.only(top: 5.0),
                                       child: SizedBox(
                                         height: _height,
-                                        // width: 50,
+                                        width: 50,
                                         child: Text(
                                           'Polish',
                                           style: TextStyle(
@@ -1473,16 +1488,16 @@ class _StoneSearchState extends State<StoneSearch>
 
                   //Fluorescence field
                   Padding(
-                    padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                    padding: EdgeInsets.only(top: 2.0, left: 10.0, right: 10.0),
                     child: Container(
                         color: Colors.white,
                         child: Container(
-                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          padding: EdgeInsets.only(top: 05, bottom: 05),
                           child: Column(
                             children: <Widget>[
                               Text(
                                 // 'Fluorescence',
-                                'FLUORESCENCE',
+                                'Fluorescence',
                                 style: TextStyle(
                                     fontSize: titleFont, fontWeight: titlebold),
                               ),
@@ -1494,7 +1509,7 @@ class _StoneSearchState extends State<StoneSearch>
 
                   // Certificate field
                   Padding(
-                    padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                    padding: EdgeInsets.only(top: 2.0, left: 10.0, right: 10.0),
                     child: Container(
                         padding: EdgeInsets.only(bottom: 10),
                         width: MediaQuery.of(context).size.width,
@@ -1503,9 +1518,9 @@ class _StoneSearchState extends State<StoneSearch>
                           children: <Widget>[
                             Padding(
                               padding:
-                                  const EdgeInsets.only(top: 10.0, bottom: 10),
+                                  const EdgeInsets.only(top: 05, bottom: 05),
                               child: Text(
-                                'CERTIFICATE',
+                                'Certificate',
                                 style: TextStyle(
                                     fontSize: titleFont, fontWeight: titlebold),
                               ),
@@ -1568,15 +1583,15 @@ class _StoneSearchState extends State<StoneSearch>
 
                   //Luster field
                   Padding(
-                    padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                    padding: EdgeInsets.only(top: 2.0, left: 10.0, right: 10.0),
                     child: Container(
                         color: Colors.white,
                         child: Container(
-                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          padding: EdgeInsets.only(top: 05, bottom: 05),
                           child: Column(
                             children: <Widget>[
                               Text(
-                                'LUSTER',
+                                'Luster',
                                 style: TextStyle(
                                     fontSize: titleFont, fontWeight: titlebold),
                               ),
@@ -1588,15 +1603,15 @@ class _StoneSearchState extends State<StoneSearch>
 
                   //Shades field
                   Padding(
-                    padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                    padding: EdgeInsets.only(top: 2.0, left: 10.0, right: 10.0),
                     child: Container(
                         color: Colors.white,
                         child: Container(
-                          padding: EdgeInsets.only(top: 10, bottom: 10),
+                          padding: EdgeInsets.only(top: 05, bottom: 05),
                           child: Column(
                             children: <Widget>[
                               Text(
-                                'SHADES',
+                                'Shades',
                                 style: TextStyle(
                                     fontSize: titleFont, fontWeight: titlebold),
                               ),
@@ -1617,7 +1632,7 @@ class _StoneSearchState extends State<StoneSearch>
                                       children: <Widget>[
                                         Padding(
                                           padding: EdgeInsets.only(
-                                              top: 5.0,
+                                              top: 2.0,
                                               left: 10.0,
                                               right: 10.0),
                                           child: Container(
@@ -1630,13 +1645,12 @@ class _StoneSearchState extends State<StoneSearch>
                                                 color: Colors.white),
                                             child: Padding(
                                               padding: const EdgeInsets.only(
-                                                  bottom: 10.0),
+                                                  bottom: 5.0),
                                               child: Column(
                                                 children: <Widget>[
                                                   Padding(
                                                     padding:
-                                                        const EdgeInsets.all(
-                                                            10.0),
+                                                        const EdgeInsets.all(5),
                                                     child: Text(
                                                       'H&A',
                                                       textAlign:
@@ -1728,7 +1742,7 @@ class _StoneSearchState extends State<StoneSearch>
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(
-                                      top: 5.0, left: 10.0, right: 10.0),
+                                      top: 2.0, left: 10.0, right: 10.0),
                                   child: Container(
                                     // height: 55.0,
                                     width: MediaQuery.of(context).size.width *
@@ -1738,9 +1752,9 @@ class _StoneSearchState extends State<StoneSearch>
                                     child: Column(
                                       children: <Widget>[
                                         Padding(
-                                          padding: const EdgeInsets.all(10.0),
+                                          padding: const EdgeInsets.all(5.0),
                                           child: Text(
-                                            'BLACK INCLUSION',
+                                            'Black Inclusion',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 fontSize: titleFont,
@@ -1827,7 +1841,7 @@ class _StoneSearchState extends State<StoneSearch>
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(
-                                      top: 5.0, left: 10.0, right: 10.0),
+                                      top: 2.0, left: 10.0, right: 10.0),
                                   child: Container(
                                     // height: 55.0,
                                     width: MediaQuery.of(context).size.width *
@@ -1837,9 +1851,9 @@ class _StoneSearchState extends State<StoneSearch>
                                     child: Column(
                                       children: <Widget>[
                                         Padding(
-                                          padding: const EdgeInsets.all(10.0),
+                                          padding: const EdgeInsets.all(5.0),
                                           child: Text(
-                                            'WHITE INCLUSION',
+                                            'White Inclusion',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 fontSize: titleFont,
@@ -1853,7 +1867,7 @@ class _StoneSearchState extends State<StoneSearch>
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                      top: 5.0, left: 10.0, right: 10.0),
+                                      top: 2.0, left: 10.0, right: 10.0),
                                   child: Container(
                                     decoration:
                                         BoxDecoration(color: Colors.white),
@@ -1958,7 +1972,7 @@ class _StoneSearchState extends State<StoneSearch>
                                             padding: const EdgeInsets.only(
                                                 left: 5.0),
                                             child: Text(
-                                              'Dollar/ct %',
+                                              'Dollar/ct ',
                                               style: TextStyle(
                                                   fontSize: titleFont,
                                                   fontWeight: titlebold),

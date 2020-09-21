@@ -640,7 +640,7 @@ class _MyOrderState extends State<MyOrder> {
                     //     child: AlertDialog(
                     //       title: Text('Ozone Diamonds'),
                     //       content:
-                    //           Text('0 Stone(s) found for your Search Criteria'),
+                    //           Text('0 Stone(s) found for your search criteria'),
                     //       actions: <Widget>[
                     //         FlatButton(
                     //             onPressed: () {
@@ -658,7 +658,7 @@ class _MyOrderState extends State<MyOrder> {
                         child: AlertDialog(
                           title: Text('Ozone Diamonds'),
                           content:
-                              Text('0 Stone(s) found for your Search Criteria'),
+                              Text('0 Stone(s) found for your search criteria'),
                           actions: <Widget>[
                             FlatButton(
                                 onPressed: () {

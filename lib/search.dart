@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import "package:http/http.dart" as http;
+
 import 'package:ozone_diamonds/LoginPage.dart';
 import 'package:ozone_diamonds/dna_page.dart';
+import 'package:ozone_diamonds/media_fullscreen.dart';
 import 'package:ozone_diamonds/ozone_diaicon_icons.dart';
 import 'package:ozone_diamonds/search_with_tabs.dart';
 
@@ -751,7 +753,7 @@ class _searchlistState extends State<searchlist> {
                                                       ),
                                                     ],
                                                   ),
-                                                  new Divider(
+                                                  Divider(
                                                     color: Colors.grey[100],
                                                     thickness: 1.0,
                                                   ),
@@ -794,6 +796,68 @@ class _searchlistState extends State<searchlist> {
                                                         ),
                                                       ),
                                                     ),
+                                                  ),
+                                                  Divider(),
+                                                  Container(
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: [
+                                                        Container(
+                                                          child: IconButton(
+                                                              icon: Icon(
+                                                                Icons.receipt,
+                                                                color: Color(
+                                                                    0XFF294ea3),
+                                                              ),
+                                                              onPressed: () {
+                                                                Navigator.of(context).push(
+                                                                    MaterialPageRoute(
+                                                                        builder: (BuildContext
+                                                                                context) =>
+                                                                            MyMediaViewer(
+                                                                              mediaType: 'pdf',
+                                                                              mediaUrl: post.pdfLink,
+                                                                            )));
+                                                              }),
+                                                        ),
+                                                        Container(
+                                                          child: IconButton(
+                                                              icon: Icon(
+                                                                Icons.videocam,
+                                                                color: Color(
+                                                                    0XFF294ea3),
+                                                              ),
+                                                              onPressed: () {
+                                                                Navigator.of(context).push(
+                                                                    MaterialPageRoute(
+                                                                        builder: (BuildContext
+                                                                                context) =>
+                                                                            MyMediaViewer(
+                                                                              mediaType: 'mp4',
+                                                                              mediaUrl: post.videoLink,
+                                                                            )));
+                                                              }),
+                                                        ),
+                                                        Container(
+                                                          child: IconButton(
+                                                              icon: Icon(
+                                                                Icons.image,
+                                                                color: Color(
+                                                                    0XFF294ea3),
+                                                              ),
+                                                              onPressed: () {
+                                                                Navigator.of(context).push(MaterialPageRoute(
+                                                                    builder: (BuildContext context) => MyMediaViewer(
+                                                                        mediaType:
+                                                                            'image',
+                                                                        mediaUrl:
+                                                                            post.imageLink)));
+                                                              }),
+                                                        )
+                                                      ],
+                                                    ),
                                                   )
                                                 ],
                                               ),
@@ -813,7 +877,7 @@ class _searchlistState extends State<searchlist> {
                     //     child: AlertDialog(
                     //       title: Text('Ozone Diamonds'),
                     //       content:
-                    //           Text('0 Stone(s) found for your Search Criteria'),
+                    //           Text('0 Stone(s) found for your search criteria'),
                     //       actions: <Widget>[
                     //         FlatButton(
                     //             onPressed: () {
@@ -831,7 +895,7 @@ class _searchlistState extends State<searchlist> {
                         child: AlertDialog(
                           title: Text('Ozone Diamonds'),
                           content:
-                              Text('0 Stone(s) found for your Search Criteria'),
+                              Text('0 Stone(s) found for your search criteria'),
                           actions: <Widget>[
                             FlatButton(
                                 onPressed: () {
