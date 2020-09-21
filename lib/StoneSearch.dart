@@ -46,7 +46,7 @@ class _StoneSearchState extends State<StoneSearch>
                   padding: EdgeInsets.all(8.0),
                   child: Text(
                     "DONE",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.black),
                   ),
                 ),
               );
