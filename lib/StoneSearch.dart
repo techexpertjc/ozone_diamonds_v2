@@ -538,40 +538,44 @@ class _StoneSearchState extends State<StoneSearch>
         children: List.generate(element.length, (index) {
           int currIndex = initIndex;
           initIndex++;
-          return Container(
-            padding: EdgeInsets.all(1),
-            width: (MediaQuery.of(context).size.width - 50) / 6,
-            child: RaisedButton(
-                elevation: 0.0,
-                shape: _shape,
-                color: colourColor[currIndex]
-                    ? Color(0XFF294EA3)
-                    : Color(0XFFEBEFFA),
-                onPressed: () {
-                  if (!FocusScope.of(context).hasPrimaryFocus) {
-                    FocusScope.of(context).unfocus();
-                  }
-                  setState(() {
-                    colourColor[currIndex] = !colourColor[currIndex];
-                    if (colourResult
-                        .contains(colourValue[currIndex].toString())) {
-                      colourResult.remove(colourValue[currIndex].toString());
-                    } else {
-                      colourResult.add(colourValue[currIndex].toString());
+          return Expanded(
+            flex: 1,
+            child: Container(
+              padding: EdgeInsets.all(1),
+              // width: (MediaQuery.of(context).size.width - 50) / 6,
+              child: RaisedButton(
+                  elevation: 0.0,
+                  shape: _shape,
+                  color: colourColor[currIndex]
+                      ? Color(0XFF294EA3)
+                      : Color(0XFFEBEFFA),
+                  onPressed: () {
+                    if (!FocusScope.of(context).hasPrimaryFocus) {
+                      FocusScope.of(context).unfocus();
                     }
-                  });
-                  // print(buttonVlaue[index].toString());
-                },
-                child: Text(
-                  element[index].toString(),
-                  style: TextStyle(
-                      fontSize: element[index].length > 3
-                          ? buttonFont - 2
-                          : buttonFont,
-                      color:
-                          colourColor[currIndex] ? Colors.white : Colors.black,
-                      fontWeight: buttonbold),
-                )),
+                    setState(() {
+                      colourColor[currIndex] = !colourColor[currIndex];
+                      if (colourResult
+                          .contains(colourValue[currIndex].toString())) {
+                        colourResult.remove(colourValue[currIndex].toString());
+                      } else {
+                        colourResult.add(colourValue[currIndex].toString());
+                      }
+                    });
+                    // print(buttonVlaue[index].toString());
+                  },
+                  child: Text(
+                    element[index].toString(),
+                    style: TextStyle(
+                        fontSize: element[index].length > 3
+                            ? buttonFont - 2
+                            : buttonFont,
+                        color: colourColor[currIndex]
+                            ? Colors.white
+                            : Colors.black,
+                        fontWeight: buttonbold),
+                  )),
+            ),
           );
         }),
       ));

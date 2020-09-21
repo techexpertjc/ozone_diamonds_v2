@@ -121,6 +121,7 @@ class _MyMediaViewerState extends State<MyMediaViewer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: !pdfLoaded
           ? Center(
               child: CircularProgressIndicator(),
