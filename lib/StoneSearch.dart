@@ -960,11 +960,7 @@ class _StoneSearchState extends State<StoneSearch>
                                 height: 30,
                                 width: 100,
                                 child: TextFormField(
-<<<<<<< HEAD
                                   focusNode: _nodeText1,
-=======
-                                   focusNode: _nodeText1,
->>>>>>> fdd2fc3b53cffc393bc8d9de6c2d4ba701cc2931
                                   controller: caratToController,
                                   // initialValue: caratTo != null ? caratTo : null,
                                   inputFormatters: [
