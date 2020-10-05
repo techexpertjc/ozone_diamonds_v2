@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:ozone_diamonds/LoginPage.dart';
+import 'package:ozone_diamonds/RegisterPage.dart';
 import 'package:ozone_diamonds/search_with_tabs.dart';
 
 void main() {
@@ -18,7 +19,8 @@ class MyApp extends StatelessWidget {
         accentColor: Color(0XFF294EA3),
         primaryColor: Color(0XFF294ea3),
       ),
-      home: LoginPage(),
+      // home: LoginPage(),
+      home: RegisterPage(),
       color: Colors.white,
       debugShowCheckedModeBanner: false,
     );
