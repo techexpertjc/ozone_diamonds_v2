@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
-
+import "package:http/http.dart" as http;
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -174,8 +176,28 @@ class _LoginPageState extends State<LoginPage> {
                       padding: EdgeInsets.only(right: 0),
                       child: InkWell(
                         onTap: () async {
-                          scaffoldKey.currentState.showSnackBar(SnackBar(
-                              content: Text('Processing your request')));
+                          if (emailController.text != '') {
+                            scaffoldKey.currentState.showSnackBar(SnackBar(
+                                content: Text('Processing your request')));
+                            Map<String, String> aheaders = {
+                              'Content-Type': 'application/json; charset=utf-8',
+                            };
+                            Map<String, String> saveMap = Map();
+                            saveMap["EmailId"] = emailController.text;
+                            http.Response response = await http.post(
+                                'http://ozonediam.com/MobAppService.svc/ForgotPassword',
+                                headers: aheaders,
+                                body: json.encode(saveMap));
+                            var responseJson = json.decode(response.body);
+                            log(response.body);
+                            scaffoldKey.currentState.showSnackBar(SnackBar(
+                                content: Text(
+                                    responseJson['ForgotPasswordResult'])));
+                          } else {
+                            scaffoldKey.currentState.showSnackBar(SnackBar(
+                                content: Text(
+                                    'Please input email in email field.')));
+                          }
                         },
                         child: Text(
                           'Forgot Password',
