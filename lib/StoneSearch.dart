@@ -42,7 +42,7 @@ class _StoneSearchState extends State<StoneSearch>
               return GestureDetector(
                 onTap: () => node.unfocus(),
                 child: Container(
-                  color:Color(0XFFB8C6FF),
+                  color: Color(0XFFB8C6FF),
                   padding: EdgeInsets.all(8.0),
                   child: Text(
                     "DONE",
@@ -960,7 +960,7 @@ class _StoneSearchState extends State<StoneSearch>
                                 height: 30,
                                 width: 100,
                                 child: TextFormField(
-                                   focusNode: _nodeText1,,
+                                  focusNode: _nodeText1,
                                   controller: caratToController,
                                   // initialValue: caratTo != null ? caratTo : null,
                                   inputFormatters: [
