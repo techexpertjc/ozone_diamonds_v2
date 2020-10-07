@@ -8,10 +8,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nice_button/NiceButton.dart';
 import 'package:ozone_diamonds/RegisterPage.dart';
-import 'package:ozone_diamonds/search_with_tabs.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'DashBoard.dart';
 import 'Login_API.dart';
 import 'StoneSearch.dart';
 
@@ -298,12 +297,7 @@ class _LoginPageState extends State<LoginPage> {
           allowBuy = user.buy;
         }
         Navigator.pop(context, true);
-        Navigator.push(
-            context,
-            new MaterialPageRoute(
-                builder: (BuildContext context) => DashBoard(
-                      email: 'email',
-                    )));
+        Navigator.pushNamed(context, "/home");
       } else {
         showDialog<void>(
             context: context,

@@ -40,6 +40,7 @@ dependencies:
   dio:
   giffy_dialog:
   url_launcher:
+  permission_handler: ^5.0.1+1
   flutter_plugin_pdf_viewer: any
   video_player: ^0.10.11+2
   

@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 import "package:http/http.dart" as http;
 import 'package:flutter/material.dart';
 
 import 'package:ozone_diamonds/StoneSearch.dart';
-import 'package:ozone_diamonds/DashBoard.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,7 +21,7 @@ class MySearchPageState extends State<MySearchPage>
     with AutomaticKeepAliveClientMixin, SingleTickerProviderStateMixin {
   SharedPreferences pref;
   Map currSavedObj;
-  int _tabIndex = 0;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -144,11 +142,7 @@ class MySearchPageState extends State<MySearchPage>
                     size: 32,
                   ),
                   onPressed: () {
-                    Navigator.pop(context, true);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => DashBoard()));
+                    Navigator.popUntil(context, ModalRoute.withName('/home'));
                   })
             ],
           ),
@@ -244,7 +238,6 @@ class MySearchPageState extends State<MySearchPage>
         'http://ozonediam.com/MObAppService.SVC/SaveSearch',
         headers: aheaders,
         body: json.encode(saveMap));
-    var responseJson = json.decode(response.body);
 
     log('Inside remove ' + saveMap.toString());
     loadSavedSearchListCopy();

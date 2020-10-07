@@ -218,12 +218,9 @@ class _StoneSearchState extends State<StoneSearch>
   List<String> shadesResult = [];
 
   //H&A field
-  List<String> haName = ['EX', 'VG'];
-  List<String> haValue = [
-    "''EX''",
-    "''VG''",
-  ];
-  List<bool> haColor = [false, false];
+  List<String> haName = ['EX', 'VG', 'NONE'];
+  List<String> haValue = ["''EX''", "''VG''", "''NONE''"];
+  List<bool> haColor = [false, false, false];
   List<String> haResult = [];
 
   //black Inclustion field
@@ -231,6 +228,30 @@ class _StoneSearchState extends State<StoneSearch>
   List<String> blackIncnValue = ['1', '2', '3', '4', '5'];
   List<bool> blackIncnColor = [false, false, false, false, false];
   List<String> blackIncnResult = [];
+
+  //TB Field
+  List<String> tbFieldName = ['N', 'B_PP', 'B_1', 'B_2', 'B_3'];
+  List<String> tbFieldValue = [
+    "''N''",
+    "''B_PP''",
+    "''B_1''",
+    "''B_2''",
+    "''B_3''"
+  ];
+  List<bool> tbFieldColor = [false, false, false, false, false];
+  List<String> tbFieldResult = [];
+
+  //SB Field
+  List<String> sbFieldName = ['N', 'B_PP', 'B_1', 'B_2', 'B_3'];
+  List<String> sbFieldValue = [
+    "''N''",
+    "''B_PP''",
+    "''B_1''",
+    "''B_2''",
+    "''B_3''"
+  ];
+  List<bool> sbFieldColor = [false, false, false, false, false];
+  List<String> sbFieldResult = [];
 
   //white Inclustion field
   List<List<String>> whiteIncnName = [
@@ -240,6 +261,92 @@ class _StoneSearchState extends State<StoneSearch>
   List<String> whiteIncnValue = ['1', '2', '3', '4', '5', '6', '7'];
   List<bool> whiteIncnColor = [false, false, false, false, false, false, false];
   List<String> whiteIncnResult = [];
+
+  //TW
+  List<List<String>> twName = [
+    ['N', 'PP1', 'PP2', 'FR1', 'FR2'],
+    ['FR3', 'CLD1', 'CLD2', 'CLD3'],
+    ['SPR1', 'SPR2', 'SPR3'],
+    ['CRL1', 'CRL2', 'CRL3']
+  ];
+  List<String> twValue = [
+    "''N''",
+    "''PP1''",
+    "''PP2''",
+    "''FR1''",
+    "''FR2''",
+    "''FR3''",
+    "''CLD1''",
+    "''CLD2''",
+    "''CLD3''",
+    "''SPR1''",
+    "''SPR2''",
+    "''SPR3''",
+    "''CRL1''",
+    "''CRL2''",
+    "''CRL3''"
+  ];
+  List<bool> twColor = [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ];
+  List<String> twResult = [];
+
+  //SW
+  List<List<String>> swName = [
+    ['N', 'PP1', 'PP2', 'FR1', 'FR2'],
+    ['FR3', 'CLD1', 'CLD2', 'CLD3'],
+    ['SPR1', 'SPR2', 'SPR3'],
+    ['CRL1', 'CRL2', 'CRL3']
+  ];
+  List<String> swValue = [
+    "''N''",
+    "''PP1''",
+    "''PP2''",
+    "''FR1''",
+    "''FR2''",
+    "''FR3''",
+    "''CLD1''",
+    "''CLD2''",
+    "''CLD3''",
+    "''SPR1''",
+    "''SPR2''",
+    "''SPR3''",
+    "''CRL1''",
+    "''CRL2''",
+    "''CRL3''"
+  ];
+  List<bool> swColor = [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ];
+  List<String> swResult = [];
 
   //shape value
 
@@ -585,6 +692,100 @@ class _StoneSearchState extends State<StoneSearch>
     );
   }
 
+  Widget getTWOptionsWidget(BuildContext context) {
+    int initIndex = 0;
+    List<Widget> temptwRow = List();
+    twName.forEach((element) {
+      temptwRow.add(Row(
+        children: List.generate(element.length, (index) {
+          int currIndex = initIndex;
+          initIndex++;
+
+          return Container(
+            padding: EdgeInsets.all(1),
+            width: (MediaQuery.of(context).size.width - 20) / element.length,
+            child: RaisedButton(
+                elevation: 0.0,
+                shape: _shape,
+                color:
+                    twColor[currIndex] ? Color(0XFF294EA3) : Color(0XFFEBEFFA),
+                onPressed: () {
+                  if (!FocusScope.of(context).hasPrimaryFocus) {
+                    FocusScope.of(context).unfocus();
+                  }
+                  setState(() {
+                    twColor[currIndex] = !twColor[currIndex];
+                    if (twResult.contains(twValue[currIndex].toString())) {
+                      twResult.remove(twValue[currIndex].toString());
+                    } else {
+                      twResult.add(twValue[currIndex].toString());
+                    }
+                  });
+                  // print(buttonVlaue[index].toString());
+                },
+                child: Text(
+                  element[index].toString(),
+                  style: TextStyle(
+                      fontSize: buttonFont,
+                      fontWeight: buttonbold,
+                      color: twColor[currIndex] ? Colors.white : Colors.black),
+                )),
+          );
+        }),
+      ));
+    });
+    return Column(
+      children: temptwRow,
+    );
+  }
+
+  Widget getSWOptionsWidget(BuildContext context) {
+    int initIndex = 0;
+    List<Widget> tempswRow = List();
+    swName.forEach((element) {
+      tempswRow.add(Row(
+        children: List.generate(element.length, (index) {
+          int currIndex = initIndex;
+          initIndex++;
+
+          return Container(
+            padding: EdgeInsets.all(1),
+            width: (MediaQuery.of(context).size.width - 20) / element.length,
+            child: RaisedButton(
+                elevation: 0.0,
+                shape: _shape,
+                color:
+                    swColor[currIndex] ? Color(0XFF294EA3) : Color(0XFFEBEFFA),
+                onPressed: () {
+                  if (!FocusScope.of(context).hasPrimaryFocus) {
+                    FocusScope.of(context).unfocus();
+                  }
+                  setState(() {
+                    swColor[currIndex] = !swColor[currIndex];
+                    if (swResult.contains(swValue[currIndex].toString())) {
+                      swResult.remove(swValue[currIndex].toString());
+                    } else {
+                      swResult.add(swValue[currIndex].toString());
+                    }
+                  });
+                  // print(buttonVlaue[index].toString());
+                },
+                child: Text(
+                  element[index].toString(),
+                  style: TextStyle(
+                      fontSize: buttonFont,
+                      fontWeight: buttonbold,
+                      color: swColor[currIndex] ? Colors.white : Colors.black),
+                )),
+          );
+        }),
+      ));
+    });
+    return Column(
+      children: tempswRow,
+    );
+  }
+
   Widget getClarityOptionsWidget(BuildContext context) {
     int initIndex = 0;
     List<Widget> tempClarityRow = List();
@@ -668,7 +869,15 @@ class _StoneSearchState extends State<StoneSearch>
       blackIncnResult = currSavedObj['blackIncnResult'].cast<String>();
       whiteIncnColor = currSavedObj['whiteIncnColor'].cast<bool>();
       whiteIncnResult = currSavedObj['whiteIncnResult'].cast<String>();
+      sbFieldColor = currSavedObj['sbFieldColor'].cast<bool>();
+      sbFieldResult = currSavedObj['sbFieldResult'].cast<String>();
+      tbFieldColor = currSavedObj['tbFieldColor'].cast<bool>();
+      tbFieldResult = currSavedObj['tbFieldResult'].cast<String>();
 
+      swColor = currSavedObj['swColor'].cast<bool>();
+      swResult = currSavedObj['swResult'].cast<String>();
+      twColor = currSavedObj['twColor'].cast<bool>();
+      twResult = currSavedObj['twResult'].cast<String>();
       discountFromController.text = currSavedObj['discountFrom'] == ''
           ? null
           : currSavedObj['discountFrom'];
@@ -1870,6 +2079,254 @@ class _StoneSearchState extends State<StoneSearch>
                                     ),
                                   ),
                                 ),
+
+                                //TB Field
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      top: 2.0, left: 10.0, right: 10.0),
+                                  child: Container(
+                                    // height: 55.0,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.9444,
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Text(
+                                            'TB',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: titleFont,
+                                                fontWeight: titlebold),
+                                          ),
+                                        ),
+                                        Center(
+                                          child: SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: Row(
+                                              children: List.generate(
+                                                  tbFieldColor.length, (index) {
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 8.0,
+                                                          bottom: 3.0,
+                                                          top: 3.0),
+                                                  child: SizedBox(
+                                                    height: _height,
+                                                    width: (size) ? 60 : 70,
+                                                    child: RaisedButton(
+                                                        elevation: 0.0,
+                                                        shape: _shape,
+                                                        color: tbFieldColor[
+                                                                index]
+                                                            ? Color(0XFF294EA3)
+                                                            : Color(0XFFEBEFFA),
+                                                        onPressed: () {
+                                                          if (!FocusScope.of(
+                                                                  context)
+                                                              .hasPrimaryFocus) {
+                                                            FocusScope.of(
+                                                                    context)
+                                                                .unfocus();
+                                                          }
+                                                          setState(() {
+                                                            tbFieldColor[
+                                                                    index] =
+                                                                !tbFieldColor[
+                                                                    index];
+                                                            if (tbFieldResult.contains(
+                                                                tbFieldValue[
+                                                                        index]
+                                                                    .toString())) {
+                                                              tbFieldResult.remove(
+                                                                  tbFieldValue[
+                                                                          index]
+                                                                      .toString());
+                                                            } else {
+                                                              tbFieldResult.add(
+                                                                  tbFieldValue[
+                                                                          index]
+                                                                      .toString());
+                                                            }
+                                                          });
+                                                        },
+                                                        child: Text(
+                                                          tbFieldName[index]
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                                  buttonFont,
+                                                              color:
+                                                                  tbFieldColor[
+                                                                          index]
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
+                                                              fontWeight:
+                                                                  buttonbold),
+                                                        )),
+                                                  ),
+                                                );
+                                              }),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                //SB Field
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      top: 2.0, left: 10.0, right: 10.0),
+                                  child: Container(
+                                    // height: 55.0,
+                                    width: MediaQuery.of(context).size.width *
+                                        0.9444,
+                                    decoration:
+                                        BoxDecoration(color: Colors.white),
+                                    child: Column(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Text(
+                                            'SB',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: titleFont,
+                                                fontWeight: titlebold),
+                                          ),
+                                        ),
+                                        Center(
+                                          child: SingleChildScrollView(
+                                            scrollDirection: Axis.horizontal,
+                                            child: Row(
+                                              children: List.generate(
+                                                  sbFieldColor.length, (index) {
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 8.0,
+                                                          bottom: 3.0,
+                                                          top: 3.0),
+                                                  child: SizedBox(
+                                                    height: _height,
+                                                    width: (size) ? 60 : 70,
+                                                    child: RaisedButton(
+                                                        elevation: 0.0,
+                                                        shape: _shape,
+                                                        color: sbFieldColor[
+                                                                index]
+                                                            ? Color(0XFF294EA3)
+                                                            : Color(0XFFEBEFFA),
+                                                        onPressed: () {
+                                                          if (!FocusScope.of(
+                                                                  context)
+                                                              .hasPrimaryFocus) {
+                                                            FocusScope.of(
+                                                                    context)
+                                                                .unfocus();
+                                                          }
+                                                          setState(() {
+                                                            sbFieldColor[
+                                                                    index] =
+                                                                !sbFieldColor[
+                                                                    index];
+                                                            if (sbFieldResult.contains(
+                                                                sbFieldValue[
+                                                                        index]
+                                                                    .toString())) {
+                                                              sbFieldResult.remove(
+                                                                  sbFieldValue[
+                                                                          index]
+                                                                      .toString());
+                                                            } else {
+                                                              sbFieldResult.add(
+                                                                  sbFieldValue[
+                                                                          index]
+                                                                      .toString());
+                                                            }
+                                                          });
+                                                        },
+                                                        child: Text(
+                                                          sbFieldName[index]
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                                  buttonFont,
+                                                              color:
+                                                                  sbFieldColor[
+                                                                          index]
+                                                                      ? Colors
+                                                                          .white
+                                                                      : Colors
+                                                                          .black,
+                                                              fontWeight:
+                                                                  buttonbold),
+                                                        )),
+                                                  ),
+                                                );
+                                              }),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                //TW Field
+                                Padding(
+                                    padding: EdgeInsets.only(
+                                        top: 2.0, left: 10.0, right: 10.0),
+                                    child: Container(
+                                        color: Colors.white,
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.only(
+                                                  top: 5, bottom: 5),
+                                              child: Center(
+                                                child: Text(
+                                                  'TW',
+                                                  style: TextStyle(
+                                                      fontSize: titleFont,
+                                                      fontWeight: titlebold),
+                                                ),
+                                              ),
+                                            ),
+                                            getTWOptionsWidget(context),
+                                          ],
+                                        ))),
+
+                                //SW Field
+                                Padding(
+                                    padding: EdgeInsets.only(
+                                        top: 2.0, left: 10.0, right: 10.0),
+                                    child: Container(
+                                        color: Colors.white,
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              padding: EdgeInsets.only(
+                                                  top: 5, bottom: 5),
+                                              child: Center(
+                                                child: Text(
+                                                  'SW',
+                                                  style: TextStyle(
+                                                      fontSize: titleFont,
+                                                      fontWeight: titlebold),
+                                                ),
+                                              ),
+                                            ),
+                                            getSWOptionsWidget(context),
+                                          ],
+                                        ))),
+
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       top: 2.0, left: 10.0, right: 10.0),
@@ -3334,6 +3791,28 @@ class _StoneSearchState extends State<StoneSearch>
                                                               ['lusterColor'] =
                                                           lusterColor;
                                                       currValues[name]
+                                                              ['sbFieldColor'] =
+                                                          sbFieldColor;
+                                                      currValues[name][
+                                                              'sbFieldResult'] =
+                                                          sbFieldResult;
+                                                      currValues[name]
+                                                              ['tbFieldColor'] =
+                                                          tbFieldColor;
+                                                      currValues[name][
+                                                              'tbFieldResult'] =
+                                                          tbFieldResult;
+                                                      currValues[name]
+                                                              ['twResult'] =
+                                                          twResult;
+                                                      currValues[name]
+                                                          ['twColor'] = twColor;
+                                                      currValues[name]
+                                                              ['swResult'] =
+                                                          swResult;
+                                                      currValues[name]
+                                                          ['swColor'] = swColor;
+                                                      currValues[name]
                                                               ['lusterResult'] =
                                                           lusterResult;
                                                       currValues[name]
@@ -3870,10 +4349,34 @@ class _StoneSearchState extends State<StoneSearch>
         filquery += '$result';
         print(result);
       }
+      if (tbFieldResult.length > 0) {
+        String val = getvalue(tbFieldResult);
+        var result = "AND BLACK_SIZE_1 IN ($val)";
+        filquery += '$result';
+        print(result);
+      }
+      if (sbFieldResult.length > 0) {
+        String val = getvalue(sbFieldResult);
+        var result = "AND BLACK_SIZE_2 IN ($val)";
+        filquery += '$result';
+        print(result);
+      }
+      if (twResult.length > 0) {
+        String val = getvalue(twResult);
+        var result = "AND FEATHER_SIZE_1 IN ($val)";
+        filquery += '$result';
+        print(result);
+      }
+      if (swResult.length > 0) {
+        String val = getvalue(swResult);
+        var result = "AND FEATHER_SIZE_2 IN ($val)";
+        filquery += '$result';
+        print(result);
+      }
       if (caratList.length == 0) {
-        if (caratFrom != null && caratTo != null) {
-          String valfrom = caratFrom;
-          String valTo = caratTo;
+        if (caratFromController.text != '' && caratToController.text != '') {
+          String valfrom = caratFromController.text;
+          String valTo = caratToController.text;
           var result =
               "AND WGT BETWEEN ${valfrom.toString()} AND ${valTo.toString()}";
           filquery += '$result';

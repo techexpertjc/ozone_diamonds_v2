@@ -8,6 +8,7 @@ import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:ozone_diamonds/LoginPage.dart';
 import 'package:ozone_diamonds/cart_page.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:share/share.dart';
 import 'package:video_player/video_player.dart';
 import "package:http/http.dart" as http;
@@ -64,7 +65,9 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
         setState(() {});
       });
       dwnloadUrl = currStockObj.pdfLink;
-      directory = await getExternalStorageDirectory();
+      directory = Platform.isAndroid
+          ? await getExternalStorageDirectory()
+          : await getApplicationDocumentsDirectory();
       if (!Directory(directory.path + Platform.pathSeparator + 'Download')
           .existsSync()) {
         Directory(directory.path + Platform.pathSeparator + 'Download')
@@ -73,7 +76,7 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
 
       myVideoController.setLooping(true);
       myVideoController.play();
-
+      log('inside pdf link:' + currStockObj.pdfLink);
       PDFDocument.fromURL(currStockObj.pdfLink).then((value) {
         setState(() {
           certiPdf = value;
@@ -590,18 +593,33 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
                           backgroundColor: Color(0XFF294ea3),
                           mini: true,
                           onPressed: () async {
-                            final taskId = await FlutterDownloader.enqueue(
-                              url: dwnloadUrl,
-                              savedDir: directory.path +
-                                  Platform.pathSeparator +
-                                  'Download',
-                              showNotification:
-                                  true, // show download progress in status bar (for Android)
-                              openFileFromNotification:
-                                  true, // click on notification to open downloaded file (for Android)
-                            );
-                            scaffoldKey.currentState.showSnackBar(
-                                SnackBar(content: Text('Download Started')));
+                            switch (imageTabController.index) {
+                              case 0:
+                                dwnloadUrl = currStockObj.pdfLink;
+                                break;
+                              case 1:
+                                dwnloadUrl = currStockObj.videoLink;
+                                break;
+                              case 0:
+                                dwnloadUrl = currStockObj.imageLink;
+                                break;
+                              default:
+                                dwnloadUrl = currStockObj.pdfLink;
+                            }
+                            if (await Permission.storage.request().isGranted) {
+                              final taskId = await FlutterDownloader.enqueue(
+                                url: dwnloadUrl,
+                                savedDir: directory.path +
+                                    Platform.pathSeparator +
+                                    'Download',
+                                showNotification:
+                                    true, // show download progress in status bar (for Android)
+                                openFileFromNotification:
+                                    true, // click on notification to open downloaded file (for Android)
+                              );
+                              scaffoldKey.currentState.showSnackBar(
+                                  SnackBar(content: Text('Download Started')));
+                            }
                           },
                           child: Icon(Icons.arrow_downward),
                         ),
@@ -694,7 +712,7 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
             ),
           ),
           Container(
-            height: double.parse((7 * 40).toString()),
+            height: double.parse((9 * 40).toString()),
             width: MediaQuery.of(context).size.width,
             child:
                 TabBarView(controller: contentTabController, children: <Widget>[
@@ -1318,6 +1336,72 @@ class _MyDNAPageState extends State<MyDNAPage> with TickerProviderStateMixin {
                         ],
                       ),
                     ),
+
+                    //New Rows
+                    Container(
+                      color: Color(0XFFEBEFFA),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            width: (MediaQuery.of(context).size.width - 2) / 4,
+                            child: Text('Shade:', style: tabTextStyle),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            width: (MediaQuery.of(context).size.width - 2) / 4,
+                            child: Text(
+                              currStockObj.shade == 'null'
+                                  ? '-'
+                                  : currStockObj.sb,
+                              style: tabTextStyle,
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black)),
+                            width: 1,
+                            height: 40,
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            width: (MediaQuery.of(context).size.width - 2) / 4,
+                            child: Text('Luster:', style: tabTextStyle),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            width: (MediaQuery.of(context).size.width - 2) / 4,
+                            child: Text(
+                              currStockObj.luster == 'null'
+                                  ? '-'
+                                  : currStockObj.sw,
+                              style: tabTextStyle,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      color: Colors.white,
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            width: (MediaQuery.of(context).size.width - 2) / 4,
+                            child: Text('TB:', style: tabTextStyle),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            width: (MediaQuery.of(context).size.width - 2) / 4,
+                            child: Text(
+                              currStockObj.tb == 'null' ? '-' : currStockObj.tb,
+                              style: tabTextStyle,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
                     Container(
                       color: Color(0XFFEBEFFA),
                       child: Row(

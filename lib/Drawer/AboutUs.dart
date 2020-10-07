@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../DashBoard.dart';
-
 class AboutUS extends StatefulWidget {
   @override
   _AboutUSState createState() => _AboutUSState();
@@ -35,10 +33,7 @@ class _AboutUSState extends State<AboutUS> {
                   size: (size) ? 32 : 32,
                 ),
                 onPressed: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => DashBoard()));
+                  Navigator.popUntil(context, ModalRoute.withName('/home'));
                 })
           ],
         ),

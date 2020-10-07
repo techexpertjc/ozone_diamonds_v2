@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../DashBoard.dart';
 
 class contactus extends StatefulWidget {
   @override
@@ -38,10 +37,7 @@ class _contactusState extends State<contactus> {
                   size: (size) ? 32 : 32,
                 ),
                 onPressed: () {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => DashBoard()));
+                  Navigator.popUntil(context, ModalRoute.withName('/home'));
                 })
           ],
         ),

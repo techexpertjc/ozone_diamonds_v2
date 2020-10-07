@@ -5,10 +5,9 @@ import 'dart:convert';
 import "package:http/http.dart" as http;
 import 'package:ozone_diamonds/LoginPage.dart';
 import 'package:ozone_diamonds/dna_page.dart';
+import 'package:ozone_diamonds/media_fullscreen.dart';
 import 'package:ozone_diamonds/ozone_diaicon_icons.dart';
-import 'package:ozone_diamonds/search_with_tabs.dart';
-
-import 'DashBoard.dart';
+import 'package:ozone_diamonds/search.dart';
 
 class MyOrder extends StatefulWidget {
   MyOrder({Key key, this.fil}) : super(key: key);
@@ -23,96 +22,50 @@ class _MyOrderState extends State<MyOrder> {
   List<String> selectedList = List();
   List<Stock> selectedListJson = List();
   String carat = "-", discount = "-", amtCts = "-", total = "-";
+  Map<String, IconData> shapeMap = {
+    'ROUND': OzoneDiaicon.round,
+    'PRINCESS': OzoneDiaicon.princess,
+    'CUSHION': OzoneDiaicon.cushion,
+    'OVAL': OzoneDiaicon.oval,
+    'EMERALD': OzoneDiaicon.emerald,
+    'PEAR': OzoneDiaicon.pear,
+    'ASSCHER': OzoneDiaicon.asscher,
+    'HEART': OzoneDiaicon.heart,
+    'RADIANT': OzoneDiaicon.radiant,
+    'MARQUISE': OzoneDiaicon.marquise
+  };
   @override
   Widget build(BuildContext context) {
     String query = "${widget.fil}";
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
-        bottomNavigationBar: Padding(
-          padding: EdgeInsets.all(5),
-          child: Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                InkWell(
-                  onTap: () async {
-                    scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content:
-                            Text('Adding the items to cart please wait...')));
-
-                    await selectedList.forEach((element) async {
-                      Map<String, String> aheaders = {
-                        'Content-Type': 'application/json; charset=utf-8',
-                      };
-                      var saveMap = Map();
-                      saveMap['Token'] = token;
-                      saveMap['PacketNo'] = element;
-                      saveMap['TranType'] = 'INSERT';
-                      log(saveMap.toString());
-                      await http
-                          .post(
-                              'http://ozonediam.com/MobAppService.svc/ManageCart',
-                              headers: aheaders,
-                              body: json.encode(saveMap))
-                          .then((value) => log(value.body))
-                          .catchError((e) {
-                        scaffoldKey.currentState.showSnackBar(SnackBar(
-                            content: Text(
-                                'An Error Occured While Adding Some items to your cart, Please check Your Internet Connection.')));
-                      });
-                    });
-                    scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text('The Items have been added to Cart')));
-                  },
-                  child: Container(
-                    height: 40,
-                    child: Center(
-                        child: Column(
-                      children: <Widget>[
-                        Icon(Icons.shopping_cart),
-                        Text('Add to Cart')
-                      ],
-                    )),
-                  ),
-                )
-              ],
-            ),
+        appBar: AppBar(
+          backgroundColor: Color(0XFF294EA3),
+          leading: IconButton(
+              icon: Icon(
+                Icons.chevron_left,
+                size: (size) ? 35 : 35,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          centerTitle: true,
+          title: Text(
+            'My Orders and Invoice',
+            style: TextStyle(
+                fontSize: (size) ? 22 : 22, fontWeight: FontWeight.w400),
           ),
-        ),
-        appBar: PreferredSize(
-          preferredSize: (size) ? Size.fromHeight(45.0) : Size.fromHeight(45.0),
-          child: AppBar(
-            backgroundColor: Color(0XFF294EA3),
-            leading: IconButton(
+          actions: <Widget>[
+            IconButton(
                 icon: Icon(
-                  Icons.chevron_left,
-                  size: (size) ? 35 : 35,
+                  Icons.home,
+                  size: (size) ? 32 : 32,
                 ),
                 onPressed: () {
-                  Navigator.pop(context);
-                }),
-            centerTitle: true,
-            title: Text(
-              'My Orders and Invoice',
-              style: TextStyle(
-                  fontSize: (size) ? 22 : 22, fontWeight: FontWeight.w400),
-            ),
-            actions: <Widget>[
-              IconButton(
-                  icon: Icon(
-                    Icons.home,
-                    size: (size) ? 32 : 32,
-                  ),
-                  onPressed: () {
-                    Navigator.pop(context, true);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => DashBoard()));
-                  })
-            ],
-          ),
+                  Navigator.popUntil(context, ModalRoute.withName('/home'));
+                })
+          ],
         ),
         body: Container(
           height: MediaQuery.of(context).size.height,
@@ -123,51 +76,51 @@ class _MyOrderState extends State<MyOrder> {
                 builder: (context, snapshot) {
                   // log('inside builder' + json.encode(snapshot.data));
                   if (snapshot.hasData) {
-                    int numOfResult = snapshot.data.length;
                     List<Stock> posts = snapshot.data;
-
+                    TextStyle boldStyle =
+                        TextStyle(fontWeight: FontWeight.bold);
                     return Column(
                       children: <Widget>[
+                        Padding(padding: EdgeInsets.only(top: 10)),
                         Card(
-                          color: Colors.grey[200],
+                          color: Colors.white,
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
+                            padding: const EdgeInsets.only(
+                                left: 8.0, bottom: 8, top: 8),
                             child: Row(
                               children: <Widget>[
                                 Column(children: <Widget>[
-                                  Text("PCS"),
-                                  SizedBox(height: 3.0),
+                                  Text("PCS", style: boldStyle),
+                                  SizedBox(height: 10.0),
                                   Text(
                                     selectedList.length.toString(),
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
                                   )
                                 ]),
                                 Expanded(
                                   child: Column(children: <Widget>[
-                                    Text("CTS"),
-                                    SizedBox(height: 3.0),
+                                    Text("CTS", style: boldStyle),
+                                    SizedBox(height: 10.0),
                                     Text(carat)
                                   ]),
                                 ),
                                 Expanded(
                                   child: Column(children: <Widget>[
-                                    Text("DISC%"),
-                                    SizedBox(height: 3.0),
+                                    Text("DISC%", style: boldStyle),
+                                    SizedBox(height: 10.0),
                                     Text(discount)
                                   ]),
                                 ),
                                 Expanded(
                                   child: Column(children: <Widget>[
-                                    Text("\$/CTS"),
-                                    SizedBox(height: 3.0),
+                                    Text("\$/CTS", style: boldStyle),
+                                    SizedBox(height: 10.0),
                                     Text(amtCts)
                                   ]),
                                 ),
                                 Expanded(
                                   child: Column(children: <Widget>[
-                                    Text("AMT \$"),
-                                    SizedBox(height: 3.0),
+                                    Text("AMT \$", style: boldStyle),
+                                    SizedBox(height: 10.0),
                                     Text(total)
                                   ]),
                                 ),
@@ -175,6 +128,7 @@ class _MyOrderState extends State<MyOrder> {
                             ),
                           ),
                         ),
+                        Padding(padding: EdgeInsets.only(top: 10)),
                         // Column(children: <Widget>[Text(numOfResult.toString())],),
                         new Column(
                             children: posts
@@ -189,71 +143,177 @@ class _MyOrderState extends State<MyOrder> {
                                           color: selectedList
                                                       .indexOf(post.stone_id) !=
                                                   -1
-                                              ? Colors.grey[300]
-                                              : Colors.grey[200],
+                                              ? Color(0XFFEBEFFA)
+                                              : Colors.white,
                                           child: InkWell(
                                             onTap: () {
                                               log('Inside on tap');
-                                              setState(() {
-                                                if (selectedList.indexOf(
-                                                        post.stone_id) !=
-                                                    -1) {
-                                                  selectedListJson.add(post);
-                                                  selectedList
-                                                      .remove(post.stone_id);
-                                                } else {
-                                                  selectedListJson.add(post);
-                                                  selectedList
-                                                      .add(post.stone_id);
-                                                }
-                                                var discTotal = 0.00,
-                                                    caratTotal = 0.00,
-                                                    amountTotal = 0.00;
-                                                selectedListJson
-                                                    .forEach((element) {
-                                                  discTotal = discTotal +
-                                                      double.parse(
-                                                          element.discount);
-                                                  caratTotal = caratTotal +
-                                                      double.parse(
-                                                          element.carat);
-                                                  amountTotal = amountTotal +
-                                                      double.parse(
-                                                          element.total_amt);
-                                                });
-                                                if (selectedList.length > 0) {
-                                                  discount = (discTotal /
-                                                          selectedList.length)
-                                                      .toStringAsFixed(2);
-                                                  carat = caratTotal
-                                                      .toStringAsFixed(2);
-                                                  amtCts =
-                                                      (amountTotal / caratTotal)
-                                                          .toStringAsFixed(2);
-                                                  total = amountTotal
-                                                      .toStringAsFixed(0);
-                                                } else {
-                                                  discount = '-';
-                                                  carat = '-';
-                                                  amtCts = '-';
-                                                  total = '-';
-                                                }
-                                              });
-                                              // print(selectedList.toString());
-                                              // Navigator.push(
-                                              //     context,
-                                              //     MaterialPageRoute(
-                                              //         builder: (BuildContext
-                                              //                 context) =>
-                                              //             MyDNAPage(
-                                              //               dnaData: post,
-                                              //             )));
+                                              // setState(() {
+                                              //   if (selectedList.indexOf(
+                                              //           post.stone_id) !=
+                                              //       -1) {
+                                              //     log('inside if');
+                                              //     selectedListJson.remove(post);
+                                              //     selectedList
+                                              //         .remove(post.stone_id);
+                                              //   } else {
+                                              //     log('inside else');
+                                              //     selectedListJson.add(post);
+                                              //     selectedList
+                                              //         .add(post.stone_id);
+                                              //   }
+                                              //   print(selectedList.length);
+                                              //   var discTotal = 0.00,
+                                              //       caratTotal = 0.00,
+                                              //       amountTotal = 0.00;
+                                              //   selectedListJson
+                                              //       .forEach((element) {
+                                              //     discTotal = discTotal +
+                                              //         double.parse(
+                                              //             element.discount);
+                                              //     caratTotal = caratTotal +
+                                              //         double.parse(
+                                              //             element.carat);
+                                              //     amountTotal = amountTotal +
+                                              //         double.parse(
+                                              //             element.total_amt);
+                                              //   });
+
+                                              //   if (selectedList.length > 0) {
+                                              //     discount = (discTotal /
+                                              //             selectedList.length)
+                                              //         .toStringAsFixed(2);
+                                              //     carat = caratTotal
+                                              //         .toStringAsFixed(2);
+                                              //     amtCts =
+                                              //         (amountTotal / caratTotal)
+                                              //             .toStringAsFixed(2);
+                                              //     total = amountTotal
+                                              //         .toStringAsFixed(0);
+                                              //     log(discTotal.toString());
+                                              //   } else {
+                                              //     discTotal = 0.00;
+                                              //     caratTotal = 0.00;
+                                              //     amountTotal = 0.00;
+                                              //     discount = '0';
+                                              //     carat = '0';
+                                              //     amtCts = '0';
+                                              //     total = '0';
+                                              //     log(discTotal.toString());
+                                              //   }
+                                              // });
                                             },
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.all(5.0),
                                               child: Column(
                                                 children: <Widget>[
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        child: Checkbox(
+                                                          activeColor:
+                                                              Color(0XFF294ea3),
+                                                          value: selectedList
+                                                                  .indexOf(post
+                                                                      .stone_id) !=
+                                                              -1,
+                                                          onChanged: (value) {
+                                                            log('Inside on tap');
+                                                            setState(() {
+                                                              if (selectedList
+                                                                      .indexOf(post
+                                                                          .stone_id) !=
+                                                                  -1) {
+                                                                log('inside if');
+                                                                selectedListJson
+                                                                    .remove(
+                                                                        post);
+                                                                selectedList
+                                                                    .remove(post
+                                                                        .stone_id);
+                                                              } else {
+                                                                log('inside else');
+                                                                selectedListJson
+                                                                    .add(post);
+                                                                selectedList
+                                                                    .add(post
+                                                                        .stone_id);
+                                                              }
+                                                              print(selectedList
+                                                                  .length);
+                                                              var discTotal =
+                                                                      0.00,
+                                                                  caratTotal =
+                                                                      0.00,
+                                                                  amountTotal =
+                                                                      0.00;
+                                                              selectedListJson
+                                                                  .forEach(
+                                                                      (element) {
+                                                                discTotal = discTotal +
+                                                                    double.parse(
+                                                                        element
+                                                                            .discount);
+                                                                caratTotal = caratTotal +
+                                                                    double.parse(
+                                                                        element
+                                                                            .carat);
+                                                                amountTotal = amountTotal +
+                                                                    double.parse(
+                                                                        element
+                                                                            .total_amt);
+                                                              });
+
+                                                              if (selectedList
+                                                                      .length >
+                                                                  0) {
+                                                                discount = (discTotal /
+                                                                        selectedList
+                                                                            .length)
+                                                                    .toStringAsFixed(
+                                                                        2);
+                                                                carat = caratTotal
+                                                                    .toStringAsFixed(
+                                                                        2);
+                                                                amtCts = (amountTotal /
+                                                                        caratTotal)
+                                                                    .toStringAsFixed(
+                                                                        2);
+                                                                total = amountTotal
+                                                                    .toStringAsFixed(
+                                                                        0);
+                                                                log(discTotal
+                                                                    .toString());
+                                                              } else {
+                                                                discTotal =
+                                                                    0.00;
+                                                                caratTotal =
+                                                                    0.00;
+                                                                amountTotal =
+                                                                    0.00;
+                                                                discount = '0';
+                                                                carat = '0';
+                                                                amtCts = '0';
+                                                                total = '0';
+                                                                log(discTotal
+                                                                    .toString());
+                                                              }
+                                                            });
+                                                            // print(selectedList.toString());
+                                                            // Navigator.push(
+                                                            //     context,
+                                                            //     MaterialPageRoute(
+                                                            //         builder: (BuildContext
+                                                            //                 context) =>
+                                                            //             MyDNAPage(
+                                                            //               dnaData: post,
+                                                            //             )));
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                   Row(
                                                     children: <Widget>[
                                                       Column(
@@ -345,9 +405,11 @@ class _MyOrderState extends State<MyOrder> {
                                                       Column(
                                                         children: <Widget>[
                                                           Icon(
-                                                            OzoneDiaicon.round,
+                                                            shapeMap[
+                                                                post.shape],
                                                             size: 40.0,
-                                                            color: Colors.blue,
+                                                            color: Color(
+                                                                0XFF294ea3),
                                                           ),
                                                         ],
                                                       ),
@@ -480,8 +542,8 @@ class _MyOrderState extends State<MyOrder> {
                                                             Text(
                                                                 "\$ ${post.total_amt}",
                                                                 style: TextStyle(
-                                                                    color: Colors
-                                                                        .blue,
+                                                                    color: Color(
+                                                                        0XFF294ea3),
                                                                     fontSize:
                                                                         (size)
                                                                             ? 12
@@ -493,6 +555,82 @@ class _MyOrderState extends State<MyOrder> {
                                                         ),
                                                       ),
                                                     ],
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10.0),
+                                                    child: Row(
+                                                      children: <Widget>[
+                                                        Column(
+                                                          children: <Widget>[
+                                                            Text(post.shade,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        (size)
+                                                                            ? 13
+                                                                            : 13,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                          ],
+                                                        ),
+                                                        Expanded(
+                                                          child: Column(
+                                                            children: <Widget>[
+                                                              Text(
+                                                                post.luster,
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .red,
+                                                                    fontSize:
+                                                                        (size)
+                                                                            ? 12
+                                                                            : 12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Column(
+                                                            children: <Widget>[
+                                                              Text(post.tb,
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                              .grey[
+                                                                          700],
+                                                                      fontSize:
+                                                                          (size)
+                                                                              ? 12
+                                                                              : 12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold)),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          child: Column(
+                                                            children: <Widget>[
+                                                              Text(post.sb,
+                                                                  style: TextStyle(
+                                                                      color: Color(
+                                                                          0XFF294ea3),
+                                                                      fontSize:
+                                                                          (size)
+                                                                              ? 12
+                                                                              : 12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold)),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                   new Divider(
                                                     color: Colors.grey[100],
@@ -588,14 +726,27 @@ class _MyOrderState extends State<MyOrder> {
                                                       ),
                                                     ],
                                                   ),
-                                                  new Divider(
+                                                  Divider(
                                                     color: Colors.grey[100],
                                                     thickness: 1.0,
                                                   ),
                                                   Container(
-                                                    child: InkWell(
-                                                      onTap: () => Navigator.of(
-                                                              context)
+                                                    // height: 30,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            2,
+                                                    child: RaisedButton(
+                                                      color: Color(0XFF294ea3),
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10)),
+                                                      onPressed: () => Navigator
+                                                              .of(context)
                                                           .push(
                                                               MaterialPageRoute(
                                                                   builder: (BuildContext
@@ -610,16 +761,75 @@ class _MyOrderState extends State<MyOrder> {
                                                               MainAxisAlignment
                                                                   .center,
                                                           children: [
-                                                            Text(
-                                                                'View details '),
-                                                            IconButton(
-                                                                icon: Icon(Icons
-                                                                    .chevron_right),
-                                                                onPressed:
-                                                                    null),
+                                                            Text('View Details',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white)),
                                                           ],
                                                         ),
                                                       ),
+                                                    ),
+                                                  ),
+                                                  Divider(),
+                                                  Container(
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: [
+                                                        Container(
+                                                          child: IconButton(
+                                                              icon: Icon(
+                                                                Icons.receipt,
+                                                                color: Color(
+                                                                    0XFF294ea3),
+                                                              ),
+                                                              onPressed: () {
+                                                                Navigator.of(context).push(
+                                                                    MaterialPageRoute(
+                                                                        builder: (BuildContext
+                                                                                context) =>
+                                                                            MyMediaViewer(
+                                                                              mediaType: 'pdf',
+                                                                              mediaUrl: post.pdfLink,
+                                                                            )));
+                                                              }),
+                                                        ),
+                                                        Container(
+                                                          child: IconButton(
+                                                              icon: Icon(
+                                                                Icons.videocam,
+                                                                color: Color(
+                                                                    0XFF294ea3),
+                                                              ),
+                                                              onPressed: () {
+                                                                Navigator.of(context).push(
+                                                                    MaterialPageRoute(
+                                                                        builder: (BuildContext
+                                                                                context) =>
+                                                                            MyMediaViewer(
+                                                                              mediaType: 'mp4',
+                                                                              mediaUrl: post.videoLink,
+                                                                            )));
+                                                              }),
+                                                        ),
+                                                        Container(
+                                                          child: IconButton(
+                                                              icon: Icon(
+                                                                Icons.image,
+                                                                color: Color(
+                                                                    0XFF294ea3),
+                                                              ),
+                                                              onPressed: () {
+                                                                Navigator.of(context).push(MaterialPageRoute(
+                                                                    builder: (BuildContext context) => MyMediaViewer(
+                                                                        mediaType:
+                                                                            'image',
+                                                                        mediaUrl:
+                                                                            post.imageLink)));
+                                                              }),
+                                                        )
+                                                      ],
                                                     ),
                                                   )
                                                 ],
@@ -674,8 +884,8 @@ class _MyOrderState extends State<MyOrder> {
                   return new Center(
                     child: new Column(
                       children: <Widget>[
-                        new Padding(padding: new EdgeInsets.all(50.0)),
-                        new CircularProgressIndicator(),
+                        Padding(padding: new EdgeInsets.all(50.0)),
+                        CircularProgressIndicator(),
                       ],
                     ),
                   );
@@ -710,149 +920,5 @@ class _MyOrderState extends State<MyOrder> {
     return (responseJson['GetConfirmListResult']['Result'] as List)
         .map((p) => Stock.fromJson(p))
         .toList();
-  }
-}
-
-class Stock {
-  final String clarity,
-      colour,
-      cut,
-      symm,
-      flu,
-      certy,
-      polish,
-      shade,
-      carat,
-      ha,
-      discount,
-      cb,
-      cw,
-      color_description,
-      comments,
-      crown_angle,
-      crown_height,
-      depth,
-      depth_per,
-      eyeclean,
-      ktos,
-      lab,
-      lenght,
-      location,
-      milky,
-      pavilion_angle,
-      pavilion_height,
-      price_per_carat,
-      rap_price,
-      ratio,
-      report_date,
-      report_no,
-      sb,
-      sw,
-      shape,
-      stage,
-      stone_id,
-      table_per,
-      total_amt,
-      video,
-      weight,
-      pdfLink,
-      videoLink,
-      imageLink,
-      width;
-
-  Stock({
-    this.clarity,
-    this.colour,
-    this.cut,
-    this.polish,
-    this.symm,
-    this.flu,
-    this.certy,
-    this.shade,
-    this.carat,
-    this.ha,
-    this.discount,
-    this.cb,
-    this.cw,
-    this.color_description,
-    this.comments,
-    this.crown_angle,
-    this.crown_height,
-    this.depth,
-    this.depth_per,
-    this.eyeclean,
-    this.ktos,
-    this.lab,
-    this.lenght,
-    this.location,
-    this.milky,
-    this.pavilion_angle,
-    this.pavilion_height,
-    this.price_per_carat,
-    this.rap_price,
-    this.ratio,
-    this.report_date,
-    this.report_no,
-    this.sw,
-    this.sb,
-    this.shape,
-    this.stage,
-    this.stone_id,
-    this.table_per,
-    this.total_amt,
-    this.video,
-    this.pdfLink,
-    this.imageLink,
-    this.videoLink,
-    this.weight,
-    this.width,
-  });
-
-  factory Stock.fromJson(Map<String, dynamic> json) {
-    return new Stock(
-        clarity: json['Clarity'].toString(),
-        colour: json['Colour'].toString(),
-        cut: json['Cut'].toString(),
-        polish: json['Polish'].toString(),
-        symm: json['Symmetry'].toString(),
-        flu: json['Fluorescence'].toString(),
-        certy: json['Lab'].toString(),
-        shade: json['Shade'].toString(),
-        carat: json['Weight'].toString(),
-        ha: json['HA'].toString(),
-        discount: json['Discount'].toString(),
-        cb: json['CB'].toString(),
-        cw: json['CW'].toString(),
-        color_description: json['ColorDescription'].toString(),
-        crown_angle: json['CrownAngle'].toString(),
-        crown_height: json['CrownHeight'].toString(),
-        depth: json['Depth'].toString(),
-        eyeclean: json['EyeClean'].toString(),
-        ktos: json['KeyToSymbols'].toString(),
-        lab: json['Lab'].toString(),
-        lenght: json['Lenght'].toString(),
-        location: json['Location'].toString(),
-        milky: json['Milky'].toString(),
-        pavilion_angle: json['PavilionAngle'].toString(),
-        pavilion_height: json['PavilionHeight'].toString(),
-        price_per_carat: json['PricePerCarat'].toString(),
-        rap_price: json['RapPrice'].toString(),
-        ratio: json['Ratio'].toString(),
-        report_date: json['ReportDate'].toString(),
-        report_no: json['ReportNo'].toString(),
-        sw: json['SW'].toString(),
-        sb: json['SB'].toString(),
-        shape: json['Shape'].toString(),
-        stage: json['Stage'].toString(),
-        stone_id: json['StoneId'].toString(),
-        table_per: json['TablePer'].toString(),
-        total_amt: json['TotalAmount'].toString(),
-        video: json['Video'].toString(),
-        pdfLink: json['Cert'].toString(),
-        videoLink: json['Mp4Video'].toString(),
-        imageLink: json['Image'].toString(),
-        comments: json['Comments'].toString(),
-        weight: json['Weight'].toString(),
-        width: json['Width'].toString());
   }
 }

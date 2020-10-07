@@ -5,10 +5,9 @@ import 'dart:convert';
 import "package:http/http.dart" as http;
 import 'package:ozone_diamonds/LoginPage.dart';
 import 'package:ozone_diamonds/dna_page.dart';
+import 'package:ozone_diamonds/media_fullscreen.dart';
 import 'package:ozone_diamonds/ozone_diaicon_icons.dart';
-import 'package:ozone_diamonds/search_with_tabs.dart';
-
-import 'DashBoard.dart';
+import 'package:ozone_diamonds/search.dart';
 
 class PairSearchlist extends StatefulWidget {
   PairSearchlist({Key key, this.fil}) : super(key: key);
@@ -21,8 +20,9 @@ class _PairsearchlistState extends State<PairSearchlist> {
   bool size = false;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> selectedList = List();
-  List<Stock> selectedListJson = List();
-  List<Stock> resultList = List();
+  List<PairStock> selectedListJson = List();
+  List<PairStock> resultList = List();
+  bool isLoaded = false;
   String carat = "0", discount = "0", amtCts = "0", total = "0";
 
   Map<String, IconData> shapeMap = {
@@ -50,11 +50,13 @@ class _PairsearchlistState extends State<PairSearchlist> {
     fetchPosts(query).then((value) {
       setState(() {
         resultList = value;
+        isLoaded = true;
       });
     });
   }
 
   List<Widget> getPairSearchResults() {
+    Map pairMap = new Map();
     List<Widget> tempList = List();
     tempList.add(
       Padding(padding: EdgeInsets.only(top: 10)),
@@ -111,75 +113,92 @@ class _PairsearchlistState extends State<PairSearchlist> {
       Padding(padding: EdgeInsets.only(top: 10)),
     );
 
-    for (int i = 0; i < resultList.length; i = i + 2) {
-      Widget tempCard;
+    resultList.forEach((element) {
+      if (!pairMap.containsKey(element.pairNo)) {
+        List<PairStock> tempStockList = new List<PairStock>();
+        tempStockList.add(element);
+        pairMap[element.pairNo] = tempStockList;
+      } else {
+        (pairMap[element.pairNo] as List).add(element);
+      }
+    });
+    pairMap.forEach((key, value) {
       List<Widget> tempWidgetList = List();
-      Stock post = resultList[i];
-      tempWidgetList.add(Column(
-        children: <Widget>[
-          Card(
-            elevation: selectedList.indexOf(post.stone_id) != -1 ? 5 : 1,
-            color: selectedList.indexOf(post.stone_id) != -1
-                ? Color(0XFFEBEFFA)
-                : Colors.white,
-            child: InkWell(
-              onTap: () {
-                log('Inside on tap');
-                setState(() {
-                  if (selectedList.indexOf(post.stone_id) != -1) {
-                    log('inside if');
-                    selectedListJson.remove(post);
-                    selectedList.remove(post.stone_id);
-                  } else {
-                    log('inside else');
-                    selectedListJson.add(post);
-                    selectedList.add(post.stone_id);
-                  }
-                  print(selectedList.length);
-                  var discTotal = 0.00, caratTotal = 0.00, amountTotal = 0.00;
-                  selectedListJson.forEach((element) {
-                    discTotal = discTotal + double.parse(element.discount);
-                    caratTotal = caratTotal + double.parse(element.carat);
-                    amountTotal = amountTotal + double.parse(element.total_amt);
-                  });
+      (value as List).forEach((post) {
+        tempWidgetList.add(Column(
+          children: <Widget>[
+            Card(
+              elevation: selectedList.indexOf(post.stone_id) != -1 ? 5 : 1,
+              color: selectedList.indexOf(post.stone_id) != -1
+                  ? Color(0XFFEBEFFA)
+                  : Colors.white,
+              child: InkWell(
+                onTap: () {
+                  log('Inside on tap');
+                  // setState(() {
+                  //   if (selectedList.indexOf(
+                  //           post.stone_id) !=
+                  //       -1) {
+                  //     log('inside if');
+                  //     selectedListJson.remove(post);
+                  //     selectedList
+                  //         .remove(post.stone_id);
+                  //   } else {
+                  //     log('inside else');
+                  //     selectedListJson.add(post);
+                  //     selectedList
+                  //         .add(post.stone_id);
+                  //   }
+                  //   print(selectedList.length);
+                  //   var discTotal = 0.00,
+                  //       caratTotal = 0.00,
+                  //       amountTotal = 0.00;
+                  //   selectedListJson
+                  //       .forEach((element) {
+                  //     discTotal = discTotal +
+                  //         double.parse(
+                  //             element.discount);
+                  //     caratTotal = caratTotal +
+                  //         double.parse(
+                  //             element.carat);
+                  //     amountTotal = amountTotal +
+                  //         double.parse(
+                  //             element.total_amt);
+                  //   });
 
-                  if (selectedList.length > 0) {
-                    discount =
-                        (discTotal / selectedList.length).toStringAsFixed(2);
-                    carat = caratTotal.toStringAsFixed(2);
-                    amtCts = (amountTotal / caratTotal).toStringAsFixed(2);
-                    total = amountTotal.toStringAsFixed(0);
-                    log(discTotal.toString());
-                  } else {
-                    discTotal = 0.00;
-                    caratTotal = 0.00;
-                    amountTotal = 0.00;
-                    discount = '0';
-                    carat = '0';
-                    amtCts = '0';
-                    total = '0';
-                    log(discTotal.toString());
-                  }
-                });
-                // print(selectedList.toString());
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (BuildContext
-                //                 context) =>
-                //             MyDNAPage(
-                //               dnaData: post,
-                //             )));
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      children: [
-                        Container(
-                          child: Checkbox(
-                              checkColor: Color(0XFF294ea3),
+                  //   if (selectedList.length > 0) {
+                  //     discount = (discTotal /
+                  //             selectedList.length)
+                  //         .toStringAsFixed(2);
+                  //     carat = caratTotal
+                  //         .toStringAsFixed(2);
+                  //     amtCts =
+                  //         (amountTotal / caratTotal)
+                  //             .toStringAsFixed(2);
+                  //     total = amountTotal
+                  //         .toStringAsFixed(0);
+                  //     log(discTotal.toString());
+                  //   } else {
+                  //     discTotal = 0.00;
+                  //     caratTotal = 0.00;
+                  //     amountTotal = 0.00;
+                  //     discount = '0';
+                  //     carat = '0';
+                  //     amtCts = '0';
+                  //     total = '0';
+                  //     log(discTotal.toString());
+                  //   }
+                  // });
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        children: [
+                          Container(
+                            child: Checkbox(
+                              activeColor: Color(0XFF294ea3),
                               value: selectedList.indexOf(post.stone_id) != -1,
                               onChanged: (value) {
                                 log('Inside on tap');
@@ -235,667 +254,391 @@ class _PairsearchlistState extends State<PairSearchlist> {
                                 //             MyDNAPage(
                                 //               dnaData: post,
                                 //             )));
-                              }),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Text(
-                              post.stone_id,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: (size) ? 14 : 14),
+                              },
                             ),
-                          ],
-                        ),
-                        Expanded(
-                          child: Column(
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Column(
                             children: <Widget>[
                               Text(
-                                post.carat,
+                                post.stone_id,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.indigo[900],
                                     fontSize: (size) ? 14 : 14),
                               ),
                             ],
                           ),
-                        ),
-                        Expanded(
-                          child: Column(
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text(
+                                  post.carat,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.indigo[900],
+                                      fontSize: (size) ? 14 : 14),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text(post.colour,
+                                    style:
+                                        TextStyle(fontSize: (size) ? 14 : 14)),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text(post.clarity,
+                                    style:
+                                        TextStyle(fontSize: (size) ? 14 : 14)),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text(post.certy,
+                                    style:
+                                        TextStyle(fontSize: (size) ? 14 : 14)),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text(post.location,
+                                    style:
+                                        TextStyle(fontSize: (size) ? 14 : 14)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Column(
                             children: <Widget>[
-                              Text(post.colour,
-                                  style: TextStyle(fontSize: (size) ? 14 : 14)),
+                              Icon(
+                                shapeMap[post.shape],
+                                size: 40.0,
+                                color: Color(0XFF294ea3),
+                              ),
                             ],
                           ),
-                        ),
-                        Expanded(
-                          child: Column(
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text(post.cut,
+                                    style:
+                                        TextStyle(fontSize: (size) ? 14 : 14)),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text(post.symm,
+                                    style:
+                                        TextStyle(fontSize: (size) ? 14 : 14)),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text(post.polish,
+                                    style:
+                                        TextStyle(fontSize: (size) ? 14 : 14)),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text(post.flu,
+                                    style:
+                                        TextStyle(fontSize: (size) ? 14 : 14)),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text(post.stage,
+                                    style: TextStyle(
+                                        fontSize: (size) ? 14 : 14,
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      //         new Divider(
+                      //   color: Colors.red,
+                      // ),
+                      Row(
+                        children: <Widget>[
+                          Column(
                             children: <Widget>[
-                              Text(post.clarity,
-                                  style: TextStyle(fontSize: (size) ? 14 : 14)),
+                              Text(post.shape,
+                                  style: TextStyle(
+                                      fontSize: (size) ? 13 : 13,
+                                      fontWeight: FontWeight.bold)),
                             ],
                           ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(post.certy,
-                                  style: TextStyle(fontSize: (size) ? 14 : 14)),
-                            ],
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text(
+                                  "DIS(%):${post.discount}",
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: (size) ? 12 : 12,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(post.location,
-                                  style: TextStyle(fontSize: (size) ? 14 : 14)),
-                            ],
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text("\$/CTS: ${post.price_per_carat}",
+                                    style: TextStyle(
+                                        color: Colors.grey[700],
+                                        fontSize: (size) ? 12 : 12,
+                                        fontWeight: FontWeight.bold)),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Column(
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text("\$ ${post.total_amt}",
+                                    style: TextStyle(
+                                        color: Color(0XFF294ea3),
+                                        fontSize: (size) ? 12 : 12,
+                                        fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
                           children: <Widget>[
-                            Icon(
-                              shapeMap[post.shape],
-                              size: 40.0,
-                              color: Color(0XFF294ea3),
+                            Column(
+                              children: <Widget>[
+                                Text(post.shade,
+                                    style: TextStyle(
+                                        fontSize: (size) ? 13 : 13,
+                                        fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                            Expanded(
+                              child: Column(
+                                children: <Widget>[
+                                  Text(
+                                    post.luster,
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: (size) ? 12 : 12,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                children: <Widget>[
+                                  Text(post.tb,
+                                      style: TextStyle(
+                                          color: Colors.grey[700],
+                                          fontSize: (size) ? 12 : 12,
+                                          fontWeight: FontWeight.bold)),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                children: <Widget>[
+                                  Text(post.sb,
+                                      style: TextStyle(
+                                          color: Color(0XFF294ea3),
+                                          fontSize: (size) ? 12 : 12,
+                                          fontWeight: FontWeight.bold)),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(post.cut,
-                                  style: TextStyle(fontSize: (size) ? 14 : 14)),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(post.symm,
-                                  style: TextStyle(fontSize: (size) ? 14 : 14)),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(post.polish,
-                                  style: TextStyle(fontSize: (size) ? 14 : 14)),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(post.flu,
-                                  style: TextStyle(fontSize: (size) ? 14 : 14)),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(post.stage,
-                                  style: TextStyle(
-                                      fontSize: (size) ? 14 : 14,
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    //         new Divider(
-                    //   color: Colors.red,
-                    // ),
-                    Row(
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Text(post.shape,
-                                style: TextStyle(
-                                    fontSize: (size) ? 13 : 13,
-                                    fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                "DIS(%):${post.discount}",
-                                style: TextStyle(
-                                    color: Colors.red,
-                                    fontSize: (size) ? 12 : 12,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text("\$/CTS: ${post.price_per_carat}",
+                      ),
+                      new Divider(
+                        color: Colors.grey[100],
+                        thickness: 1.0,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text(
+                                  "TABLE(%):${post.table_per}",
                                   style: TextStyle(
                                       color: Colors.grey[700],
                                       fontSize: (size) ? 12 : 12,
-                                      fontWeight: FontWeight.bold)),
-                            ],
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text("\$ ${post.total_amt}",
-                                  style: TextStyle(
-                                      color: Color(0XFF294ea3),
-                                      fontSize: (size) ? 12 : 12,
-                                      fontWeight: FontWeight.bold)),
-                            ],
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text("DEPTH(%)${post.depth}",
+                                    style: TextStyle(
+                                        color: Colors.grey[700],
+                                        fontSize: (size) ? 12 : 12,
+                                        fontWeight: FontWeight.bold)),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    new Divider(
-                      color: Colors.grey[100],
-                      thickness: 1.0,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                "TABLE(%):${post.table_per}",
-                                style: TextStyle(
-                                    color: Colors.grey[700],
-                                    fontSize: (size) ? 12 : 12,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                        ],
+                      ),
+                      new Divider(
+                        color: Colors.grey[100],
+                        thickness: 1.0,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text(
+                                    'MEAS:${post.lenght} x ${post.width} x ${post.depth}',
+                                    style: TextStyle(
+                                        color: Colors.grey[700],
+                                        fontSize: (size) ? 12 : 12,
+                                        fontWeight: FontWeight.bold)),
+                              ],
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text("DEPTH(%)${post.depth}",
-                                  style: TextStyle(
-                                      color: Colors.grey[700],
-                                      fontSize: (size) ? 12 : 12,
-                                      fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    new Divider(
-                      color: Colors.grey[100],
-                      thickness: 1.0,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                  'MEAS:${post.lenght} x ${post.width} x ${post.depth}',
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text(
+                                  "RATIO(%):${post.ratio}",
                                   style: TextStyle(
                                       color: Colors.grey[700],
                                       fontSize: (size) ? 12 : 12,
-                                      fontWeight: FontWeight.bold)),
-                            ],
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                "RATIO(%):${post.ratio}",
-                                style: TextStyle(
-                                    color: Colors.grey[700],
-                                    fontSize: (size) ? 12 : 12,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    new Divider(
-                      color: Colors.grey[100],
-                      thickness: 1.0,
-                    ),
-                    Container(
-                      // height: 30,
-                      width: MediaQuery.of(context).size.width / 2,
-                      child: RaisedButton(
-                        color: Color(0XFF294ea3),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        onPressed: () =>
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => MyDNAPage(
-                                      dnaData: post,
-                                    ))),
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('View Details',
-                                  style: TextStyle(color: Colors.white)),
-                            ],
+                        ],
+                      ),
+                      Divider(
+                        color: Colors.grey[100],
+                        thickness: 1.0,
+                      ),
+                      Container(
+                        // height: 30,
+                        width: MediaQuery.of(context).size.width / 2,
+                        child: RaisedButton(
+                          color: Color(0XFF294ea3),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          onPressed: () =>
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) => MyDNAPage(
+                                        dnaData: Stock.fromPairStock(post),
+                                      ))),
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('View Details',
+                                    style: TextStyle(color: Colors.white)),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    )
-                  ],
+                      Divider(),
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Container(
+                              child: IconButton(
+                                  icon: Icon(
+                                    Icons.receipt,
+                                    color: Color(0XFF294ea3),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                MyMediaViewer(
+                                                  mediaType: 'pdf',
+                                                  mediaUrl: post.pdfLink,
+                                                )));
+                                  }),
+                            ),
+                            Container(
+                              child: IconButton(
+                                  icon: Icon(
+                                    Icons.videocam,
+                                    color: Color(0XFF294ea3),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                MyMediaViewer(
+                                                  mediaType: 'mp4',
+                                                  mediaUrl: post.videoLink,
+                                                )));
+                                  }),
+                            ),
+                            Container(
+                              child: IconButton(
+                                  icon: Icon(
+                                    Icons.image,
+                                    color: Color(0XFF294ea3),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                MyMediaViewer(
+                                                    mediaType: 'image',
+                                                    mediaUrl: post.imageLink)));
+                                  }),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
 
-          //Text(post.certy)
-        ],
-      ));
-      Stock post1 = resultList[i + 1];
-      tempWidgetList.add(Column(
-        children: <Widget>[
-          Card(
-            elevation: selectedList.indexOf(post1.stone_id) != -1 ? 5 : 1,
-            color: selectedList.indexOf(post1.stone_id) != -1
-                ? Color(0XFFEBEFFA)
-                : Colors.white,
-            child: InkWell(
-              onTap: () {
-                log('Inside on tap');
-                setState(() {
-                  if (selectedList.indexOf(post1.stone_id) != -1) {
-                    log('inside if');
-                    selectedListJson.remove(post1);
-                    selectedList.remove(post1.stone_id);
-                  } else {
-                    log('inside else');
-                    selectedListJson.add(post1);
-                    selectedList.add(post1.stone_id);
-                  }
-                  print(selectedList.length);
-                  var discTotal = 0.00, caratTotal = 0.00, amountTotal = 0.00;
-                  selectedListJson.forEach((element) {
-                    discTotal = discTotal + double.parse(element.discount);
-                    caratTotal = caratTotal + double.parse(element.carat);
-                    amountTotal = amountTotal + double.parse(element.total_amt);
-                  });
-
-                  if (selectedList.length > 0) {
-                    discount =
-                        (discTotal / selectedList.length).toStringAsFixed(2);
-                    carat = caratTotal.toStringAsFixed(2);
-                    amtCts = (amountTotal / caratTotal).toStringAsFixed(2);
-                    total = amountTotal.toStringAsFixed(0);
-                    log(discTotal.toString());
-                  } else {
-                    discTotal = 0.00;
-                    caratTotal = 0.00;
-                    amountTotal = 0.00;
-                    discount = '0';
-                    carat = '0';
-                    amtCts = '0';
-                    total = '0';
-                    log(discTotal.toString());
-                  }
-                });
-                // print(selectedList.toString());
-                // Navigator.push(
-                //     context,
-                //     MaterialPageRoute(
-                //         builder: (BuildContext
-                //                 context) =>
-                //             MyDNAPage(
-                //               dnaData: post1,
-                //             )));
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      children: [
-                        Container(
-                          child: Checkbox(
-                              checkColor: Color(0XFF294ea3),
-                              value: selectedList.indexOf(post1.stone_id) != -1,
-                              onChanged: (value) {
-                                log('Inside on tap');
-                                setState(() {
-                                  if (selectedList.indexOf(post1.stone_id) !=
-                                      -1) {
-                                    log('inside if');
-                                    selectedListJson.remove(post1);
-                                    selectedList.remove(post1.stone_id);
-                                  } else {
-                                    log('inside else');
-                                    selectedListJson.add(post1);
-                                    selectedList.add(post1.stone_id);
-                                  }
-                                  print(selectedList.length);
-                                  var discTotal = 0.00,
-                                      caratTotal = 0.00,
-                                      amountTotal = 0.00;
-                                  selectedListJson.forEach((element) {
-                                    discTotal = discTotal +
-                                        double.parse(element.discount);
-                                    caratTotal = caratTotal +
-                                        double.parse(element.carat);
-                                    amountTotal = amountTotal +
-                                        double.parse(element.total_amt);
-                                  });
-
-                                  if (selectedList.length > 0) {
-                                    discount = (discTotal / selectedList.length)
-                                        .toStringAsFixed(2);
-                                    carat = caratTotal.toStringAsFixed(2);
-                                    amtCts = (amountTotal / caratTotal)
-                                        .toStringAsFixed(2);
-                                    total = amountTotal.toStringAsFixed(0);
-                                    log(discTotal.toString());
-                                  } else {
-                                    discTotal = 0.00;
-                                    caratTotal = 0.00;
-                                    amountTotal = 0.00;
-                                    discount = '0';
-                                    carat = '0';
-                                    amtCts = '0';
-                                    total = '0';
-                                    log(discTotal.toString());
-                                  }
-                                });
-                                // print(selectedList.toString());
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //         builder: (BuildContext
-                                //                 context) =>
-                                //             MyDNAPage(
-                                //               dnaData: post1,
-                                //             )));
-                              }),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Text(
-                              post1.stone_id,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: (size) ? 14 : 14),
-                            ),
-                          ],
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                post1.carat,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.indigo[900],
-                                    fontSize: (size) ? 14 : 14),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(post1.colour,
-                                  style: TextStyle(fontSize: (size) ? 14 : 14)),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(post1.clarity,
-                                  style: TextStyle(fontSize: (size) ? 14 : 14)),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(post1.certy,
-                                  style: TextStyle(fontSize: (size) ? 14 : 14)),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(post1.location,
-                                  style: TextStyle(fontSize: (size) ? 14 : 14)),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Icon(
-                              shapeMap[post1.shape],
-                              size: 40.0,
-                              color: Color(0XFF294ea3),
-                            ),
-                          ],
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(post1.cut,
-                                  style: TextStyle(fontSize: (size) ? 14 : 14)),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(post1.symm,
-                                  style: TextStyle(fontSize: (size) ? 14 : 14)),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(post1.polish,
-                                  style: TextStyle(fontSize: (size) ? 14 : 14)),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(post1.flu,
-                                  style: TextStyle(fontSize: (size) ? 14 : 14)),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(post1.stage,
-                                  style: TextStyle(
-                                      fontSize: (size) ? 14 : 14,
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    //         new Divider(
-                    //   color: Colors.red,
-                    // ),
-                    Row(
-                      children: <Widget>[
-                        Column(
-                          children: <Widget>[
-                            Text(post1.shape,
-                                style: TextStyle(
-                                    fontSize: (size) ? 13 : 13,
-                                    fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                "DIS(%):${post1.discount}",
-                                style: TextStyle(
-                                    color: Colors.red,
-                                    fontSize: (size) ? 12 : 12,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text("\$/CTS: ${post1.price_per_carat}",
-                                  style: TextStyle(
-                                      color: Colors.grey[700],
-                                      fontSize: (size) ? 12 : 12,
-                                      fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text("\$ ${post1.total_amt}",
-                                  style: TextStyle(
-                                      color: Color(0XFF294ea3),
-                                      fontSize: (size) ? 12 : 12,
-                                      fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    new Divider(
-                      color: Colors.grey[100],
-                      thickness: 1.0,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                "TABLE(%):${post1.table_per}",
-                                style: TextStyle(
-                                    color: Colors.grey[700],
-                                    fontSize: (size) ? 12 : 12,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text("DEPTH(%)${post1.depth}",
-                                  style: TextStyle(
-                                      color: Colors.grey[700],
-                                      fontSize: (size) ? 12 : 12,
-                                      fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    new Divider(
-                      color: Colors.grey[100],
-                      thickness: 1.0,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                  'MEAS:${post1.lenght} x ${post1.width} x ${post1.depth}',
-                                  style: TextStyle(
-                                      color: Colors.grey[700],
-                                      fontSize: (size) ? 12 : 12,
-                                      fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text(
-                                "RATIO(%):${post1.ratio}",
-                                style: TextStyle(
-                                    color: Colors.grey[700],
-                                    fontSize: (size) ? 12 : 12,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    new Divider(
-                      color: Colors.grey[100],
-                      thickness: 1.0,
-                    ),
-                    Container(
-                      // height: 30,
-                      width: MediaQuery.of(context).size.width / 2,
-                      child: RaisedButton(
-                        color: Color(0XFF294ea3),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        onPressed: () =>
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) => MyDNAPage(
-                                      dnaData: post1,
-                                    ))),
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('View Details',
-                                  style: TextStyle(color: Colors.white)),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          //Text(post1.certy)
-        ],
-      ));
+            //Text(post.certy)
+          ],
+        ));
+      });
       tempList.add(Card(
         child: Container(
           padding: EdgeInsets.only(top: 15, bottom: 15, right: 3, left: 3),
@@ -904,7 +647,9 @@ class _PairsearchlistState extends State<PairSearchlist> {
           ),
         ),
       ));
-    }
+    });
+    log(pairMap.toString());
+
     return tempList;
   }
 
@@ -1128,25 +873,25 @@ class _PairsearchlistState extends State<PairSearchlist> {
                   size: (size) ? 32 : 32,
                 ),
                 onPressed: () {
-                  Navigator.pop(context, true);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => DashBoard()));
+                  Navigator.popUntil(context, ModalRoute.withName('/home'));
                 })
           ],
         ),
         body: Container(
           height: MediaQuery.of(context).size.height,
-          child: ListView(
-            children: getPairSearchResults(),
-          ),
+          child: isLoaded
+              ? ListView(
+                  children: getPairSearchResults(),
+                )
+              : Center(
+                  child: CircularProgressIndicator(),
+                ),
         ),
       ),
     );
   }
 
-  Future<List<Stock>> fetchPosts(String query) async {
+  Future<List<PairStock>> fetchPosts(String query) async {
     Map<String, String> aheaders = {
       'Content-Type': 'application/json; charset=utf-8',
     };
@@ -1168,12 +913,13 @@ class _PairsearchlistState extends State<PairSearchlist> {
     var resutList = (responseJson['GetStockappResult']['Result'] as List);
     resutList.sort(
         (a, b) => a["PairNo"].toString().compareTo(b["PairNo"].toString()));
-    return resutList.map((p) => Stock.fromJson(p)).toList();
+    return resutList.map((p) => PairStock.fromJson(p)).toList();
   }
 }
 
-class Stock {
+class PairStock {
   final String clarity,
+      luster,
       colour,
       cut,
       symm,
@@ -1217,9 +963,11 @@ class Stock {
       pdfLink,
       videoLink,
       imageLink,
-      width;
+      width,
+      pairNo,
+      tb;
 
-  Stock({
+  PairStock({
     this.clarity,
     this.colour,
     this.cut,
@@ -1264,11 +1012,14 @@ class Stock {
     this.imageLink,
     this.videoLink,
     this.weight,
+    this.luster,
     this.width,
+    this.pairNo,
+    this.tb,
   });
 
-  factory Stock.fromJson(Map<String, dynamic> json) {
-    return new Stock(
+  factory PairStock.fromJson(Map<String, dynamic> json) {
+    return new PairStock(
         clarity: json['Clarity'].toString(),
         colour: json['Colour'].toString(),
         cut: json['Cut'].toString(),
@@ -1281,6 +1032,7 @@ class Stock {
         ha: json['HA'].toString(),
         discount: json['Discount'].toString(),
         cb: json['CB'].toString(),
+        tb: json['TB'].toString(),
         cw: json['CW'].toString(),
         color_description: json['ColorDescription'].toString(),
         crown_angle: json['CrownAngle'].toString(),
@@ -1312,6 +1064,8 @@ class Stock {
         imageLink: json['Image'].toString(),
         comments: json['Comments'].toString(),
         weight: json['Weight'].toString(),
-        width: json['Width'].toString());
+        width: json['Width'].toString(),
+        pairNo: json['PairNo'].toString(),
+        luster: json['Luster'].toString());
   }
 }

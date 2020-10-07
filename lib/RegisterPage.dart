@@ -13,7 +13,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   bool small = false;
-  bool _toggleVisibility = true, rememberMe = false;
+  bool rememberMe = false;
   final _formKey = new GlobalKey<FormState>();
   final scaffolKey = GlobalKey<ScaffoldState>();
   String email, password;

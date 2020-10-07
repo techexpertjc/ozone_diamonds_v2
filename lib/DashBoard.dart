@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:carousel_pro/carousel_pro.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +20,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'Drawer/AboutUs.dart';
 import 'Drawer/ContactUs.dart';
 import 'Login_API.dart';
-
-import 'StoneSearch.dart';
 
 class DashBoard extends StatefulWidget {
   DashBoard({Key key, this.email, this.id, this.name = 'User'})
@@ -58,25 +55,6 @@ class _DashBoardState extends State<DashBoard> {
   Widget build(BuildContext context) {
     // var menu_one_url = new AssetImage('asets/Serch.jpg');
     // var menu_one_image = new Image(image: menu_one_url, height: 100);
-    Widget image_carousel = new Container(
-      height: 250.0,
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: new Carousel(
-          boxFit: BoxFit.cover,
-          images: [
-            AssetImage('asets/Jewel1.jpg'),
-            AssetImage('asets/Jewel2.jpg'),
-          ],
-          autoplay: false,
-          animationCurve: Curves.fastOutSlowIn,
-          animationDuration: Duration(milliseconds: 1000),
-          dotSize: 4.0,
-          dotColor: Colors.blue,
-          indicatorBgPadding: 4.0,
-        ),
-      ),
-    );
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,

@@ -5,11 +5,10 @@ import 'dart:convert';
 import "package:http/http.dart" as http;
 import 'package:ozone_diamonds/LoginPage.dart';
 import 'package:ozone_diamonds/dna_page.dart';
+import 'package:ozone_diamonds/media_fullscreen.dart';
 import 'package:ozone_diamonds/ozone_diaicon_icons.dart';
-import 'package:ozone_diamonds/search_with_tabs.dart';
-import 'package:ozone_diamonds/search.dart';
 
-import 'DashBoard.dart';
+import 'package:ozone_diamonds/search.dart';
 
 class MyCartList extends StatefulWidget {
   MyCartList({Key key, this.fil}) : super(key: key);
@@ -43,198 +42,6 @@ class _myCartlistState extends State<MyCartList> {
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
-        bottomNavigationBar: Padding(
-          padding: EdgeInsets.all(5),
-          child: Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                InkWell(
-                  onTap: () async {
-                    scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content: Text(
-                            'Deleting the item(s) from cart please wait...')));
-
-                    await selectedList.forEach((element) async {
-                      Map<String, String> aheaders = {
-                        'Content-Type': 'application/json; charset=utf-8',
-                      };
-                      var saveMap = Map();
-                      saveMap['Token'] = token;
-                      saveMap['PacketNo'] = element;
-                      saveMap['TransType'] = 'DELETE';
-                      await http
-                          .post(
-                              'http://ozonediam.com/MobAppService.svc/ManageCart',
-                              headers: aheaders,
-                              body: json.encode(saveMap))
-                          .catchError((e) {
-                        scaffoldKey.currentState.showSnackBar(SnackBar(
-                            content: Text(
-                                'An Error Occured While Adding Some items to your cart, Please check Your Internet Connection.')));
-                      });
-                    });
-                    scaffoldKey.currentState.showSnackBar(SnackBar(
-                        content:
-                            Text('The Item(s) have been Detelet From Cart')));
-                    setState(() {});
-                  },
-                  child: Container(
-                    height: 50,
-                    child: Center(
-                        child: Column(
-                      children: <Widget>[
-                        Icon(
-                          Icons.remove_shopping_cart,
-                          color: Color(0XFF294ea3),
-                        ),
-                        Text(
-                          'Delete From Cart',
-                          style: TextStyle(fontSize: 15),
-                        )
-                      ],
-                    )),
-                  ),
-                ),
-                InkWell(
-                  onTap: () async {
-                    var naration, instructedBy;
-                    final dialogKey = GlobalKey<ScaffoldState>();
-                    if (token != null &&
-                        token != '' &&
-                        partyCode != null &&
-                        partyCode != '') {
-                      showDialog(
-                          context: context,
-                          child: Padding(
-                            padding: EdgeInsets.all(15),
-                            child: Center(
-                              child: SizedBox(
-                                  height:
-                                      MediaQuery.of(context).size.height / 3,
-                                  child: Scaffold(
-                                      resizeToAvoidBottomPadding: false,
-                                      key: dialogKey,
-                                      body: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Container(
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                child: Text('Confirm Stone',
-                                                    style: TextStyle(
-                                                        fontSize: 18)),
-                                              ),
-                                              TextFormField(
-                                                onChanged: (val) =>
-                                                    naration = val,
-                                                decoration: InputDecoration(
-                                                    hintText: 'Naration'),
-                                              ),
-                                              TextFormField(
-                                                onChanged: (val) =>
-                                                    instructedBy = val,
-                                                decoration: InputDecoration(
-                                                    hintText: 'Instruction By'),
-                                              ),
-                                              Padding(
-                                                  padding:
-                                                      EdgeInsets.only(top: 20)),
-                                              RaisedButton(
-                                                onPressed: () async {
-                                                  dialogKey.currentState
-                                                      .showSnackBar(SnackBar(
-                                                          content: Text(
-                                                              'Confirming stone please wait...')));
-                                                  var saveMap = Map();
-                                                  saveMap['Token'] = token;
-                                                  saveMap['PartyCode'] =
-                                                      partyCode;
-                                                  saveMap['ReportNoList'] =
-                                                      selectedList.join(',');
-                                                  saveMap['Narration'] =
-                                                      naration;
-                                                  saveMap['Instructionby'] =
-                                                      instructedBy;
-                                                  Map<String, String> aheaders =
-                                                      {
-                                                    'Content-Type':
-                                                        'application/json; charset=utf-8',
-                                                  };
-                                                  http.Response response =
-                                                      await http.post(
-                                                          'http://ozonediam.com/MobAppService.svc/ConfirmStone',
-                                                          headers: aheaders,
-                                                          body: json
-                                                              .encode(saveMap));
-                                                  var responseJson = json
-                                                      .decode(response.body);
-                                                  print(
-                                                      responseJson.toString());
-                                                  if (responseJson[
-                                                          'SaveSearchResult']
-                                                      .toString()
-                                                      .toLowerCase()
-                                                      .contains('success')) {
-                                                    Navigator.of(context,
-                                                            rootNavigator: true)
-                                                        .pop();
-                                                    scaffoldKey.currentState
-                                                        .showSnackBar(SnackBar(
-                                                            content: Text(
-                                                                'Stone Confirmed Successfully')));
-                                                  } else {
-                                                    dialogKey.currentState
-                                                        .showSnackBar(SnackBar(
-                                                            content: Text(
-                                                                'Failed to confirm stone')));
-                                                  }
-                                                },
-                                                child: Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width -
-                                                            100,
-                                                    child: Text(
-                                                      'Confirm',
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                    )),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ))),
-                            ),
-                          ));
-                    } else {
-                      scaffoldKey.currentState.showSnackBar(SnackBar(
-                          content:
-                              Text('You are not allowed to Confirm stone')));
-                    }
-                  },
-                  child: Container(
-                    height: 50,
-                    child: Center(
-                        child: Column(
-                      children: <Widget>[
-                        Icon(
-                          Icons.attach_money,
-                          color: Color(0XFF294EA3),
-                        ),
-                        Text(
-                          'Confirm Stone',
-                          style: TextStyle(fontSize: 15),
-                        )
-                      ],
-                    )),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
         appBar: AppBar(
           backgroundColor: Color(0XFF294EA3),
           leading: IconButton(
@@ -258,11 +65,7 @@ class _myCartlistState extends State<MyCartList> {
                   size: (size) ? 32 : 32,
                 ),
                 onPressed: () {
-                  Navigator.pop(context, true);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => DashBoard()));
+                  Navigator.popUntil(context, ModalRoute.withName('/home'));
                 })
           ],
         ),
@@ -273,7 +76,7 @@ class _myCartlistState extends State<MyCartList> {
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   TextStyle boldStyle = TextStyle(fontWeight: FontWeight.bold);
-                  int numOfResult = snapshot.data.length;
+
                   List<Stock> posts = snapshot.data;
                   return Column(
                     children: <Widget>[
@@ -344,63 +147,168 @@ class _myCartlistState extends State<MyCartList> {
                                         child: InkWell(
                                           onTap: () {
                                             log('Inside on tap');
-                                            setState(() {
-                                              if (selectedList
-                                                      .indexOf(post.stone_id) !=
-                                                  -1) {
-                                                selectedListJson.remove(post);
-                                                selectedList
-                                                    .remove(post.stone_id);
-                                              } else {
-                                                selectedListJson.add(post);
-                                                selectedList.add(post.stone_id);
-                                              }
-                                              var discTotal = 0.00,
-                                                  caratTotal = 0.00,
-                                                  amountTotal = 0.00;
-                                              selectedListJson
-                                                  .forEach((element) {
-                                                discTotal = discTotal +
-                                                    double.parse(
-                                                        element.discount);
-                                                caratTotal = caratTotal +
-                                                    double.parse(element.carat);
-                                                amountTotal = amountTotal +
-                                                    double.parse(
-                                                        element.total_amt);
-                                              });
-                                              if (selectedList.length > 0) {
-                                                discount = (discTotal /
-                                                        selectedList.length)
-                                                    .toStringAsFixed(2);
-                                                carat = caratTotal
-                                                    .toStringAsFixed(2);
-                                                amtCts =
-                                                    (amountTotal / caratTotal)
-                                                        .toStringAsFixed(2);
-                                                total = amountTotal
-                                                    .toStringAsFixed(0);
-                                              } else {
-                                                discount = '0';
-                                                carat = '0';
-                                                amtCts = '0';
-                                                total = '0';
-                                              }
-                                            });
-                                            // print(selectedList.toString());
-                                            // Navigator.push(
-                                            //     context,
-                                            //     MaterialPageRoute(
-                                            //         builder: (BuildContext
-                                            //                 context) =>
-                                            //             MyDNAPage(
-                                            //               dnaData: post,
-                                            //             )));
+                                            // setState(() {
+                                            //   if (selectedList.indexOf(
+                                            //           post.stone_id) !=
+                                            //       -1) {
+                                            //     log('inside if');
+                                            //     selectedListJson.remove(post);
+                                            //     selectedList
+                                            //         .remove(post.stone_id);
+                                            //   } else {
+                                            //     log('inside else');
+                                            //     selectedListJson.add(post);
+                                            //     selectedList
+                                            //         .add(post.stone_id);
+                                            //   }
+                                            //   print(selectedList.length);
+                                            //   var discTotal = 0.00,
+                                            //       caratTotal = 0.00,
+                                            //       amountTotal = 0.00;
+                                            //   selectedListJson
+                                            //       .forEach((element) {
+                                            //     discTotal = discTotal +
+                                            //         double.parse(
+                                            //             element.discount);
+                                            //     caratTotal = caratTotal +
+                                            //         double.parse(
+                                            //             element.carat);
+                                            //     amountTotal = amountTotal +
+                                            //         double.parse(
+                                            //             element.total_amt);
+                                            //   });
+
+                                            //   if (selectedList.length > 0) {
+                                            //     discount = (discTotal /
+                                            //             selectedList.length)
+                                            //         .toStringAsFixed(2);
+                                            //     carat = caratTotal
+                                            //         .toStringAsFixed(2);
+                                            //     amtCts =
+                                            //         (amountTotal / caratTotal)
+                                            //             .toStringAsFixed(2);
+                                            //     total = amountTotal
+                                            //         .toStringAsFixed(0);
+                                            //     log(discTotal.toString());
+                                            //   } else {
+                                            //     discTotal = 0.00;
+                                            //     caratTotal = 0.00;
+                                            //     amountTotal = 0.00;
+                                            //     discount = '0';
+                                            //     carat = '0';
+                                            //     amtCts = '0';
+                                            //     total = '0';
+                                            //     log(discTotal.toString());
+                                            //   }
+                                            // });
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.all(5.0),
                                             child: Column(
                                               children: <Widget>[
+                                                Row(
+                                                  children: [
+                                                    Container(
+                                                      child: Checkbox(
+                                                        activeColor:
+                                                            Color(0XFF294ea3),
+                                                        value: selectedList
+                                                                .indexOf(post
+                                                                    .stone_id) !=
+                                                            -1,
+                                                        onChanged: (value) {
+                                                          log('Inside on tap');
+                                                          setState(() {
+                                                            if (selectedList
+                                                                    .indexOf(post
+                                                                        .stone_id) !=
+                                                                -1) {
+                                                              log('inside if');
+                                                              selectedListJson
+                                                                  .remove(post);
+                                                              selectedList
+                                                                  .remove(post
+                                                                      .stone_id);
+                                                            } else {
+                                                              log('inside else');
+                                                              selectedListJson
+                                                                  .add(post);
+                                                              selectedList.add(
+                                                                  post.stone_id);
+                                                            }
+                                                            print(selectedList
+                                                                .length);
+                                                            var discTotal =
+                                                                    0.00,
+                                                                caratTotal =
+                                                                    0.00,
+                                                                amountTotal =
+                                                                    0.00;
+                                                            selectedListJson
+                                                                .forEach(
+                                                                    (element) {
+                                                              discTotal = discTotal +
+                                                                  double.parse(
+                                                                      element
+                                                                          .discount);
+                                                              caratTotal = caratTotal +
+                                                                  double.parse(
+                                                                      element
+                                                                          .carat);
+                                                              amountTotal =
+                                                                  amountTotal +
+                                                                      double.parse(
+                                                                          element
+                                                                              .total_amt);
+                                                            });
+
+                                                            if (selectedList
+                                                                    .length >
+                                                                0) {
+                                                              discount = (discTotal /
+                                                                      selectedList
+                                                                          .length)
+                                                                  .toStringAsFixed(
+                                                                      2);
+                                                              carat = caratTotal
+                                                                  .toStringAsFixed(
+                                                                      2);
+                                                              amtCts = (amountTotal /
+                                                                      caratTotal)
+                                                                  .toStringAsFixed(
+                                                                      2);
+                                                              total = amountTotal
+                                                                  .toStringAsFixed(
+                                                                      0);
+                                                              log(discTotal
+                                                                  .toString());
+                                                            } else {
+                                                              discTotal = 0.00;
+                                                              caratTotal = 0.00;
+                                                              amountTotal =
+                                                                  0.00;
+                                                              discount = '0';
+                                                              carat = '0';
+                                                              amtCts = '0';
+                                                              total = '0';
+                                                              log(discTotal
+                                                                  .toString());
+                                                            }
+                                                          });
+                                                          // print(selectedList.toString());
+                                                          // Navigator.push(
+                                                          //     context,
+                                                          //     MaterialPageRoute(
+                                                          //         builder: (BuildContext
+                                                          //                 context) =>
+                                                          //             MyDNAPage(
+                                                          //               dnaData: post,
+                                                          //             )));
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                                 Row(
                                                   children: <Widget>[
                                                     Column(
@@ -639,6 +547,81 @@ class _myCartlistState extends State<MyCartList> {
                                                     ),
                                                   ],
                                                 ),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      10.0),
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Column(
+                                                        children: <Widget>[
+                                                          Text(post.shade,
+                                                              style: TextStyle(
+                                                                  fontSize:
+                                                                      (size)
+                                                                          ? 13
+                                                                          : 13,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold)),
+                                                        ],
+                                                      ),
+                                                      Expanded(
+                                                        child: Column(
+                                                          children: <Widget>[
+                                                            Text(
+                                                              post.luster,
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .red,
+                                                                  fontSize:
+                                                                      (size)
+                                                                          ? 12
+                                                                          : 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Column(
+                                                          children: <Widget>[
+                                                            Text(post.tb,
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                            .grey[
+                                                                        700],
+                                                                    fontSize:
+                                                                        (size)
+                                                                            ? 12
+                                                                            : 12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Column(
+                                                          children: <Widget>[
+                                                            Text(post.sb,
+                                                                style: TextStyle(
+                                                                    color: Color(
+                                                                        0XFF294ea3),
+                                                                    fontSize:
+                                                                        (size)
+                                                                            ? 12
+                                                                            : 12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold)),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
                                                 new Divider(
                                                   color: Colors.grey[100],
                                                   thickness: 1.0,
@@ -688,7 +671,6 @@ class _myCartlistState extends State<MyCartList> {
                                                   color: Colors.grey[100],
                                                   thickness: 1.0,
                                                 ),
-
                                                 Row(
                                                   children: <Widget>[
                                                     Expanded(
@@ -730,7 +712,7 @@ class _myCartlistState extends State<MyCartList> {
                                                     ),
                                                   ],
                                                 ),
-                                                new Divider(
+                                                Divider(
                                                   color: Colors.grey[100],
                                                   thickness: 1.0,
                                                 ),
@@ -769,6 +751,74 @@ class _myCartlistState extends State<MyCartList> {
                                                         ],
                                                       ),
                                                     ),
+                                                  ),
+                                                ),
+                                                Divider(),
+                                                Container(
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceAround,
+                                                    children: [
+                                                      Container(
+                                                        child: IconButton(
+                                                            icon: Icon(
+                                                              Icons.receipt,
+                                                              color: Color(
+                                                                  0XFF294ea3),
+                                                            ),
+                                                            onPressed: () {
+                                                              Navigator.of(context).push(
+                                                                  MaterialPageRoute(
+                                                                      builder: (BuildContext
+                                                                              context) =>
+                                                                          MyMediaViewer(
+                                                                            mediaType:
+                                                                                'pdf',
+                                                                            mediaUrl:
+                                                                                post.pdfLink,
+                                                                          )));
+                                                            }),
+                                                      ),
+                                                      Container(
+                                                        child: IconButton(
+                                                            icon: Icon(
+                                                              Icons.videocam,
+                                                              color: Color(
+                                                                  0XFF294ea3),
+                                                            ),
+                                                            onPressed: () {
+                                                              Navigator.of(context).push(
+                                                                  MaterialPageRoute(
+                                                                      builder: (BuildContext
+                                                                              context) =>
+                                                                          MyMediaViewer(
+                                                                            mediaType:
+                                                                                'mp4',
+                                                                            mediaUrl:
+                                                                                post.videoLink,
+                                                                          )));
+                                                            }),
+                                                      ),
+                                                      Container(
+                                                        child: IconButton(
+                                                            icon: Icon(
+                                                              Icons.image,
+                                                              color: Color(
+                                                                  0XFF294ea3),
+                                                            ),
+                                                            onPressed: () {
+                                                              Navigator.of(context).push(MaterialPageRoute(
+                                                                  builder: (BuildContext
+                                                                          context) =>
+                                                                      MyMediaViewer(
+                                                                          mediaType:
+                                                                              'image',
+                                                                          mediaUrl:
+                                                                              post.imageLink)));
+                                                            }),
+                                                      )
+                                                    ],
                                                   ),
                                                 )
                                               ],
@@ -837,7 +887,7 @@ class _myCartlistState extends State<MyCartList> {
         headers: aheaders,
         body: msg);
     var responseJson = json.decode(response.body);
-    log(msg);
+
     return (responseJson['GetStockappResult']['Result'] as List)
         .map((p) => Stock.fromJson(p))
         .toList();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ozone_diamonds/DashBoard.dart';
 
 import 'package:ozone_diamonds/LoginPage.dart';
 
@@ -10,6 +11,15 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  var routes = <String, WidgetBuilder>{
+    "/home": (BuildContext context) => DashBoard(),
+    // "/searchPage": (BuildContext context) => StoneSearch(),
+    // "/searchResults": (BuildContext context) => SearchResults(),
+    // "/aboutUs": (BuildContext context) => AboutUs(),
+    // "/gallery": (BuildContext context) => MyGallery(),
+    // "/contact": (BuildContext context) => ContactUs()
+  };
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -21,6 +31,7 @@ class MyApp extends StatelessWidget {
       home: LoginPage(),
       color: Colors.white,
       debugShowCheckedModeBanner: false,
+      routes: routes,
     );
   }
 }
