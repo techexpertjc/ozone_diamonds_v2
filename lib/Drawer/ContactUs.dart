@@ -45,43 +45,22 @@ class _contactusState extends State<contactus> {
                 })
           ],
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.all(10),
-                child: Row(
-                  children: [
-                    Container(
-                      child: Icon(
-                        Icons.pin_drop,
-                        size: 35,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                    ),
-                    Container(
-                      child: Text(
-                        '202, 2nd Floor, Sumukh Building,\nSuper Compound, \nVastadevdi Road, Katargam,\nSurat -395004.(Gujarat) India.',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  launch("tel:+919722273818");
-                },
-                child: Container(
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          color: Colors.grey[800],
+          padding: EdgeInsets.all(10),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
                   padding: EdgeInsets.all(10),
                   child: Row(
                     children: [
                       Container(
                         child: Icon(
-                          Icons.call,
+                          Icons.pin_drop,
                           size: 35,
+                          color: Colors.white,
                         ),
                       ),
                       Padding(
@@ -89,65 +68,116 @@ class _contactusState extends State<contactus> {
                       ),
                       Container(
                         child: Text(
-                          '(M) +91 9722273818',
-                          style: TextStyle(fontSize: 18),
+                          '202, 2nd Floor, Sumukh Building,\nSuper Compound, \nVastadevdi Road, Katargam,\nSurat -395004.(Gujarat) India.',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-              InkWell(
-                onTap: () => launch("tel:+91 02612533533"),
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                  child: Row(
-                    children: [
-                      Container(
-                        child: Icon(
-                          Icons.contact_phone,
-                          size: 35,
+                Divider(
+                  color: Colors.grey[100],
+                ),
+                InkWell(
+                  onTap: () {
+                    launch("tel:+919722273818");
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    child: Row(
+                      children: [
+                        Container(
+                          child: Icon(
+                            Icons.call,
+                            size: 35,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                      ),
-                      Container(
-                        child: Text(
-                          ' Tel: +91 0261 2533533',
-                          style: TextStyle(fontSize: 18),
+                        Padding(
+                          padding: EdgeInsets.all(10),
                         ),
-                      ),
-                    ],
+                        Container(
+                          child: Text(
+                            '(M) +91 9722273818',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              InkWell(
-                onTap: () => launch("mailto:sales@ozonediam.com"),
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                  child: Row(
-                    children: [
-                      Container(
-                        child: Icon(
-                          Icons.mail,
-                          size: 35,
+                Divider(
+                  color: Colors.grey[100],
+                ),
+                InkWell(
+                  onTap: () => launch("tel:+91 02612533533"),
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    child: Row(
+                      children: [
+                        Container(
+                          child: Icon(
+                            Icons.contact_phone,
+                            size: 35,
+                            color: Colors.white,
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                      ),
-                      Container(
-                        child: Text(
-                          ' Email: sales@ozonediam.com',
-                          style: TextStyle(fontSize: 18),
+                        Padding(
+                          padding: EdgeInsets.all(10),
                         ),
-                      ),
-                    ],
+                        Container(
+                          child: Text(
+                            ' Tel: +91 0261 2533533',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              )
-            ],
+                Divider(
+                  color: Colors.grey[100],
+                ),
+                InkWell(
+                  onTap: () => launch("mailto:sales@ozonediam.com"),
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    child: Row(
+                      children: [
+                        Container(
+                          child: Icon(
+                            Icons.mail,
+                            size: 35,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(10),
+                        ),
+                        Container(
+                          child: Text(
+                            ' Email: sales@ozonediam.com',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ));
   }

@@ -47,6 +47,12 @@ class _AboutUSState extends State<AboutUS> {
           child: Card(
             child: ListView(
               children: <Widget>[
+                Container(
+                  child: Image.asset(
+                    'asets/Ozonlogo.png',
+                    scale: 0.2,
+                  ),
+                ),
                 Padding(
                   padding: EdgeInsets.only(top: 10.0, left: 8.0, right: 8.0),
                   child: new Container(
@@ -83,7 +89,7 @@ class _AboutUSState extends State<AboutUS> {
                         style: TextStyle(
                             fontSize: 13.0,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: Color(0XFF294EA3),
                             decoration: TextDecoration.underline),
                         textAlign: TextAlign.center,
                       ),

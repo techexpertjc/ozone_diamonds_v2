@@ -181,7 +181,61 @@ class _PairsearchlistState extends State<PairSearchlist> {
                           child: Checkbox(
                               checkColor: Color(0XFF294ea3),
                               value: selectedList.indexOf(post.stone_id) != -1,
-                              onChanged: null),
+                              onChanged: (value) {
+                                log('Inside on tap');
+                                setState(() {
+                                  if (selectedList.indexOf(post.stone_id) !=
+                                      -1) {
+                                    log('inside if');
+                                    selectedListJson.remove(post);
+                                    selectedList.remove(post.stone_id);
+                                  } else {
+                                    log('inside else');
+                                    selectedListJson.add(post);
+                                    selectedList.add(post.stone_id);
+                                  }
+                                  print(selectedList.length);
+                                  var discTotal = 0.00,
+                                      caratTotal = 0.00,
+                                      amountTotal = 0.00;
+                                  selectedListJson.forEach((element) {
+                                    discTotal = discTotal +
+                                        double.parse(element.discount);
+                                    caratTotal = caratTotal +
+                                        double.parse(element.carat);
+                                    amountTotal = amountTotal +
+                                        double.parse(element.total_amt);
+                                  });
+
+                                  if (selectedList.length > 0) {
+                                    discount = (discTotal / selectedList.length)
+                                        .toStringAsFixed(2);
+                                    carat = caratTotal.toStringAsFixed(2);
+                                    amtCts = (amountTotal / caratTotal)
+                                        .toStringAsFixed(2);
+                                    total = amountTotal.toStringAsFixed(0);
+                                    log(discTotal.toString());
+                                  } else {
+                                    discTotal = 0.00;
+                                    caratTotal = 0.00;
+                                    amountTotal = 0.00;
+                                    discount = '0';
+                                    carat = '0';
+                                    amtCts = '0';
+                                    total = '0';
+                                    log(discTotal.toString());
+                                  }
+                                });
+                                // print(selectedList.toString());
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (BuildContext
+                                //                 context) =>
+                                //             MyDNAPage(
+                                //               dnaData: post,
+                                //             )));
+                              }),
                         ),
                       ],
                     ),
@@ -518,7 +572,61 @@ class _PairsearchlistState extends State<PairSearchlist> {
                           child: Checkbox(
                               checkColor: Color(0XFF294ea3),
                               value: selectedList.indexOf(post1.stone_id) != -1,
-                              onChanged: null),
+                              onChanged: (value) {
+                                log('Inside on tap');
+                                setState(() {
+                                  if (selectedList.indexOf(post1.stone_id) !=
+                                      -1) {
+                                    log('inside if');
+                                    selectedListJson.remove(post1);
+                                    selectedList.remove(post1.stone_id);
+                                  } else {
+                                    log('inside else');
+                                    selectedListJson.add(post1);
+                                    selectedList.add(post1.stone_id);
+                                  }
+                                  print(selectedList.length);
+                                  var discTotal = 0.00,
+                                      caratTotal = 0.00,
+                                      amountTotal = 0.00;
+                                  selectedListJson.forEach((element) {
+                                    discTotal = discTotal +
+                                        double.parse(element.discount);
+                                    caratTotal = caratTotal +
+                                        double.parse(element.carat);
+                                    amountTotal = amountTotal +
+                                        double.parse(element.total_amt);
+                                  });
+
+                                  if (selectedList.length > 0) {
+                                    discount = (discTotal / selectedList.length)
+                                        .toStringAsFixed(2);
+                                    carat = caratTotal.toStringAsFixed(2);
+                                    amtCts = (amountTotal / caratTotal)
+                                        .toStringAsFixed(2);
+                                    total = amountTotal.toStringAsFixed(0);
+                                    log(discTotal.toString());
+                                  } else {
+                                    discTotal = 0.00;
+                                    caratTotal = 0.00;
+                                    amountTotal = 0.00;
+                                    discount = '0';
+                                    carat = '0';
+                                    amtCts = '0';
+                                    total = '0';
+                                    log(discTotal.toString());
+                                  }
+                                });
+                                // print(selectedList.toString());
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (BuildContext
+                                //                 context) =>
+                                //             MyDNAPage(
+                                //               dnaData: post1,
+                                //             )));
+                              }),
                         ),
                       ],
                     ),

@@ -175,7 +175,12 @@ class _DashBoardState extends State<DashBoard> {
                 ),
               ),
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => PairSearchlist(
+                            fil: '',
+                          )));
+                },
                 child: ListTile(
                   leading: Icon(
                     Icons.search,
