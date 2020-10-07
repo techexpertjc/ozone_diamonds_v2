@@ -12,6 +12,7 @@ import 'package:ozone_diamonds/change_password.dart';
 import 'package:ozone_diamonds/my_order.dart';
 import 'package:ozone_diamonds/my_profile.dart';
 import 'package:ozone_diamonds/new_arrival.dart';
+import 'package:ozone_diamonds/pair_search_result.dart';
 import 'package:ozone_diamonds/search.dart';
 import 'package:ozone_diamonds/search_with_tabs.dart';
 import 'package:ozone_diamonds/view_offer.dart';
@@ -500,7 +501,7 @@ class _DashBoardState extends State<DashBoard> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (BuildContext context) =>
-                                        MySearchPage(isPair: true)));
+                                        PairSearchlist(fil: '')));
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),

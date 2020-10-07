@@ -16,9 +16,7 @@ class _contactusState extends State<contactus> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: (size) ? Size.fromHeight(45.0) : Size.fromHeight(45.0),
-        child: AppBar(
+        appBar: AppBar(
           leading: IconButton(
               icon: Icon(
                 Icons.chevron_left,
@@ -47,39 +45,110 @@ class _contactusState extends State<contactus> {
                 })
           ],
         ),
-      ),
-      body: Container(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
+        body: SingleChildScrollView(
           child: Column(
-            children: <Widget>[
-              RaisedButton.icon(
-                onPressed: () => launch("tel:$number"),
-                icon: Icon(Icons.call),
-                label: Text(
-                  "$number",
+            children: [
+              Container(
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  children: [
+                    Container(
+                      child: Icon(
+                        Icons.pin_drop,
+                        size: 35,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                    ),
+                    Container(
+                      child: Text(
+                        '202, 2nd Floor, Sumukh Building,\nSuper Compound, \nVastadevdi Road, Katargam,\nSurat -395004.(Gujarat) India.',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              SizedBox(height: 10),
-              RaisedButton.icon(
-                onPressed: () => launch("sms:$number"),
-                icon: Icon(Icons.sms),
-                label: Text(
-                  "$number",
+              InkWell(
+                onTap: () {
+                  launch("tel:+919722273818");
+                },
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      Container(
+                        child: Icon(
+                          Icons.call,
+                          size: 35,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                      ),
+                      Container(
+                        child: Text(
+                          '(M) +91 9722273818',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              SizedBox(height: 10),
-              RaisedButton.icon(
-                onPressed: () => launch("mailto:$email"),
-                icon: Icon(Icons.mail),
-                label: Text(
-                  "$email",
+              InkWell(
+                onTap: () => launch("tel:+91 02612533533"),
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      Container(
+                        child: Icon(
+                          Icons.contact_phone,
+                          size: 35,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                      ),
+                      Container(
+                        child: Text(
+                          ' Tel: +91 0261 2533533',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
+              InkWell(
+                onTap: () => launch("mailto:sales@ozonediam.com"),
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      Container(
+                        child: Icon(
+                          Icons.mail,
+                          size: 35,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                      ),
+                      Container(
+                        child: Text(
+                          ' Email: sales@ozonediam.com',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
             ],
           ),
-        ),
-      ),
-    );
+        ));
   }
 }

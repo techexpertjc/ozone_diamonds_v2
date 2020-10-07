@@ -418,6 +418,21 @@ class _searchlistState extends State<searchlist> {
                                               child: Column(
                                                 children: <Widget>[
                                                   Row(
+                                                    children: [
+                                                      Container(
+                                                        child: Checkbox(
+                                                            activeColor: Color(
+                                                                0XFF294ea3),
+                                                            value: selectedList
+                                                                    .indexOf(post
+                                                                        .stone_id) !=
+                                                                -1,
+                                                            onChanged:
+                                                                (value) {}),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Row(
                                                     children: <Widget>[
                                                       Column(
                                                         children: <Widget>[

@@ -22,7 +22,7 @@ class _offerListState extends State<OfferList> {
   bool size = false;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   List<String> selectedList = List();
-  List<Stock> selectedListJson = List();
+  List<Stock1> selectedListJson = List();
   String carat = "-", discount = "-", amtCts = "-", total = "-";
   @override
   Widget build(BuildContext context) {
@@ -119,12 +119,12 @@ class _offerListState extends State<OfferList> {
           height: MediaQuery.of(context).size.height,
           child: ListView(
             children: <Widget>[
-              new FutureBuilder<List<Stock>>(
+              new FutureBuilder<List<Stock1>>(
                 future: fetchPosts(query),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     int numOfResult = snapshot.data.length;
-                    List<Stock> posts = snapshot.data;
+                    List<Stock1> posts = snapshot.data;
 
                     return Column(
                       children: <Widget>[
@@ -677,7 +677,7 @@ class _offerListState extends State<OfferList> {
     );
   }
 
-  Future<List<Stock>> fetchPosts(String query) async {
+  Future<List<Stock1>> fetchPosts(String query) async {
     Map<String, String> aheaders = {
       'Content-Type': 'application/json; charset=utf-8',
     };
@@ -690,7 +690,151 @@ class _offerListState extends State<OfferList> {
     log('inside result ' +
         responseJson['GetViewOfferResult']['Result'][0].toString());
     return (responseJson['GetViewOfferResult']['Result'] as List)
-        .map((p) => Stock.fromJson(p))
+        .map((p) => Stock1.fromJson(p))
         .toList();
+  }
+}
+
+class Stock1 {
+  final String clarity,
+      colour,
+      cut,
+      symm,
+      flu,
+      certy,
+      polish,
+      shade,
+      carat,
+      ha,
+      discount,
+      cb,
+      cw,
+      color_description,
+      comments,
+      crown_angle,
+      crown_height,
+      depth,
+      depth_per,
+      eyeclean,
+      ktos,
+      lab,
+      lenght,
+      location,
+      milky,
+      pavilion_angle,
+      pavilion_height,
+      price_per_carat,
+      rap_price,
+      ratio,
+      report_date,
+      report_no,
+      sb,
+      sw,
+      shape,
+      stage,
+      stone_id,
+      table_per,
+      total_amt,
+      video,
+      weight,
+      pdfLink,
+      videoLink,
+      imageLink,
+      width;
+
+  Stock1({
+    this.clarity,
+    this.colour,
+    this.cut,
+    this.polish,
+    this.symm,
+    this.flu,
+    this.certy,
+    this.shade,
+    this.carat,
+    this.ha,
+    this.discount,
+    this.cb,
+    this.cw,
+    this.color_description,
+    this.comments,
+    this.crown_angle,
+    this.crown_height,
+    this.depth,
+    this.depth_per,
+    this.eyeclean,
+    this.ktos,
+    this.lab,
+    this.lenght,
+    this.location,
+    this.milky,
+    this.pavilion_angle,
+    this.pavilion_height,
+    this.price_per_carat,
+    this.rap_price,
+    this.ratio,
+    this.report_date,
+    this.report_no,
+    this.sw,
+    this.sb,
+    this.shape,
+    this.stage,
+    this.stone_id,
+    this.table_per,
+    this.total_amt,
+    this.video,
+    this.pdfLink,
+    this.imageLink,
+    this.videoLink,
+    this.weight,
+    this.width,
+  });
+
+  factory Stock1.fromJson(Map<String, dynamic> json) {
+    return new Stock1(
+        clarity: json['Clarity'].toString(),
+        colour: json['Colour'].toString(),
+        cut: json['Cut'].toString(),
+        polish: json['Polish'].toString(),
+        symm: json['Symmetry'].toString(),
+        flu: json['Fluorescence'].toString(),
+        certy: json['Lab'].toString(),
+        shade: json['Shade'].toString(),
+        carat: json['Weight'].toString(),
+        ha: json['HA'].toString(),
+        discount: json['Discount'].toString(),
+        cb: json['CB'].toString(),
+        cw: json['CW'].toString(),
+        color_description: json['ColorDescription'].toString(),
+        crown_angle: json['CrownAngle'].toString(),
+        crown_height: json['CrownHeight'].toString(),
+        depth: json['Depth'].toString(),
+        eyeclean: json['EyeClean'].toString(),
+        ktos: json['KeyToSymbols'].toString(),
+        lab: json['Lab'].toString(),
+        lenght: json['Lenght'].toString(),
+        location: json['Location'].toString(),
+        milky: json['Milky'].toString(),
+        pavilion_angle: json['PavilionAngle'].toString(),
+        pavilion_height: json['PavilionHeight'].toString(),
+        price_per_carat: json['PricePerCarat'].toString(),
+        rap_price: json['RapPrice'].toString(),
+        ratio: json['Ratio'].toString(),
+        report_date: json['ReportDate'].toString(),
+        report_no: json['ReportNo'].toString(),
+        sw: json['SW'].toString(),
+        sb: json['SB'].toString(),
+        shape: json['Shape'].toString(),
+        stage: json['Stage'].toString(),
+        stone_id: json['StoneId'].toString(),
+        table_per: json['TablePer'].toString(),
+        total_amt: json['TotalAmount'].toString(),
+        video: json['Video'].toString(),
+        pdfLink: json['Cert'].toString(),
+        videoLink: json['Mp4Video'].toString(),
+        imageLink: json['Image'].toString(),
+        comments: json['Comments'].toString(),
+        weight: json['Weight'].toString(),
+        width: json['Width'].toString());
   }
 }

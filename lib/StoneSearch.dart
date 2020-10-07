@@ -195,8 +195,8 @@ class _StoneSearchState extends State<StoneSearch>
 
   //Luster field
   List<List<String>> lusterName = [
-    ['EXCELLENT', 'VERY GOOD'],
-    ['MILKY 1', 'MILKY 2']
+    ['EXCELLENT', 'VERY GOOD', 'MILKY 1'],
+    ['MILKY 2']
   ];
   List<String> lusterValue = ['1', '2', '4', '5', '6'];
   List<bool> lusterColor = [false, false, false, false, false];

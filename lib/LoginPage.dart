@@ -7,6 +7,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nice_button/NiceButton.dart';
+import 'package:ozone_diamonds/RegisterPage.dart';
 import 'package:ozone_diamonds/search_with_tabs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -232,6 +233,43 @@ class _LoginPageState extends State<LoginPage> {
             //Finish
 
             //New User
+            Padding(
+              padding: EdgeInsets.only(top: 20.0, left: 100.0),
+              child: SizedBox(
+                  height: (small) ? 50 : 55,
+                  child: Row(
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          Text(
+                            'New User? ',
+                            style: TextStyle(
+                                fontSize: (small) ? 16 : 18,
+                                fontWeight: FontWeight.w500),
+                          )
+                        ],
+                      ),
+                      Column(
+                        children: <Widget>[
+                          InkWell(
+                            child: Text(
+                              'Register Here',
+                              style: TextStyle(
+                                  fontSize: (small) ? 18 : 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0XFF294ea3)),
+                            ),
+                            onTap: () => Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        RegisterPage())),
+                          )
+                        ],
+                      )
+                    ],
+                  )),
+            ),
+            //Finish
           ],
         ),
       ),
